@@ -1,6 +1,20 @@
 <?php include 'components/header.php'; ?>
 
 <body class="bg-warning">
+    <!-- Sticky Navbar (hidden by default, shows on scroll) -->
+    <nav id="scroll-navbar" class="navbar navbar-expand-lg fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="assets/img/logo2.png" alt="Logo" style="width:40px; height:40px;" class="me-2">
+            </a>
+            <div class="d-flex flex-row gap-2 ms-auto">
+                <a href="#company" class="btn btn-warning-hover px-3 py-2">Our Company</a>
+                <a href="#specialties" class="btn btn-warning-hover px-3 py-2">Our Specialties</a>
+                <a href="#projects" class="btn btn-warning-hover px-3 py-2">Our Projects</a>
+                <a href="#contact" class="btn btn-warning-hover px-3 py-2">Connect Now</a>
+            </div>
+        </div>
+    </nav>
     <!-- HERO SECTION -->
     <div class="position-relative min-vh-100 d-flex align-items-center justify-content-center"
         style="background-image: url('assets/img/bg.png'); background-size: cover; background-position: center;">
@@ -174,7 +188,7 @@
     </footer>
 
     <?php include 'components/footer.php'; ?>
-    <style>                 
+    <style>
         .btn-warning-hover {
             background-color: #FFC107;
             color: #212529 !important;
@@ -182,19 +196,19 @@
             font-size: 1.25rem;
             width: 100%;
         }
-        
+
         .btn-warning-hover.active,
         .btn-warning-hover:hover {
             background-color: #fd7e14 !important;
             color: white !important;
         }
-        
+
         @media (min-width: 992px) {
             .btn-warning-hover {
                 width: auto;
             }
         }
-        
+
         .footer-icon:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -207,5 +221,46 @@
         .footer-icon:hover i {
             transform: scale(1.1);
         }
+
+        .custom-navbar {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(8px);
+            border-radius: 0 0 1.5rem 1.5rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(.4, 2, .3, 1), opacity 0.5s cubic-bezier(.4, 2, .3, 1);
+            z-index: 1050;
+        }
+
+        .custom-navbar.show-navbar {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .custom-navbar .navbar-brand img {
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
+        }
+
+        .custom-navbar .btn-warning-hover {
+            border-radius: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
     </style>
+    <script>
+        // Show navbar after scrolling past hero section with smooth transition
+        window.addEventListener('scroll', function () {
+            const navbar = document.getElementById('scroll-navbar');
+            const hero = document.querySelector('.position-relative.min-vh-100');
+            if (!navbar || !hero) return;
+            const heroBottom = hero.offsetTop + hero.offsetHeight - 80;
+            if (window.scrollY > heroBottom) {
+                navbar.classList.add('show-navbar');
+            } else {
+                navbar.classList.remove('show-navbar');
+            }
+        });
+    </script>
 </body>
