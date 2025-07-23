@@ -1,6 +1,6 @@
 <?php include 'components/header.php'; ?>
 
-<body>
+<body class="bg-warning">
     <!-- HERO SECTION -->
     <div class="position-relative min-vh-100 d-flex align-items-center justify-content-center"
         style="background-image: url('assets/img/bg.png'); background-size: cover; background-position: center;">
@@ -15,11 +15,10 @@
             </p>
 
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-2 mt-5 pt-5">
-                <a href="#company" class="btn btn-warning text-dark fw-semibold fs-5 w-100 w-lg-auto">Our Company</a>
-                <a href="#specialties" class="btn btn-warning text-dark fw-semibold fs-5 w-100 w-lg-auto">Our
-                    Specialties</a>
-                <a href="#projects" class="btn btn-warning text-dark fw-semibold fs-5 w-100 w-lg-auto">Our Projects</a>
-                <a href="#contact" class="btn btn-warning text-dark fw-semibold fs-5 w-100 w-lg-auto">Connect Now</a>
+                <a href="#company" class="btn btn-warning-hover active px-4 py-2">Our Company</a>
+                <a href="#specialties" class="btn btn-warning-hover px-4 py-2">Our Specialties</a>
+                <a href="#projects" class="btn btn-warning-hover px-4 py-2">Our Projects</a>
+                <a href="#contact" class="btn btn-warning-hover px-4 py-2">Connect Now</a>
             </div>
         </div>
     </div>
@@ -175,7 +174,27 @@
     </footer>
 
     <?php include 'components/footer.php'; ?>
-    <style>
+    <style>                 
+        .btn-warning-hover {
+            background-color: #FFC107;
+            color: #212529 !important;
+            font-weight: 600;
+            font-size: 1.25rem;
+            width: 100%;
+        }
+        
+        .btn-warning-hover.active,
+        .btn-warning-hover:hover {
+            background-color: #fd7e14 !important;
+            color: white !important;
+        }
+        
+        @media (min-width: 992px) {
+            .btn-warning-hover {
+                width: auto;
+            }
+        }
+        
         .footer-icon:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
