@@ -7,11 +7,29 @@
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="assets/img/logo2.png" alt="Logo" style="width:40px; height:40px;" class="me-2">
             </a>
-            <div class="d-flex flex-row gap-2 ms-auto">
-                <a href="#company" class="btn btn-warning-hover px-3 py-2">Our Company</a>
-                <a href="#specialties" class="btn btn-warning-hover px-3 py-2">Our Specialties</a>
-                <a href="#projects" class="btn btn-warning-hover px-3 py-2">Our Projects</a>
-                <a href="#contact" class="btn btn-warning-hover px-3 py-2">Connect Now</a>
+
+            <!-- Hamburger button for mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navigation items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="#company" class="nav-link">Our Company</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#specialties" class="nav-link">Our Specialties</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#projects" class="nav-link">Our Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link">Connect Now</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -29,10 +47,13 @@
             </p>
 
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-2 mt-5 pt-5">
-                <a href="#company" class="btn btn-warning-hover active px-4 py-2">Our Company</a>
-                <a href="#specialties" class="btn btn-warning-hover px-4 py-2">Our Specialties</a>
-                <a href="#projects" class="btn btn-warning-hover px-4 py-2">Our Projects</a>
-                <a href="#contact" class="btn btn-warning-hover px-4 py-2">Connect Now</a>
+                <a href="#company" class="btn btn-warning-hover active px-4 py-2 border border-0 border-white">Our
+                    Company</a>
+                <a href="#specialties" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
+                    Specialties</a>
+                <a href="#projects" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
+                    Projects</a>
+                <a href="#contact" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Connect Now</a>
             </div>
         </div>
     </div>
@@ -52,22 +73,34 @@
                         the industry.</p>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0 pb-4">
-                    <div class="row g-2">
+                    <div class="row g-3">
                         <div class="col-6">
-                            <img src="assets/img/pentagon1.png" class="img-fluid rounded object-fit-cover"
-                                alt="Company 1" style="width: 100%; height: 100%;">
+                            <div class="square-image-container">
+                                <img src="assets/img/pentagon1.png"
+                                    class="img-fluid rounded object-fit-cover"
+                                    alt="Company 1">
+                            </div>
                         </div>
                         <div class="col-6">
-                            <img src="assets/img/pentagon2.png" class="img-fluid rounded object-fit-cover"
-                                alt="Company 2" style="width: 100%; height: 100%;">
+                            <div class="square-image-container">
+                                <img src="assets/img/pentagon2.png"
+                                    class="img-fluid rounded object-fit-cover"
+                                    alt="Company 2">
+                            </div>
                         </div>
                         <div class="col-6">
-                            <img src="assets/img/pentagon3.png" class="img-fluid rounded object-fit-cover"
-                                alt="Company 3" style="width: 100%; height: 100%;">
+                            <div class="square-image-container">
+                                <img src="assets/img/pentagon3.png"
+                                    class="img-fluid rounded object-fit-cover"
+                                    alt="Company 3">
+                            </div>
                         </div>
                         <div class="col-6">
-                            <img src="assets/img/pentagon4.png" class="img-fluid rounded object-fit-cover"
-                                alt="Company 4" style="width: 100%; height: 100%;">
+                            <div class="square-image-container">
+                                <img src="assets/img/pentagon4.png"
+                                    class="img-fluid rounded object-fit-cover"
+                                    alt="Company 4">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,18 +155,18 @@
     <section id="specialties">
         <div class="row g-0">
             <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
-                <div class="position-relative w-100 h-100" style="min-height:300px;">
-                    <img src="assets/img/pentagon2.png" class="w-100 h-100 object-fit-cover"
-                        style="filter:brightness(0.7);">
+                <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
+                    <img src="assets/img/banner1.png" class="w-100 h-100 object-fit-cover specialty-image">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
                     <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
                         <h2 class="fw-bold text-white fs-4">DISCOVER<br>OUR SPECIALTIES</h2>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6 p-0">
-                <div class="position-relative w-100 h-100" style="min-height:300px;">
-                    <img src="assets/img/pentagon2.png" class="w-100 h-100 object-fit-cover"
-                        style="filter:brightness(0.7);">
+                <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
+                    <img src="assets/img/banner2.png" class="w-100 h-100 object-fit-cover specialty-image">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
                     <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
                         <h2 class="fw-bold text-white fs-4">CHECK OUT<br>OUR BUILDS</h2>
                     </div>
@@ -188,79 +221,4 @@
     </footer>
 
     <?php include 'components/footer.php'; ?>
-    <style>
-        .btn-warning-hover {
-            background-color: #FFC107;
-            color: #212529 !important;
-            font-weight: 600;
-            font-size: 1.25rem;
-            width: 100%;
-        }
-
-        .btn-warning-hover.active,
-        .btn-warning-hover:hover {
-            background-color: #fd7e14 !important;
-            color: white !important;
-        }
-
-        @media (min-width: 992px) {
-            .btn-warning-hover {
-                width: auto;
-            }
-        }
-
-        .footer-icon:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .footer-icon i {
-            transition: transform 0.3s ease;
-        }
-
-        .footer-icon:hover i {
-            transform: scale(1.1);
-        }
-
-        .custom-navbar {
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            backdrop-filter: blur(8px);
-            border-radius: 0 0 1.5rem 1.5rem;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            transform: translateY(-100%);
-            opacity: 0;
-            transition: transform 0.5s cubic-bezier(.4, 2, .3, 1), opacity 0.5s cubic-bezier(.4, 2, .3, 1);
-            z-index: 1050;
-        }
-
-        .custom-navbar.show-navbar {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .custom-navbar .navbar-brand img {
-            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
-        }
-
-        .custom-navbar .btn-warning-hover {
-            border-radius: 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-        }
-    </style>
-    <script>
-        // Show navbar after scrolling past hero section with smooth transition
-        window.addEventListener('scroll', function () {
-            const navbar = document.getElementById('scroll-navbar');
-            const hero = document.querySelector('.position-relative.min-vh-100');
-            if (!navbar || !hero) return;
-            const heroBottom = hero.offsetTop + hero.offsetHeight - 80;
-            if (window.scrollY > heroBottom) {
-                navbar.classList.add('show-navbar');
-            } else {
-                navbar.classList.remove('show-navbar');
-            }
-        });
-    </script>
 </body>

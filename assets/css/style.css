@@ -1,0 +1,166 @@
+/* Button styles for hero section */
+.btn-warning-hover {
+    background-color: #FFC107;
+    color: #212529 !important;
+    font-weight: 600;
+    font-size: 1.25rem;
+    width: 100%;
+}
+
+.btn-warning-hover.active,
+.btn-warning-hover:hover {
+    background-color: #fd7e14 !important;
+    color: white !important;
+}
+
+@media (min-width: 992px) {
+    .btn-warning-hover {
+        width: auto;
+    }
+}
+
+/* Footer icon hover effects */
+.footer-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer-icon i {
+    transition: transform 0.3s ease;
+}
+
+.footer-icon:hover i {
+    transform: scale(1.1);
+}
+
+/* Navbar styles */
+.custom-navbar {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    border-radius: 0 0 1.5rem 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(.4, 2, .3, 1), opacity 0.5s cubic-bezier(.4, 2, .3, 1);
+    z-index: 1050;
+}
+
+.custom-navbar.show-navbar {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.custom-navbar .navbar-brand img {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
+}
+
+/* Navbar navigation styles */
+.custom-navbar .navbar-nav {
+    gap: 1rem;
+}
+
+.custom-navbar .nav-link {
+    color: white !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: 2rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.custom-navbar .nav-link:hover,
+.custom-navbar .nav-link:focus {
+    background-color: #fd7e14 !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile responsive styles */
+@media (max-width: 991.98px) {
+    .custom-navbar .navbar-collapse {
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        margin-top: 1rem;
+        padding: 1rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .custom-navbar .navbar-nav {
+        gap: 0.5rem;
+    }
+
+    .custom-navbar .nav-link {
+        text-align: center;
+        padding: 0.75rem 1rem !important;
+        border-radius: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .custom-navbar .navbar-toggler {
+        border: none;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .custom-navbar .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    .custom-navbar .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+}
+
+/* Specialties & Builds Section Hover Effects */
+.specialty-item {
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.specialty-image {
+    transition: all 0.08s ease;
+    filter: brightness(0.3);
+}
+
+.specialty-overlay {
+    opacity: 0.7;
+    transition: opacity 0.08s ease;
+}
+
+.specialty-item:hover .specialty-image {
+    filter: brightness(0.8);
+    transform: scale(1.05);
+}
+
+.specialty-item:hover .specialty-overlay {
+    opacity: 0.3;
+}
+
+/* Square Image Grid for Company Section */
+.square-image-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* Creates a square aspect ratio */
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.square-image-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.square-image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

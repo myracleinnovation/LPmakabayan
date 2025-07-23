@@ -4,7 +4,6 @@
 <head>
     <meta charSet="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-G-4YG2CYYQ86" as="script" />
     <title>Makabayan Avellanosa Construction</title>
     <meta name="description"
         content="Makabayan Avellanosa Construction is a construction company in the Philippines specialized in streamlining workflows in construction and real estate industries." />
@@ -15,4 +14,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G-4YG2CYYQ86"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-G-4YG2CYYQ86');
+    </script>
 </head>
