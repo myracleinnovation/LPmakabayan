@@ -73,35 +73,10 @@
                         the industry.</p>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0 pb-4">
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="square-image-container">
-                                <img src="assets/img/pentagon1.png"
-                                    class="img-fluid rounded object-fit-cover"
-                                    alt="Company 1">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="square-image-container">
-                                <img src="assets/img/pentagon2.png"
-                                    class="img-fluid rounded object-fit-cover"
-                                    alt="Company 2">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="square-image-container">
-                                <img src="assets/img/pentagon3.png"
-                                    class="img-fluid rounded object-fit-cover"
-                                    alt="Company 3">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="square-image-container">
-                                <img src="assets/img/pentagon4.png"
-                                    class="img-fluid rounded object-fit-cover"
-                                    alt="Company 4">
-                            </div>
-                        </div>
+                    <div class="about-image-container">
+                        <img src="assets/img/about.png"
+                            class="img-fluid rounded object-fit-cover"
+                            alt="About Our Company">
                     </div>
                 </div>
             </div>
