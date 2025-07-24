@@ -73,11 +73,7 @@
                         the industry.</p>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0 pb-4">
-                    <div class="about-image-container">
-                        <img src="assets/img/about.png"
-                            class="img-fluid rounded object-fit-cover"
-                            alt="About Our Company">
-                    </div>
+                    <img src="assets/img/about.png" class="img-fluid object-fit-cover w-100" alt="About Our Company">
                 </div>
             </div>
         </div>
