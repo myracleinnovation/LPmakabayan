@@ -1,38 +1,8 @@
 <?php include 'components/header.php'; ?>
 
 <body class="bg-warning">
-    <!-- Sticky Navbar (hidden by default, shows on scroll) -->
-    <nav id="scroll-navbar" class="navbar navbar-expand-lg fixed-top custom-navbar">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="assets/img/logo2.png" alt="Logo" style="width:40px; height:40px;" class="me-2">
-            </a>
+    <?php include 'components/topNav.php'; ?>
 
-            <!-- Hamburger button for mobile -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Navigation items -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="#company" class="nav-link">Our Company</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#specialties" class="nav-link">Our Specialties</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#projects" class="nav-link">Our Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#contact" class="nav-link">Connect Now</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
     <!-- HERO SECTION -->
     <div class="position-relative min-vh-100 d-flex align-items-center justify-content-center"
         style="background-image: url('assets/img/bg.png'); background-size: cover; background-position: center;">
@@ -49,9 +19,9 @@
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-2 mt-5 pt-5">
                 <a href="#company" class="btn btn-warning-hover active px-4 py-2 border border-0 border-white">Our
                     Company</a>
-                <a href="#specialties" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
+                <a href="specialties.php" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
                     Specialties</a>
-                <a href="#projects" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
+                <a href="project.php" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
                     Projects</a>
                 <a href="#contact" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Connect Now</a>
             </div>
@@ -87,34 +57,30 @@
             </div>
             <div class="row justify-content-center text-center">
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
-                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center"
-                        style="width: 250px; height: 250px; overflow: hidden; clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0% 50%); background: #fff;">
+                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
                         <img src="assets/img/pentagon1.png" class="w-100 h-100 object-fit-cover"
                             alt="Modern Construction">
                     </div>
                     <div class="fs-4">Modern Construction Techniques</div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
-                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center"
-                        style="width: 250px; height: 250px; overflow: hidden; clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0% 50%); background: #fff;">
+                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
                         <img src="assets/img/pentagon2.png" class="w-100 h-100 object-fit-cover"
-                            alt="Sustainable Practices">
+                            style="border-radius: 10px;" alt="Sustainable Practices">
                     </div>
                     <div class="fs-4">Sustainable Practices</div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
-                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center"
-                        style="width: 250px; height: 250px; overflow: hidden; clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0% 50%); background: #fff;">
+                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
                         <img src="assets/img/pentagon3.png" class="w-100 h-100 object-fit-cover"
-                            alt="Comprehensive Services">
+                            style="border-radius: 10px;" alt="Comprehensive Services">
                     </div>
                     <div class="fs-4">Comprehensive Services</div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
-                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center"
-                        style="width: 250px; height: 250px; overflow: hidden; clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0% 50%); background: #fff;">
+                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
                         <img src="assets/img/pentagon4.png" class="w-100 h-100 object-fit-cover"
-                            alt="Ethical Standards">
+                            style="border-radius: 10px;" alt="Ethical Standards">
                     </div>
                     <div class="fs-4">Ethical Standards and Client Commitment</div>
                 </div>
@@ -130,7 +96,7 @@
                     <img src="assets/img/banner1.png" class="w-100 h-100 object-fit-cover specialty-image">
                     <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
                     <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
-                        <h2 class="fw-bold text-white fs-4">DISCOVER<br>OUR SPECIALTIES</h2>
+                        <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Discover<br>Our Specialties</h2>
                     </div>
                 </div>
             </div>
@@ -139,57 +105,12 @@
                     <img src="assets/img/banner2.png" class="w-100 h-100 object-fit-cover specialty-image">
                     <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
                     <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
-                        <h2 class="fw-bold text-white fs-4">CHECK OUT<br>OUR BUILDS</h2>
+                        <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Check Out<br>Our Builds</h2>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- FOOTER -->
-    <footer class="border-top py-4 bg-warning text-black">
-        <div class="container text-center">
-            <img src="assets/img/logo2.png" alt="Logo" class="mb-2 mt-3" style="width:60px;">
-            <div class="fw-bold mb-3 small">Makabayan Avellanosa Construction</div>
-            <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
-                <a href="#"
-                    class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
-                    style="width:48px; height:48px; font-size:1.5rem; transition: all 0.3s ease;">
-                    <i class='bx bx-envelope'></i>
-                </a>
-                <a href="#"
-                    class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
-                    style="width:48px; height:48px; font-size:1.5rem; transition: all 0.3s ease;">
-                    <i class="bx bx-phone"></i>
-                </a>
-                <a href="#"
-                    class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
-                    style="width:48px; height:48px; font-size:1.5rem; transition: all 0.3s ease;">
-                    <i class="bx bx-mobile"></i>
-                </a>
-                <a href="#"
-                    class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
-                    style="width:48px; height:48px; font-size:1.5rem; transition: all 0.3s ease;">
-                    <i class="bx bx-map"></i>
-                </a>
-                <a href="#"
-                    class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
-                    style="width:48px; height:48px; font-size:1.5rem; transition: all 0.3s ease;">
-                    <i class="bx bxl-facebook"></i>
-                </a>
-                <a href="#"
-                    class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
-                    style="width:48px; height:48px; font-size:1.5rem; transition: all 0.3s ease;">
-                    <i class='bx bxl-instagram'></i>
-                </a>
-                <a href="#"
-                    class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
-                    style="width:48px; height:48px; font-size:1.5rem; transition: all 0.3s ease;">
-                    <i class="bx bxl-linkedin"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
 
     <?php include 'components/footer.php'; ?>
 </body>
