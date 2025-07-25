@@ -9,3 +9,5 @@ window.addEventListener('scroll', function () {
         navbar.classList.remove('show-navbar');
     }
 });
+
+document.getElementById('year').textContent = new Date().getFullYear();
