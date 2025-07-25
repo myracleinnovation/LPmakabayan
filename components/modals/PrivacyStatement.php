@@ -8,9 +8,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="max-height:70vh; overflow-y:auto;">
-                <p>Makabayan Avellanosa Construction is committed to protecting the privacy of users accessing its
-                    website and services. This Privacy Statement outlines how we collect, use, and safeguard personal
-                    information. By using our website, users agree to the practices described in this statement.</p>
+                <p><strong>Makabayan Avellanosa Construction</strong> is committed to protecting the privacy of users
+                    accessing its website and services. This Privacy Statement outlines how we collect, use, and
+                    safeguard personal information. By using our website, users agree to the practices described in this
+                    statement.</p>
                 <ol>
                     <li><strong>Information We Collect</strong>
                         <ul>

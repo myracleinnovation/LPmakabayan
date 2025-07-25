@@ -8,9 +8,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="max-height:70vh; overflow-y:auto;">
-                <p>Makabayan Avellanosa Construction governs the use of its website and services through these Terms and
-                    Conditions. Accessing or using the website constitutes agreement to these terms. Users who do not
-                    agree should refrain from using the website.</p>
+                <p><strong>Makabayan Avellanosa Construction</strong> governs the use of its website and services
+                    through these Terms and Conditions. Accessing or using the website constitutes agreement to these
+                    terms. Users who do not agree should refrain from using the website.</p>
                 <ol>
                     <li><strong>Definitions</strong>
                         <ol type="a">

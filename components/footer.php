@@ -56,8 +56,8 @@
      </div>
  </footer>
 
- <?php include_once __DIR__ . '/modals/termsCondition.php'; ?>
- <?php include_once __DIR__ . '/modals/privacyStatement.php'; ?>
+ <?php include_once __DIR__ . '/modals/TermsCondition.php'; ?>
+ <?php include_once __DIR__ . '/modals/PrivacyStatement.php'; ?>
 
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
