@@ -79,6 +79,13 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.custom-navbar .nav-link.active {
+    background-color: #fd7e14 !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
 /* Mobile responsive styles */
 @media (max-width: 991.98px) {
     .custom-navbar .navbar-collapse {

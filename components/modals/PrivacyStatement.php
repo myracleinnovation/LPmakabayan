@@ -72,7 +72,7 @@
                     </li>
                     <li><strong>Contact Information</strong>
                         <p>For inquiries regarding this Privacy Statement, contact:</p>
-                        <p>Makabayan Avellanosa Construction<br>Email: macons2022@gmail.com</p>
+                        <p>Makabayan Avellanosa Construction<br>Email: connect@makabayanavellanosa.com</p>
                     </li>
                 </ol>
                 <p>By using this website, users acknowledge having read, understood, and agreed to this Privacy

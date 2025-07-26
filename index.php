@@ -23,7 +23,8 @@
                     Specialties</a>
                 <a href="project.php" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
                     Projects</a>
-                <a href="#contact" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Connect Now</a>
+                <a href="connect.php" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Connect
+                    Now</a>
             </div>
         </div>
     </div>
@@ -92,22 +93,26 @@
     <section id="specialties">
         <div class="row g-0">
             <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
-                <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
-                    <img src="assets/img/banner1.png" class="w-100 h-100 object-fit-cover specialty-image">
-                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
-                    <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
-                        <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Discover<br>Our Specialties</h2>
+                <a href="specialties.php">
+                    <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
+                        <img src="assets/img/banner1.png" class="w-100 h-100 object-fit-cover specialty-image">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
+                            <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Discover<br>Our Specialties</h2>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-12 col-md-6 p-0">
-                <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
-                    <img src="assets/img/banner2.png" class="w-100 h-100 object-fit-cover specialty-image">
-                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
-                    <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
-                        <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Check Out<br>Our Builds</h2>
+                <a href="project.php">
+                    <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
+                        <img src="assets/img/banner2.png" class="w-100 h-100 object-fit-cover specialty-image">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
+                            <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Check Out<br>Our Builds</h2>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </section>

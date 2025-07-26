@@ -1,0 +1,46 @@
+<?php include 'components/header.php'; ?>
+
+<body class="bg-warning">
+    <?php include 'components/topNav.php'; ?>
+
+    <!-- OUR COMPANY & SPECIALTIES SECTION -->
+    <section class="bg-dark text-white">
+        <div class="row g-0">
+            <div class="col-12 col-md-4 p-0">
+                <a href="index.php#company">
+                    <div class="position-relative w-100 h-100 specialty-item" style="min-height: 300px;">
+                        <img src="assets/img/banner3.jpg" class="w-100 h-100 object-fit-cover specialty-image">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
+                            <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Our Company</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-4 p-0">
+                <a href="specialties.php">
+                    <div class="position-relative w-100 h-100 specialty-item" style="min-height: 300px;">
+                        <img src="assets/img/banner1.png" class="w-100 h-100 object-fit-cover specialty-image">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
+                            <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Discover<br>Our Specialties</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-4 p-0">
+                <a href="project.php">
+                    <div class="position-relative w-100 h-100 specialty-item" style="min-height: 300px;">
+                        <img src="assets/img/banner2.png" class="w-100 h-100 object-fit-cover specialty-image">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black specialty-overlay"></div>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-2">
+                            <h2 class="fw-bold text-white fs-1 fs-md-1 text-uppercase">Check Out<br>Our Builds</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <?php include 'components/footer.php'; ?>
+</body>

@@ -1,19 +1,21 @@
  <!-- FOOTER -->
  <footer class="bg-warning text-black mt-3">
      <div class="container text-center">
-         <img src="assets/img/logo2.png" alt="Logo" class="mb-3" style="width:80px;">
+         <img src="assets/img/logo.png" alt="Logo" class="mb-3" style="width:80px;">
          <div class="fw-bold mb-3">Makabayan Avellanosa Construction</div>
          <div class="mb-3">
-             <div class="mb-1">Address: 34 A. Novales, Project 4, Quezon City, 1800 Kalakhang Maynila</div>
-             <div class="mb-1">Contact: (0917) 596 5155 | macons2022@gmail.com</div>
+             <span class="me-2">Centro Tumalim, Nasugbu, Batangas, Philippines</span> •
+             <span class="ms-2">JP Laurel St., Bgry. 2, Nasugbu, Batangas, Philippines</span><br>
+             <span class="me-2">+63 917 596 5155</span> • <span class="ms-2">macons2022@gmail.com</span> •
+             <span class="ms-2">connect@makabayanavellanosa.com</span>
          </div>
          <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
-             <a href="https://maps.app.goo.gl/c12NV7UAhKwcuhrf7" target="_blank"
+             <a href="https://maps.app.goo.gl/v6PRdFqaEsTURANN7" target="_blank"
                  class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
                  style="width:50px; height:50px; font-size:1.5rem; transition: all 0.3s ease;">
                  <i class='bx bx-map'></i>
              </a>
-             <a href="mailto:macons2022@gmail.com"
+             <a href="mailto:connect@makabayanavellanosa.com"
                  class="footer-icon rounded-circle bg-white d-flex align-items-center justify-content-center text-decoration-none text-dark"
                  style="width:50px; height:50px; font-size:1.5rem; transition: all 0.3s ease;">
                  <i class='bx bx-envelope'></i>
@@ -48,10 +50,10 @@
      <div class="bg-black text-white py-3">
          <div class="container text-center">
              <div><a href="#" data-bs-toggle="modal" data-bs-target="#termsConditionModal"
-                     class="text-white text-decoration-underline">Terms and Condition</a> | <a href="#"
+                     class="text-white text-decoration-none me-2">Terms and Condition</a> • <a href="#"
                      data-bs-toggle="modal" data-bs-target="#privacyStatementModal"
-                     class="text-white text-decoration-underline">Privacy Statement</a></div>
-             <div class="fw-bold">© <span id="year"></span> Makabayan Avellanosa Construction</div>
+                     class="text-white text-decoration-none ms-2">Privacy Statement</a></div>
+             <div>© <span id="year"></span> Makabayan Avellanosa Construction</div>
          </div>
      </div>
  </footer>
