@@ -20,7 +20,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
-
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-G-4YG2CYYQ86"></script>
     <script>
