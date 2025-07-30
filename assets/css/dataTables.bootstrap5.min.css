@@ -1,0 +1,49 @@
+/* DataTables Bootstrap 5 CSS - Minimal version */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_wrapper .dataTables_info {
+    padding-top: 0.5rem;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    padding-top: 0.5rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.375rem 0.75rem;
+    margin-left: 2px;
+    border: 1px solid #dee2e6;
+    background-color: #fff;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #495057;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.dataTables_wrapper .dataTables_processing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 40px;
+    margin-left: -50%;
+    margin-top: -25px;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    background: none;
+    background: rgba(255, 255, 255, 0.8);
+} 

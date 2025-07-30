@@ -1,0 +1,47 @@
+.suggestion-Item:hover{
+    cursor: pointer;
+    padding-left: 3px;;
+ }
+ 
+ 
+ /* lg and up: hide horizontal overflow */
+ @media (min-width: 992px) {
+    .overflow-lg-invisible {
+      overflow: hidden !important;
+    }
+  }
+ 
+#customerSuggestions {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.suggestion-item {
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none !important;
+}
+
+.drop-zone {
+    border: 2px dashed #007bff;
+    background-color: #f8f9fa;
+    padding: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.drop-zone.highlight {
+    background-color: #e2f0ff;
+    border-color: #0056b3;
+}
+
+#editProofOfPayment[type="file"] {
+    display: none;
+}
+
+/* VAT input disabled state styling removed - VAT amount is now always editable */

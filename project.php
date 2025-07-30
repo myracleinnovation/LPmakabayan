@@ -1,105 +1,20 @@
 <?php 
 include 'components/header.php'; 
+require_once 'app/Db.php';
+$pdo = Db::connect();
 
-// Function to get project categories from API
-function getProjectCategories() {
-    $apiUrl = 'app/apiProjectCategories.php';
-    
-    try {
-        $response = file_get_contents($apiUrl);
-        if ($response === false) {
-            throw new Exception('Failed to fetch data from API');
-        }
-        
-        $data = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('Invalid JSON response');
-        }
-        
-        if (isset($data['success']) && $data['success'] && isset($data['data'])) {
-            return $data['data'];
-        } else {
-            throw new Exception('API returned error: ' . ($data['message'] ?? 'Unknown error'));
-        }
-    } catch (Exception $e) {
-        // Return default project categories on error
-        return [
-            [
-                'CategoryName' => 'Residential Projects',
-                'CategoryImage' => 'assets/img/project1.png'
-            ],
-            [
-                'CategoryName' => 'Commercial Buildings',
-                'CategoryImage' => 'assets/img/project2.png'
-            ],
-            [
-                'CategoryName' => 'Industrial Facilities',
-                'CategoryImage' => 'assets/img/project3.png'
-            ],
-            [
-                'CategoryName' => 'Healthcare Facilities',
-                'CategoryImage' => 'assets/img/project4.png'
-            ],
-            [
-                'CategoryName' => 'Educational Institutions',
-                'CategoryImage' => 'assets/img/project5.png'
-            ],
-            [
-                'CategoryName' => 'Infrastructure Projects',
-                'CategoryImage' => 'assets/img/project6.png'
-            ]
-        ];
-    }
+function fetchProjectCategories($pdo) {
+    $stmt = $pdo->query("SELECT CategoryName, CategoryImage FROM Project_Categories WHERE Status = 1");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Function to get projects from API
-function getProjects() {
-    $apiUrl = 'app/apiProjects.php';
-    
-    try {
-        $response = file_get_contents($apiUrl);
-        if ($response === false) {
-            throw new Exception('Failed to fetch data from API');
-        }
-        
-        $data = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('Invalid JSON response');
-        }
-        
-        if (isset($data['success']) && $data['success'] && isset($data['data'])) {
-            return $data['data'];
-        } else {
-            throw new Exception('API returned error: ' . ($data['message'] ?? 'Unknown error'));
-        }
-    } catch (Exception $e) {
-        // Return default projects on error
-        return [
-            [
-                'ProjectTitle' => 'Modern Residential Complex',
-                'ProjectDescription' => 'A state-of-the-art residential complex featuring modern amenities and sustainable design principles.',
-                'ProjectOwner' => 'ABC Development Corp.',
-                'ProjectLocation' => 'Metro Manila',
-                'TurnoverDate' => '2024-01-15',
-                'ProjectImage1' => 'assets/img/project7.png',
-                'ProjectImage2' => 'assets/img/project8.png'
-            ],
-            [
-                'ProjectTitle' => 'Commercial Office Tower',
-                'ProjectDescription' => 'A premium office tower designed for modern businesses with cutting-edge facilities.',
-                'ProjectOwner' => 'XYZ Properties Inc.',
-                'ProjectLocation' => 'Makati City',
-                'TurnoverDate' => '2023-12-20',
-                'ProjectImage1' => 'assets/img/project1.png',
-                'ProjectImage2' => 'assets/img/project2.png'
-            ]
-        ];
-    }
+function fetchProjects($pdo) {
+    $stmt = $pdo->query("SELECT * FROM Company_Projects WHERE Status = 1 ORDER BY TurnoverDate DESC");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Get data from API
-$projectCategories = getProjectCategories();
-$projects = getProjects();
+$projectCategories = fetchProjectCategories($pdo);
+$projects = fetchProjects($pdo);
 ?>
 
 <body class="bg-warning">
@@ -113,14 +28,13 @@ $projects = getProjects();
             </div>
             <div class="row justify-content-center">
                 <?php foreach ($projectCategories as $category): ?>
-                <div class="col-12 col-md-4 mb-4 mb-md-4">
+                <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
-                        <img src="<?php echo htmlspecialchars($category['CategoryImage']); ?>"
-                            class="w-100 object-fit-cover"
-                            alt="<?php echo htmlspecialchars($category['CategoryName']); ?>">
+                        <img src="<?= htmlspecialchars($category['CategoryImage']); ?>" class="w-100 object-fit-cover"
+                            alt="<?= htmlspecialchars($category['CategoryName']); ?>">
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
-                                <?php echo htmlspecialchars($category['CategoryName']); ?>
+                                <?= htmlspecialchars($category['CategoryName']); ?>
                             </h3>
                         </div>
                     </div>
@@ -154,45 +68,45 @@ $projects = getProjects();
         }
     ?>
     <!-- PROJECT DETAIL SECTION -->
-    <section class="<?php echo $bgClass; ?> <?php echo $textClass; ?> py-4 py-md-5" style="min-height: 100vh;">
+    <section class="<?= $bgClass; ?> <?= $textClass; ?> py-4 py-md-5" style="min-height: 100vh;">
         <div class="container h-100 d-flex align-items-center justify-content-center flex-column">
             <div class="row align-items-center">
-                <div class="col-12 col-lg-6 mb-4 mb-lg-0 <?php echo ($index % 2 == 1) ? 'order-lg-2' : ''; ?>">
-                    <h2 class="fw-bolder <?php echo $titleClass; ?> mb-3 mb-md-4 fs-1 fs-md-1 text-uppercase">
-                        <?php echo htmlspecialchars($project['ProjectTitle']); ?></h2>
+                <div class="col-12 col-lg-6 mb-4 mb-lg-0 <?= ($index % 2 == 1) ? 'order-lg-2' : ''; ?>">
+                    <h2 class="fw-bolder <?= $titleClass; ?> mb-3 mb-md-4 fs-1 fs-md-1 text-uppercase">
+                        <?= htmlspecialchars($project['ProjectTitle']); ?></h2>
                     <div class="mb-3 mb-md-4">
                         <p class="mb-2 fs-5">Owner:
-                            <strong><?php echo htmlspecialchars($project['ProjectOwner']); ?></strong></p>
+                            <strong><?= htmlspecialchars($project['ProjectOwner']); ?></strong></p>
                         <p class="mb-2 fs-5">Turnover:
-                            <strong><?php echo date('F Y', strtotime($project['TurnoverDate'])); ?></strong></p>
+                            <strong><?= date('F Y', strtotime($project['TurnoverDate'])); ?></strong></p>
                         <p class="mb-2 fs-5">Location:
-                            <strong><?php echo htmlspecialchars($project['ProjectLocation']); ?></strong></p>
+                            <strong><?= htmlspecialchars($project['ProjectLocation']); ?></strong></p>
                     </div>
                     <p class="mb-3 mb-md-4 fs-5">
-                        <?php echo htmlspecialchars($project['ProjectDescription']); ?>
+                        <?= htmlspecialchars($project['ProjectDescription']); ?>
                     </p>
-                    <div class="d-flex gap-2 <?php echo $justifyClass; ?>">
-                        <div class="<?php echo $dotClass; ?>" style="width: 12px; height: 12px;"></div>
-                        <div class="<?php echo $dotClass; ?>" style="width: 12px; height: 12px;"></div>
-                        <div class="<?php echo $dotClass; ?>" style="width: 12px; height: 12px;"></div>
-                        <div class="<?php echo $dotClass; ?>" style="width: 12px; height: 12px;"></div>
-                        <div class="<?php echo $dotClass; ?>" style="width: 12px; height: 12px;"></div>
+                    <div class="d-flex gap-2 <?= $justifyClass; ?>">
+                        <div class="<?= $dotClass; ?>" style="width: 12px; height: 12px;"></div>
+                        <div class="<?= $dotClass; ?>" style="width: 12px; height: 12px;"></div>
+                        <div class="<?= $dotClass; ?>" style="width: 12px; height: 12px;"></div>
+                        <div class="<?= $dotClass; ?>" style="width: 12px; height: 12px;"></div>
+                        <div class="<?= $dotClass; ?>" style="width: 12px; height: 12px;"></div>
                     </div>
                 </div>
-                <div class="col-12 col-lg-6 <?php echo ($index % 2 == 1) ? 'order-lg-1' : ''; ?>">
+                <div class="col-12 col-lg-6 <?= ($index % 2 == 1) ? 'order-lg-1' : ''; ?>">
                     <div class="row g-3">
                         <?php if (!empty($project['ProjectImage1'])): ?>
                         <div class="col-12">
-                            <img src="<?php echo htmlspecialchars($project['ProjectImage1']); ?>"
+                            <img src="<?= htmlspecialchars($project['ProjectImage1']); ?>"
                                 class="w-100 h-100 object-fit-cover" style="height: 200px;"
-                                alt="<?php echo htmlspecialchars($project['ProjectTitle']); ?> - Image 1">
+                                alt="<?= htmlspecialchars($project['ProjectTitle']); ?> - Image 1">
                         </div>
                         <?php endif; ?>
                         <?php if (!empty($project['ProjectImage2'])): ?>
                         <div class="col-12">
-                            <img src="<?php echo htmlspecialchars($project['ProjectImage2']); ?>"
+                            <img src="<?= htmlspecialchars($project['ProjectImage2']); ?>"
                                 class="w-100 h-100 object-fit-cover" style="height: 200px;"
-                                alt="<?php echo htmlspecialchars($project['ProjectTitle']); ?> - Image 2">
+                                alt="<?= htmlspecialchars($project['ProjectTitle']); ?> - Image 2">
                         </div>
                         <?php endif; ?>
                     </div>

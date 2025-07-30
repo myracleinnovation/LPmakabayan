@@ -1,40 +1,33 @@
 <?php
-session_start();
-
-// Check if user is logged in
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: ../login.php');
-    exit();
-}
-
-require_once '../app/Db.php';
-
-// Get admin info
-$admin_username = $_SESSION['admin_username'];
-$admin_id = $_SESSION['admin_id'];
-
-// Initialize variables for messages (if needed for legacy support)
-$message = '';
-$message_type = '';
-
-// Get admin accounts
-try {
-    // Get database connection using Db class
-    $pdo = Db::getConnection();
+    session_start();
     
-    $stmt = $pdo->query("SELECT * FROM Admin_Accounts WHERE Status = 1 ORDER BY CreatedTimestamp DESC");
-    $admins = $stmt->fetchAll();
-} catch (Exception $e) {
-    $admins = [];
-}
+    // Check if admin is logged in
+    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        header('Location: ../login.php');
+        exit();
+    }
+    
+    include 'components/header.php';
+    require_once '../app/Db.php';
+
+    $admin_username = $_SESSION['admin_username'];
+    $admin_id = $_SESSION['admin_id'];
+
+    $message = '';
+    $message_type = '';
+
+    try {
+        $pdo = Db::connect();
+        
+        $stmt = $pdo->query("SELECT * FROM Admin_Accounts WHERE Status = 1 ORDER BY CreatedTimestamp DESC");
+        $admins = $stmt->fetchAll();
+    } catch (Exception $e) {
+        $admins = [];
+    }
 ?>
 
-<?php include 'components/header.php'; ?>
-
 <body>
-    <!-- ======= Header ======= -->
     <?php include 'components/topNav.php'; ?>
-    <!-- ======= Sidebar ======= -->
     <?php include 'components/sideNav.php'; ?>
 
     <!-- ======= Main ======= -->
@@ -231,9 +224,6 @@ try {
         </div>
     </div>
     <?php include 'components/footer.php'; ?>
-
-    <!-- DataTables JavaScript -->
-    <script src="assets/js/dataTables/adminsDataTables.js"></script>
 </body>
 
 </html>

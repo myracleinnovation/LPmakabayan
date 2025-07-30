@@ -1,110 +1,113 @@
 <?php
-session_start();
-header('Content-Type: application/json');
+    include '../components/header.php';
+    require_once '../../app/Db.php';
+    header('Content-Type: application/json');
 
-// Check if user is logged in
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
-    exit();
-}
+    $action = $_POST['action'] ?? '';
 
-require_once '../../app/Db.php';
-
-$action = $_POST['action'] ?? '';
-
-try {
-    // Get database connection using Db class
-    $pdo = Db::getConnection();
-    
-    switch ($action) {
-        case 'add':
-            $specialtyName = trim($_POST['specialty_name']);
-            $specialtyDescription = trim($_POST['specialty_description']);
-            $imageUrl = trim($_POST['image_url']);
-            $displayOrder = (int)$_POST['display_order'];
-            $status = (int)$_POST['status'];
-            
-            if (empty($specialtyName)) {
-                echo json_encode(['success' => false, 'message' => 'Specialty name is required']);
-                exit();
-            }
-            
-            $stmt = $pdo->prepare("INSERT INTO Company_Specialties (SpecialtyName, SpecialtyDescription, ImageUrl, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, NOW())");
-            $result = $stmt->execute([$specialtyName, $specialtyDescription, $imageUrl, $displayOrder, $status]);
-            
-            if ($result) {
-                echo json_encode(['success' => true, 'message' => 'Specialty added successfully']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to add specialty']);
-            }
-            break;
-            
-        case 'edit':
-            $specialtyId = (int)$_POST['specialty_id'];
-            $specialtyName = trim($_POST['specialty_name']);
-            $specialtyDescription = trim($_POST['specialty_description']);
-            $imageUrl = trim($_POST['image_url']);
-            $displayOrder = (int)$_POST['display_order'];
-            $status = (int)$_POST['status'];
-            
-            if (empty($specialtyName)) {
-                echo json_encode(['success' => false, 'message' => 'Specialty name is required']);
-                exit();
-            }
-            
-            $stmt = $pdo->prepare("UPDATE Company_Specialties SET SpecialtyName = ?, SpecialtyDescription = ?, ImageUrl = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdSpecialty = ?");
-            $result = $stmt->execute([$specialtyName, $specialtyDescription, $imageUrl, $displayOrder, $status, $specialtyId]);
-            
-            if ($result) {
-                echo json_encode(['success' => true, 'message' => 'Specialty updated successfully']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to update specialty']);
-            }
-            break;
-            
-        case 'delete':
-            $specialtyId = (int)$_POST['specialty_id'];
-            
-            $stmt = $pdo->prepare("UPDATE Company_Specialties SET Status = 0 WHERE IdSpecialty = ?");
-            $result = $stmt->execute([$specialtyId]);
-            
-            if ($result) {
-                echo json_encode(['success' => true, 'message' => 'Specialty deleted successfully']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to delete specialty']);
-            }
-            break;
-            
-        case 'get':
-            $specialtyId = (int)$_POST['specialty_id'];
-            
-            $stmt = $pdo->prepare("SELECT * FROM Company_Specialties WHERE IdSpecialty = ?");
-            $stmt->execute([$specialtyId]);
-            $specialty = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($specialty) {
-                echo json_encode(['success' => true, 'data' => $specialty]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Specialty not found']);
-            }
-            break;
-            
-        case 'get_specialties':
-            // Get all specialties for DataTables
-            $stmt = $pdo->query("SELECT * FROM Company_Specialties WHERE Status = 1 ORDER BY DisplayOrder ASC, SpecialtyName ASC");
-            $specialties = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $specialties
-            ]);
-            break;
-            
-        default:
-            echo json_encode(['success' => false, 'message' => 'Invalid action']);
-            break;
+    try {
+        $pdo = Db::connect();
+        
+        switch ($action) {
+            case 'add':
+                handleAdd($pdo);
+                break;
+                
+            case 'edit':
+                handleEdit($pdo);
+                break;
+                
+            case 'delete':
+                handleDelete($pdo);
+                break;
+                
+            case 'get':
+                handleGet($pdo);
+                break;
+                
+            case 'get_specialties':
+                handleGetSpecialties($pdo);
+                break;
+                
+            default:
+                respondWithJson(['success' => false, 'message' => 'Invalid action']);
+                break;
+        }
+    } catch (Exception $e) {
+        respondWithJson(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
     }
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
-}
-?>
+
+    function respondWithJson($data) {
+        echo json_encode($data);
+        exit();
+    }
+
+    function handleAdd($pdo) {
+        $specialtyName = trim($_POST['specialty_name']);
+        $specialtyDescription = trim($_POST['specialty_description']);
+        $specialtyImage = $_POST['specialty_image'] ?? '';
+        $displayOrder = (int)$_POST['display_order'];
+        $status = (int)$_POST['status'];
+        
+        if (empty($specialtyName)) {
+            respondWithJson(['success' => false, 'message' => 'Specialty name is required']);
+        }
+        
+        $stmt = $pdo->prepare("INSERT INTO Company_Specialties (SpecialtyName, SpecialtyDescription, SpecialtyImage, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, NOW())");
+        $result = $stmt->execute([$specialtyName, $specialtyDescription, $specialtyImage, $displayOrder, $status]);
+        
+        respondWithJson($result 
+            ? ['success' => true, 'message' => 'Specialty added successfully'] 
+            : ['success' => false, 'message' => 'Failed to add specialty']);
+    }
+
+    function handleEdit($pdo) {
+        $specialtyId = (int)$_POST['specialty_id'];
+        $specialtyName = trim($_POST['specialty_name']);
+        $specialtyDescription = trim($_POST['specialty_description']);
+        $specialtyImage = $_POST['specialty_image'] ?? '';
+        $displayOrder = (int)$_POST['display_order'];
+        $status = (int)$_POST['status'];
+        
+        if (empty($specialtyName)) {
+            respondWithJson(['success' => false, 'message' => 'Specialty name is required']);
+        }
+        
+        $stmt = $pdo->prepare("UPDATE Company_Specialties SET SpecialtyName = ?, SpecialtyDescription = ?, SpecialtyImage = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdSpecialty = ?");
+        $result = $stmt->execute([$specialtyName, $specialtyDescription, $specialtyImage, $displayOrder, $status, $specialtyId]);
+        
+        respondWithJson($result 
+            ? ['success' => true, 'message' => 'Specialty updated successfully'] 
+            : ['success' => false, 'message' => 'Failed to update specialty']);
+    }
+
+    function handleDelete($pdo) {
+        $specialtyId = (int)$_POST['specialty_id'];
+        
+        $stmt = $pdo->prepare("UPDATE Company_Specialties SET Status = 0 WHERE IdSpecialty = ?");
+        $result = $stmt->execute([$specialtyId]);
+        
+        respondWithJson($result 
+            ? ['success' => true, 'message' => 'Specialty deleted successfully'] 
+            : ['success' => false, 'message' => 'Failed to delete specialty']);
+    }
+
+    function handleGet($pdo) {
+        $specialtyId = (int)$_POST['specialty_id'];
+        
+        $stmt = $pdo->prepare("SELECT * FROM Company_Specialties WHERE IdSpecialty = ?");
+        $stmt->execute([$specialtyId]);
+        $specialty = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        respondWithJson($specialty 
+            ? ['success' => true, 'data' => $specialty] 
+            : ['success' => false, 'message' => 'Specialty not found']);
+    }
+
+    function handleGetSpecialties($pdo) {
+        $stmt = $pdo->query("SELECT * FROM Company_Specialties WHERE Status = 1 ORDER BY DisplayOrder ASC, CreatedTimestamp DESC");
+        $specialties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        respondWithJson(['success' => true, 'data' => $specialties]);
+    }
+?> 

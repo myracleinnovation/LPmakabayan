@@ -1,39 +1,23 @@
 <?php
-session_start();
-
-// Check if user is logged in
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: ../login.php');
-    exit();
-}
-
-require_once '../app/Db.php';
-
-// Get admin info
-$admin_username = $_SESSION['admin_username'];
-$admin_id = $_SESSION['admin_id'];
-
-// Get projects
-try {
-    // Get database connection using Db class
-    $pdo = Db::getConnection();
+    session_start();
     
-    $stmt = $pdo->query("SELECT * FROM Company_Projects WHERE Status = 1 ORDER BY DisplayOrder ASC, CreatedTimestamp DESC");
-    $projects = $stmt->fetchAll();
-} catch (Exception $e) {
-    $error_message = 'Database error: ' . $e->getMessage();
-}
+    // Check if admin is logged in
+    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        header('Location: ../login.php');
+        exit();
+    }
+    
+    include 'components/header.php';
+    require_once '../app/Db.php';
+
+    $admin_username = $_SESSION['admin_username'];
+    $admin_id = $_SESSION['admin_id'];
 ?>
 
-<?php include 'components/header.php'; ?>
-
 <body>
-    <!-- ======= Header ======= -->
     <?php include 'components/topNav.php'; ?>
-    <!-- ======= Sidebar ======= -->
     <?php include 'components/sideNav.php'; ?>
 
-    <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div class="pagetitle">
             <h1>Projects</h1>
@@ -48,7 +32,7 @@ try {
         <section class="section">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card shadow-sm mb-4">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">All Projects</h5>
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectModal">
@@ -60,7 +44,7 @@ try {
                             <div id="alert-container"></div>
 
                             <div class="table-responsive">
-                                <table id="projectsTable" class="table table-hover projects_table">
+                                <table id="projectsTable" class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Title</th>
@@ -73,7 +57,7 @@ try {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Data will be loaded via AJAX -->
+                                        <!-- Data will be loaded by DataTables -->
                                     </tbody>
                                 </table>
                             </div>
@@ -84,7 +68,6 @@ try {
         </section>
     </main>
 
-    <!-- Add Project Modal -->
     <div class="modal fade" id="addProjectModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -111,15 +94,28 @@ try {
                                 <input type="text" class="form-control" name="project_location">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" class="form-control" name="project_category">
+                                <label class="form-label">Project Area (sqm)</label>
+                                <input type="number" step="0.01" class="form-control" name="project_area">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Project Value (PHP)</label>
+                                <input type="number" step="0.01" class="form-control" name="project_value">
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Turnover Date</label>
                                 <input type="date" class="form-control" name="turnover_date">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="project_category_id">
+                                    <option value="">Select Category</option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Display Order</label>
@@ -135,22 +131,33 @@ try {
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 1 URL</label>
-                                <input type="text" class="form-control" name="image_url_1">
+                                <input type="text" class="form-control" name="project_image1">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 2 URL</label>
-                                <input type="text" class="form-control" name="image_url_2">
+                                <input type="text" class="form-control" name="project_image2">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 3 URL</label>
-                                <input type="text" class="form-control" name="image_url_3">
+                                <input type="text" class="form-control" name="project_image3">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 4 URL</label>
-                                <input type="text" class="form-control" name="image_url_4">
+                                <input type="text" class="form-control" name="project_image4">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Image 5 URL</label>
+                                <input type="text" class="form-control" name="project_image5">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Image 6 URL</label>
+                                <input type="text" class="form-control" name="project_image6">
                             </div>
                         </div>
 
@@ -171,7 +178,6 @@ try {
         </div>
     </div>
 
-    <!-- Edit Project Modal -->
     <div class="modal fade" id="editProjectModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -202,16 +208,30 @@ try {
                                     id="edit_project_location">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" class="form-control" name="project_category"
-                                    id="edit_project_category">
+                                <label class="form-label">Project Area (sqm)</label>
+                                <input type="number" step="0.01" class="form-control" name="project_area"
+                                    id="edit_project_area">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Project Value (PHP)</label>
+                                <input type="number" step="0.01" class="form-control" name="project_value"
+                                    id="edit_project_value">
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Turnover Date</label>
                                 <input type="date" class="form-control" name="turnover_date" id="edit_turnover_date">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="project_category_id" id="edit_project_category_id">
+                                    <option value="">Select Category</option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Display Order</label>
@@ -228,22 +248,33 @@ try {
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 1 URL</label>
-                                <input type="text" class="form-control" name="image_url_1" id="edit_image_url_1">
+                                <input type="text" class="form-control" name="project_image1" id="edit_project_image1">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 2 URL</label>
-                                <input type="text" class="form-control" name="image_url_2" id="edit_image_url_2">
+                                <input type="text" class="form-control" name="project_image2" id="edit_project_image2">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 3 URL</label>
-                                <input type="text" class="form-control" name="image_url_3" id="edit_image_url_3">
+                                <input type="text" class="form-control" name="project_image3" id="edit_project_image3">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image 4 URL</label>
-                                <input type="text" class="form-control" name="image_url_4" id="edit_image_url_4">
+                                <input type="text" class="form-control" name="project_image4" id="edit_project_image4">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Image 5 URL</label>
+                                <input type="text" class="form-control" name="project_image5" id="edit_project_image5">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Image 6 URL</label>
+                                <input type="text" class="form-control" name="project_image6" id="edit_project_image6">
                             </div>
                         </div>
 
@@ -264,7 +295,6 @@ try {
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteProjectModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -286,7 +316,6 @@ try {
     </div>
 
     <?php include 'components/footer.php'; ?>
-
-    <!-- DataTables JavaScript -->
-    <script src="assets/js/dataTables/projectsDataTables.js"></script>
 </body>
+
+</html>

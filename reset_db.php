@@ -7,8 +7,8 @@ try {
     $conn = new PDO("mysql:host=localhost", $MYSQL_USER, $MYSQL_PASS);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    echo "Dropping MakabayanConstruction database...\n";
-    $conn->exec("DROP DATABASE IF EXISTS MakabayanConstruction");
+    echo "Dropping makabayanconstruction database...\n";
+    $conn->exec("DROP DATABASE IF EXISTS makabayanconstruction");
     
     echo "Importing database.sql...\n";
     $sql = file_get_contents('database.sql');

@@ -8,9 +8,9 @@
 -- =====================================================
 
 -- Drop and recreate the database
-DROP DATABASE IF EXISTS MakabayanConstruction;
-CREATE DATABASE MakabayanConstruction CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE MakabayanConstruction;
+DROP DATABASE IF EXISTS makabayanconstruction;
+CREATE DATABASE makabayanconstruction CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE makabayanconstruction;
 
 -- =====================================================
 -- TABLE: Admin_Accounts
@@ -219,7 +219,7 @@ INSERT INTO Admin_Accounts (Username, Password, Email, FullName, Role, Status) V
 -- Seed: Company Information
 INSERT INTO Company_Info (CompanyName, Tagline, Description, Mission, Vision, AboutImage, LogoImage, FaviconImage) VALUES
 ('Makabayan Avellanosa Construction', 'Building a Better Future', 
-'Superior and quality construction services grounded in modern principles, sustainable solutions, and client satisfaction. We specialize in residential, commercial, and industrial construction projects with a commitment to excellence and innovation.',
+'Superior and quality construction services grounded in modern principles, sustainable solutions, and client satisfaction.',
 'To deliver the highest quality of service through the dedication and expertise of our skilled workforce. We uphold strong ethical standards, foster a passion for excellence, remain committed to our craft, and continuously strive for growth and innovation in the industry.',
 'To be the leading construction company known for excellence, innovation, and sustainable practices, setting industry standards for quality and customer satisfaction.',
 'assets/img/about.png', 'assets/img/logo2.png', 'assets/img/logo.png');
@@ -262,9 +262,9 @@ INSERT INTO Company_Projects (ProjectTitle, ProjectDescription, ProjectOwner, Pr
 
 -- Seed: Process Steps
 INSERT INTO Company_Process (ProcessTitle, ProcessDescription, ProcessImage, DisplayOrder) VALUES
-('Project Plan', 'Our construction process starts with a detailed project plan including site analysis, design development, and comprehensive project planning to ensure successful project execution.', 'assets/img/pentagon5.png', 1),
-('Site Preparation', 'Process of getting a piece of land ready for construction including site clearing, foundation preparation, and infrastructure setup for optimal construction conditions.', 'assets/img/pentagon6.png', 2),
-('Execution', 'Construction activities that take place on a project site including structural work, systems installation, and finishing works with quality control at every stage.', 'assets/img/pentagon7.png', 3);
+('Project Plan', 'Our construction process starts with a detailed project plan.', 'assets/img/pentagon5.png', 1),
+('Site Preparation', 'Process of getting a piece of land ready for construction.', 'assets/img/pentagon6.png', 2),
+('Execution', 'Construction activities that take place on a project site.', 'assets/img/pentagon7.png', 3);
 
 -- Seed: Contact Information
 INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder) VALUES

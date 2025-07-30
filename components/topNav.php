@@ -32,11 +32,6 @@ $current_section = isset($_GET['section']) ? $_GET['section'] : '';
                         Specialties</a>
                 </li>
                 <li class="nav-item">
-                    <a href="industries.php"
-                        class="nav-link <?php echo ($current_page == 'industries.php') ? 'active bg-warning' : ''; ?>">Our
-                        Industries</a>
-                </li>
-                <li class="nav-item">
                     <a href="project.php"
                         class="nav-link <?php echo ($current_page == 'project.php') ? 'active bg-warning' : ''; ?>">Our
                         Projects</a>

@@ -1,48 +1,40 @@
 <?php
-session_start();
-
-// Check if user is logged in
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: ../login.php');
-    exit();
-}
-
-require_once '../app/Db.php';
-
-// Get admin info
-$admin_username = $_SESSION['admin_username'];
-$admin_id = $_SESSION['admin_id'];
-
-// Initialize variables for messages (if needed for legacy support)
-$message = '';
-$message_type = '';
-
-// Get company information
-try {
-    // Get database connection using Db class
-    $pdo = Db::getConnection();
+    session_start();
     
-    $stmt = $pdo->query("SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1");
-    $company_info = $stmt->fetch();
-} catch (Exception $e) {
-    $error_message = 'Database error: ' . $e->getMessage();
-}
+    // Check if admin is logged in
+    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        header('Location: ../login.php');
+        exit();
+    }
+    
+    include 'components/header.php';
+    require_once '../app/Db.php';
 
-// Get contact information
-try {
-    $stmt = $pdo->query("SELECT * FROM Company_Contact WHERE Status = 1 ORDER BY DisplayOrder ASC");
-    $contacts = $stmt->fetchAll();
-} catch (Exception $e) {
-    $contacts = [];
-}
+    $admin_username = $_SESSION['admin_username'];
+    $admin_id = $_SESSION['admin_id'];
+
+    $message = '';
+    $message_type = '';
+
+    try {
+        $pdo = Db::connect();
+        
+        $stmt = $pdo->query("SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1");
+        $company_info = $stmt->fetch();
+    } catch (Exception $e) {
+        $error_message = 'Database error: ' . $e->getMessage();
+    }
+
+    try {
+        $stmt = $pdo->query("SELECT * FROM Company_Contact WHERE Status = 1 ORDER BY DisplayOrder ASC");
+        $contacts = $stmt->fetchAll();
+    } catch (Exception $e) {
+        $contacts = [];
+    }
 ?>
 
-<?php include 'components/header.php'; ?>
-
 <body>
-    <!-- ======= Header ======= -->
     <?php include 'components/topNav.php'; ?>
-    <!-- ======= Sidebar ======= -->
     <?php include 'components/sideNav.php'; ?>
 
     <!-- ======= Main ======= -->
@@ -313,9 +305,6 @@ try {
     </div>
 
     <?php include 'components/footer.php'; ?>
-
-    <!-- DataTables JavaScript -->
-    <script src="assets/js/dataTables/contactsDataTables.js"></script>
 </body>
 
 </html>
