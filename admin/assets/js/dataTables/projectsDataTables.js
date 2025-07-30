@@ -153,20 +153,25 @@ function initializeProjectsDataTable() {
 
 function loadCategories() {
     $.ajax({
-        url: 'app/apiCompanyProjects.php',
+        url: 'app/apiProjectCategories.php',
         type: 'POST',
         data: {
             action: 'get_categories'
         },
         success: function (response) {
-            if (response.success) {
+            if (response.status === 1) {
                 const categories = response.data;
                 let options = '<option value="">Select Category</option>';
                 categories.forEach(function (category) {
                     options += `<option value="${category.IdCategory}">${category.CategoryName}</option>`;
                 });
                 $('select[name="project_category_id"], #edit_project_category_id').html(options);
+            } else {
+                console.error('Error loading categories:', response.message);
             }
+        },
+        error: function () {
+            console.error('Error loading categories');
         }
     });
 }

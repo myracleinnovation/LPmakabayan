@@ -92,6 +92,46 @@
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['action'])) {
             switch ($_POST['action']) {
+                case 'get_categories':
+                    try {
+                        $search = $_POST['search'] ?? '';
+                        $start = $_POST['start'] ?? 0;
+                        $length = $_POST['length'] ?? 25;
+                        $order = isset($_POST['order']) ? json_decode($_POST['order'], true) : [];
+                        
+                        $data = $projectCategories->getAllCategories($search, $start, $length, $order);
+                        
+                        $response = [
+                            'status' => 1,
+                            'message' => 'Project categories retrieved successfully',
+                            'data' => $data
+                        ];
+                    } catch (Exception $e) {
+                        $response = [
+                            'status' => 0,
+                            'message' => $e->getMessage(),
+                            'data' => []
+                        ];
+                    }
+                    break;
+
+                case 'get_active_categories':
+                    try {
+                        $data = $projectCategories->getActiveCategories();
+                        $response = [
+                            'status' => 1,
+                            'message' => 'Active project categories retrieved successfully',
+                            'data' => $data
+                        ];
+                    } catch (Exception $e) {
+                        $response = [
+                            'status' => 0,
+                            'message' => $e->getMessage(),
+                            'data' => []
+                        ];
+                    }
+                    break;
+
                 case 'create':
                     try {
                         $categoryId = $projectCategories->createCategory($_POST);

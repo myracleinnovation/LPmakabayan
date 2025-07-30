@@ -650,12 +650,13 @@
         // Add new method to refresh category dropdowns
         refreshCategoryDropdowns() {
             $.ajax({
-                url: 'app/API/apiCategory.php?get_categories',
-                type: 'GET',
+                url: 'app/apiProjectCategories.php',
+                type: 'POST',
+                data: { action: 'get_categories' },
                 success: response => {
                     if (response.status === 1) {
                         const options = ['<option value="" disabled selected>Select category</option>']
-                            .concat(response.data.data.map(cat => `<option value="${cat.idCategory}">${cat.CategoryName}</option>`))
+                            .concat(response.data.map(cat => `<option value="${cat.IdCategory}">${cat.CategoryName}</option>`))
                             .join('');
                         
                         // Update category dropdowns in both modals
