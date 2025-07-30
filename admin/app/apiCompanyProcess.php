@@ -14,7 +14,7 @@
     });
 
     $conn = Db::connect();
-    $projectCategories = new ProjectCategories($conn);
+    $companyProcess = new CompanyProcess($conn);
 
     $response = [
         'status' => 0,
@@ -23,67 +23,63 @@
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (isset($_GET['get_categories'])) {
+        if (isset($_GET['get_processes']) || isset($_GET['get_process'])) {
             try {
                 $search = $_GET['search'] ?? '';
                 $start = $_GET['start'] ?? 0;
                 $length = $_GET['length'] ?? 25;
                 $order = isset($_GET['order']) ? json_decode($_GET['order'], true) : [];
                 
-                $data = $projectCategories->getAllCategories($search, $start, $length, $order);
+                $data = $companyProcess->getAllProcesses($search, $start, $length, $order);
                 
                 $response = [
-                    'status' => 1,
-                    'message' => 'Project categories retrieved successfully',
-                    'data' => [
-                        'data' => $data
-                    ]
-                ];
-            } catch (Exception $e) {
-                $response = [
-                    'status' => 0,
-                    'message' => $e->getMessage(),
-                    'data' => [
-                        'data' => []
-                    ]
-                ];
-            }
-        } elseif (isset($_GET['get_active_categories'])) {
-            try {
-                $data = $projectCategories->getActiveCategories();
-                $response = [
-                    'status' => 1,
-                    'message' => 'Active project categories retrieved successfully',
+                    'success' => true,
+                    'message' => 'Processes retrieved successfully',
                     'data' => $data
                 ];
             } catch (Exception $e) {
                 $response = [
-                    'status' => 0,
+                    'success' => false,
                     'message' => $e->getMessage(),
                     'data' => []
                 ];
             }
-        } elseif (isset($_GET['get_category'])) {
+        } elseif (isset($_GET['get_active_processes'])) {
+            try {
+                $data = $companyProcess->getActiveProcesses();
+                $response = [
+                    'success' => true,
+                    'message' => 'Active processes retrieved successfully',
+                    'data' => $data
+                ];
+            } catch (Exception $e) {
+                $response = [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'data' => []
+                ];
+            }
+        } elseif (isset($_GET['get_process'])) {
             try {
                 $id = $_GET['id'] ?? 0;
-                $data = $projectCategories->getCategoryById($id);
+                $data = $companyProcess->getProcessById($id);
                 
                 if ($data) {
                     $response = [
-                        'status' => 1,
-                        'message' => 'Project category retrieved successfully',
+                        'success' => true,
+                        'message' => 'Process retrieved successfully',
                         'data' => $data
                     ];
                 } else {
                     $response = [
-                        'status' => 0,
-                        'message' => 'Project category not found',
+                        'success' => false,
+                        'message' => 'Process not found',
                         'data' => null
                     ];
                 }
             } catch (Exception $e) {
                 $response = [
-                    'status' => 0,
+                    'success' => false,
                     'message' => $e->getMessage(),
                     'data' => null
                 ];
@@ -94,15 +90,15 @@
             switch ($_POST['action']) {
                 case 'create':
                     try {
-                        $categoryId = $projectCategories->createCategory($_POST);
+                        $processId = $companyProcess->createProcess($_POST);
                         $response = [
-                            'status' => 1,
-                            'message' => 'Project category created successfully',
-                            'data' => ['category_id' => $categoryId]
+                            'success' => true,
+                            'message' => 'Process created successfully',
+                            'data' => ['process_id' => $processId]
                         ];
                     } catch (Exception $e) {
                         $response = [
-                            'status' => 0,
+                            'success' => false,
                             'message' => $e->getMessage(),
                             'data' => null
                         ];
@@ -111,15 +107,42 @@
 
                 case 'update':
                     try {
-                        $projectCategories->updateCategory($_POST);
+                        $companyProcess->updateProcess($_POST);
                         $response = [
-                            'status' => 1,
-                            'message' => 'Project category updated successfully',
+                            'success' => true,
+                            'message' => 'Process updated successfully',
                             'data' => null
                         ];
                     } catch (Exception $e) {
                         $response = [
-                            'status' => 0,
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            'data' => null
+                        ];
+                    }
+                    break;
+
+                case 'get':
+                    try {
+                        $id = $_POST['process_id'] ?? 0;
+                        $data = $companyProcess->getProcessById($id);
+                        
+                        if ($data) {
+                            $response = [
+                                'success' => true,
+                                'message' => 'Process retrieved successfully',
+                                'data' => $data
+                            ];
+                        } else {
+                            $response = [
+                                'success' => false,
+                                'message' => 'Process not found',
+                                'data' => null
+                            ];
+                        }
+                    } catch (Exception $e) {
+                        $response = [
+                            'success' => false,
                             'message' => $e->getMessage(),
                             'data' => null
                         ];
@@ -128,16 +151,16 @@
 
                 case 'delete':
                     try {
-                        $id = $_POST['category_id'] ?? 0;
-                        $projectCategories->deleteCategory($id);
+                        $id = $_POST['process_id'] ?? 0;
+                        $companyProcess->deleteProcess($id);
                         $response = [
-                            'status' => 1,
-                            'message' => 'Project category deleted successfully',
+                            'success' => true,
+                            'message' => 'Process deleted successfully',
                             'data' => null
                         ];
                     } catch (Exception $e) {
                         $response = [
-                            'status' => 0,
+                            'success' => false,
                             'message' => $e->getMessage(),
                             'data' => null
                         ];
@@ -146,7 +169,7 @@
 
                 default:
                     $response = [
-                        'status' => 0,
+                        'success' => false,
                         'message' => 'Invalid action',
                         'data' => null
                     ];

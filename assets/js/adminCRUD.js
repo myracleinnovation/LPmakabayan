@@ -159,7 +159,7 @@ class AdminCRUD {
     loadFeatures() {
         this.currentTable = 'features';
         $.ajax({
-            url: 'app/apiFeatures.php',
+            url: 'app/apiCompanyFeatures.php',
             type: 'POST',
             data: { action: 'get_features' },
             success: (response) => {
@@ -216,7 +216,7 @@ class AdminCRUD {
     loadProjects() {
         this.currentTable = 'projects';
         $.ajax({
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: { action: 'get_projects' },
             success: (response) => {
@@ -254,7 +254,7 @@ class AdminCRUD {
     loadProcess() {
         this.currentTable = 'process';
         $.ajax({
-            url: 'app/apiProcess.php',
+            url: 'app/apiCompanyProcess.php',
             type: 'POST',
             data: { action: 'get_processes' },
             success: (response) => {

@@ -15,7 +15,7 @@ $(document).ready(function () {
         lengthChange: false,
         info: false,
         ajax: {
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: {
                 action: 'get_recent_projects'

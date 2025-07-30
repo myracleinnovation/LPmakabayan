@@ -14,7 +14,7 @@
     });
 
     $conn = Db::connect();
-    $projectCategories = new ProjectCategories($conn);
+    $companySpecialties = new CompanySpecialties($conn);
 
     $response = [
         'status' => 0,
@@ -23,18 +23,18 @@
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (isset($_GET['get_categories'])) {
+        if (isset($_GET['get_specialties'])) {
             try {
                 $search = $_GET['search'] ?? '';
                 $start = $_GET['start'] ?? 0;
                 $length = $_GET['length'] ?? 25;
                 $order = isset($_GET['order']) ? json_decode($_GET['order'], true) : [];
                 
-                $data = $projectCategories->getAllCategories($search, $start, $length, $order);
+                $data = $companySpecialties->getAllSpecialties($search, $start, $length, $order);
                 
                 $response = [
                     'status' => 1,
-                    'message' => 'Project categories retrieved successfully',
+                    'message' => 'Specialties retrieved successfully',
                     'data' => [
                         'data' => $data
                     ]
@@ -48,12 +48,12 @@
                     ]
                 ];
             }
-        } elseif (isset($_GET['get_active_categories'])) {
+        } elseif (isset($_GET['get_active_specialties'])) {
             try {
-                $data = $projectCategories->getActiveCategories();
+                $data = $companySpecialties->getActiveSpecialties();
                 $response = [
                     'status' => 1,
-                    'message' => 'Active project categories retrieved successfully',
+                    'message' => 'Active specialties retrieved successfully',
                     'data' => $data
                 ];
             } catch (Exception $e) {
@@ -63,21 +63,21 @@
                     'data' => []
                 ];
             }
-        } elseif (isset($_GET['get_category'])) {
+        } elseif (isset($_GET['get_specialty'])) {
             try {
                 $id = $_GET['id'] ?? 0;
-                $data = $projectCategories->getCategoryById($id);
+                $data = $companySpecialties->getSpecialtyById($id);
                 
                 if ($data) {
                     $response = [
                         'status' => 1,
-                        'message' => 'Project category retrieved successfully',
+                        'message' => 'Specialty retrieved successfully',
                         'data' => $data
                     ];
                 } else {
                     $response = [
                         'status' => 0,
-                        'message' => 'Project category not found',
+                        'message' => 'Specialty not found',
                         'data' => null
                     ];
                 }
@@ -94,11 +94,11 @@
             switch ($_POST['action']) {
                 case 'create':
                     try {
-                        $categoryId = $projectCategories->createCategory($_POST);
+                        $specialtyId = $companySpecialties->createSpecialty($_POST);
                         $response = [
                             'status' => 1,
-                            'message' => 'Project category created successfully',
-                            'data' => ['category_id' => $categoryId]
+                            'message' => 'Specialty created successfully',
+                            'data' => ['specialty_id' => $specialtyId]
                         ];
                     } catch (Exception $e) {
                         $response = [
@@ -111,10 +111,10 @@
 
                 case 'update':
                     try {
-                        $projectCategories->updateCategory($_POST);
+                        $companySpecialties->updateSpecialty($_POST);
                         $response = [
                             'status' => 1,
-                            'message' => 'Project category updated successfully',
+                            'message' => 'Specialty updated successfully',
                             'data' => null
                         ];
                     } catch (Exception $e) {
@@ -128,11 +128,11 @@
 
                 case 'delete':
                     try {
-                        $id = $_POST['category_id'] ?? 0;
-                        $projectCategories->deleteCategory($id);
+                        $id = $_POST['specialty_id'] ?? 0;
+                        $companySpecialties->deleteSpecialty($id);
                         $response = [
                             'status' => 1,
-                            'message' => 'Project category deleted successfully',
+                            'message' => 'Specialty deleted successfully',
                             'data' => null
                         ];
                     } catch (Exception $e) {

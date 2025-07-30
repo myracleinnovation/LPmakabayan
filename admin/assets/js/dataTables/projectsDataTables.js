@@ -21,7 +21,7 @@ function initializeProjectsDataTable() {
         processing: true,
         serverSide: false,
         ajax: {
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: {
                 action: 'get_projects'
@@ -127,7 +127,7 @@ function initializeProjectsDataTable() {
         const projectId = $('#delete_project_id').val();
         
         $.ajax({
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: {
                 action: 'delete',
@@ -153,7 +153,7 @@ function initializeProjectsDataTable() {
 
 function loadCategories() {
     $.ajax({
-        url: 'app/apiProjects.php',
+        url: 'app/apiCompanyProjects.php',
         type: 'POST',
         data: {
             action: 'get_categories'
@@ -173,7 +173,7 @@ function loadCategories() {
 
 function loadProjectData(projectId) {
     $.ajax({
-        url: 'app/apiProjects.php',
+        url: 'app/apiCompanyProjects.php',
         type: 'POST',
         data: {
             action: 'get',
@@ -223,7 +223,7 @@ $(document).ready(function () {
         formData.append('action', 'add');
 
         $.ajax({
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: formData,
             processData: false,
@@ -251,7 +251,7 @@ $(document).ready(function () {
         formData.append('action', 'edit');
 
         $.ajax({
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: formData,
             processData: false,

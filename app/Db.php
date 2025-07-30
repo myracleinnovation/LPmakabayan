@@ -1,6 +1,6 @@
 <?php
     class Db {
-        private static $isLive = true;
+        private static $isLive = false;
         public static function connect() {
             try {
                 if (self::$isLive) {

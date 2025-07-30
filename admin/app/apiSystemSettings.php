@@ -14,7 +14,7 @@
     });
 
     $conn = Db::connect();
-    $projectCategories = new ProjectCategories($conn);
+    $systemSettings = new SystemSettings($conn);
 
     $response = [
         'status' => 0,
@@ -23,18 +23,18 @@
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (isset($_GET['get_categories'])) {
+        if (isset($_GET['get_settings'])) {
             try {
                 $search = $_GET['search'] ?? '';
                 $start = $_GET['start'] ?? 0;
                 $length = $_GET['length'] ?? 25;
                 $order = isset($_GET['order']) ? json_decode($_GET['order'], true) : [];
                 
-                $data = $projectCategories->getAllCategories($search, $start, $length, $order);
+                $data = $systemSettings->getAllSettings($search, $start, $length, $order);
                 
                 $response = [
                     'status' => 1,
-                    'message' => 'Project categories retrieved successfully',
+                    'message' => 'System settings retrieved successfully',
                     'data' => [
                         'data' => $data
                     ]
@@ -48,12 +48,12 @@
                     ]
                 ];
             }
-        } elseif (isset($_GET['get_active_categories'])) {
+        } elseif (isset($_GET['get_active_settings'])) {
             try {
-                $data = $projectCategories->getActiveCategories();
+                $data = $systemSettings->getActiveSettings();
                 $response = [
                     'status' => 1,
-                    'message' => 'Active project categories retrieved successfully',
+                    'message' => 'Active system settings retrieved successfully',
                     'data' => $data
                 ];
             } catch (Exception $e) {
@@ -63,21 +63,46 @@
                     'data' => []
                 ];
             }
-        } elseif (isset($_GET['get_category'])) {
+        } elseif (isset($_GET['get_setting'])) {
             try {
                 $id = $_GET['id'] ?? 0;
-                $data = $projectCategories->getCategoryById($id);
+                $data = $systemSettings->getSettingById($id);
                 
                 if ($data) {
                     $response = [
                         'status' => 1,
-                        'message' => 'Project category retrieved successfully',
+                        'message' => 'System setting retrieved successfully',
                         'data' => $data
                     ];
                 } else {
                     $response = [
                         'status' => 0,
-                        'message' => 'Project category not found',
+                        'message' => 'System setting not found',
+                        'data' => null
+                    ];
+                }
+            } catch (Exception $e) {
+                $response = [
+                    'status' => 0,
+                    'message' => $e->getMessage(),
+                    'data' => null
+                ];
+            }
+        } elseif (isset($_GET['get_setting_by_key'])) {
+            try {
+                $key = $_GET['key'] ?? '';
+                $data = $systemSettings->getSettingByKey($key);
+                
+                if ($data) {
+                    $response = [
+                        'status' => 1,
+                        'message' => 'System setting retrieved successfully',
+                        'data' => $data
+                    ];
+                } else {
+                    $response = [
+                        'status' => 0,
+                        'message' => 'System setting not found',
                         'data' => null
                     ];
                 }
@@ -94,11 +119,11 @@
             switch ($_POST['action']) {
                 case 'create':
                     try {
-                        $categoryId = $projectCategories->createCategory($_POST);
+                        $settingId = $systemSettings->createSetting($_POST);
                         $response = [
                             'status' => 1,
-                            'message' => 'Project category created successfully',
-                            'data' => ['category_id' => $categoryId]
+                            'message' => 'System setting created successfully',
+                            'data' => ['setting_id' => $settingId]
                         ];
                     } catch (Exception $e) {
                         $response = [
@@ -111,10 +136,10 @@
 
                 case 'update':
                     try {
-                        $projectCategories->updateCategory($_POST);
+                        $systemSettings->updateSetting($_POST);
                         $response = [
                             'status' => 1,
-                            'message' => 'Project category updated successfully',
+                            'message' => 'System setting updated successfully',
                             'data' => null
                         ];
                     } catch (Exception $e) {
@@ -128,11 +153,11 @@
 
                 case 'delete':
                     try {
-                        $id = $_POST['category_id'] ?? 0;
-                        $projectCategories->deleteCategory($id);
+                        $id = $_POST['setting_id'] ?? 0;
+                        $systemSettings->deleteSetting($id);
                         $response = [
                             'status' => 1,
-                            'message' => 'Project category deleted successfully',
+                            'message' => 'System setting deleted successfully',
                             'data' => null
                         ];
                     } catch (Exception $e) {

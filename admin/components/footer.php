@@ -16,11 +16,6 @@
 <script src="assets/vendor/quill/quill.js"></script>
 <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
 
-<!-- Apex Chart -->
-<script src="assets/apexChart/currentMonthOrderStatusChart.js"></script>
-<script src="assets/apexChart/currentMonthOrderPaymentsChart.js"></script>
-<script src="assets/apexChart/monthlyOrdersChart.js"></script>
-
 <!-- Moment.js for date formatting -->
 <script src="assets/js/moment/moment.min.js"></script>
 
@@ -28,23 +23,14 @@
 <script src="assets/js/dataTables/dataTables.js"></script>
 <script src="assets/js/dataTables/dataTables.bootstrap5.js"></script>
 
-<!-- Custom DataTables -->
-<script src="assets/js/dataTables/orderDataTables.js"></script>
-<script src="assets/js/dataTables/customerDataTables.js"></script>
-<script src="assets/js/dataTables/pricelistDataTables.js"></script>
-<script src="assets/js/dataTables/categoryDataTables.js"></script>
-<script src="assets/js/dataTables/orderStatusDataTables.js"></script>
-<script src="assets/js/dataTables/logsDataTables.js"></script>
-
-<!-- Suggestion -->
-<script src="assets/js/customerSuggestions.js"></script>
-<script src="assets/js/productSuggestions.js"></script>
-
-<!-- Order Calculations -->
-<script src="assets/js/orderCalculations.js"></script>
-
-<!-- Order Form Handler -->
-<script src="assets/js/orderFormHandler.js"></script>
+<!-- Admin Management DataTables -->
+<script src="assets/js/dataTables/adminsDataTables.js"></script>
+<script src="assets/js/dataTables/specialtiesDataTables.js"></script>
+<script src="assets/js/dataTables/industriesDataTables.js"></script>
+<script src="assets/js/dataTables/featuresDataTables.js"></script>
+<script src="assets/js/dataTables/processDataTables.js"></script>
+<script src="assets/js/dataTables/projectCategoriesDataTables.js"></script>
+<script src="assets/js/dataTables/contactsDataTables.js"></script>
 
 <!-- Helpers -->
 <script src="assets/js/helpers.js"></script>

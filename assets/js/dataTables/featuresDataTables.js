@@ -17,7 +17,7 @@ function initializeFeaturesDataTable() {
         processing: true,
         serverSide: false,
         ajax: {
-            url: 'app/apiFeatures.php',
+            url: 'app/apiCompanyFeatures.php',
             type: 'POST',
             data: function(d) {
                 d.action = 'get_features';
@@ -94,7 +94,7 @@ function initializeFeaturesDataTable() {
         }
 
         $.ajax({
-            url: 'app/apiFeatures.php',
+            url: 'app/apiCompanyFeatures.php',
             type: 'POST',
             data: { [action]: true, ...data },
             success: response => {
@@ -156,7 +156,7 @@ function initializeFeaturesDataTable() {
     $(document).on('click', '.edit_feature', function () {
         const featureId = $(this).data('feature-id');
         $.ajax({
-            url: 'app/apiFeatures.php',
+            url: 'app/apiCompanyFeatures.php',
             type: 'POST',
             data: { action: 'get', feature_id: featureId },
             success: response => {
@@ -190,7 +190,7 @@ function initializeFeaturesDataTable() {
     $(document).on('click', '#deleteFeatureModal .btn-danger', function() {
         const featureId = $('#delete_feature_id').val();
         $.ajax({
-            url: 'app/apiFeatures.php',
+            url: 'app/apiCompanyFeatures.php',
             type: 'POST',
             data: { action: 'delete', feature_id: featureId },
             success: response => {
@@ -210,7 +210,7 @@ function initializeFeaturesDataTable() {
     $('#confirmDeleteFeature').on('click', function() {
         const featureId = $('#delete_feature_id').val();
         $.ajax({
-            url: 'app/apiFeatures.php',
+            url: 'app/apiCompanyFeatures.php',
             type: 'POST',
             data: { action: 'delete', feature_id: featureId },
             success: response => {

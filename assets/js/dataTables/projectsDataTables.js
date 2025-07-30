@@ -21,7 +21,7 @@ function initializeProjectsDataTable() {
         processing: true,
         serverSide: false,
         ajax: {
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: {
                 action: 'get_projects'
@@ -104,7 +104,7 @@ function initializeProjectsDataTable() {
         }
 
         $.ajax({
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: {
                 [action]: true,
@@ -155,7 +155,7 @@ function initializeProjectsDataTable() {
     $(document).on('click', '.edit_project', function () {
         const projectId = $(this).data('project-id');
         $.ajax({
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: {
                 action: 'get',
@@ -184,7 +184,7 @@ function initializeProjectsDataTable() {
     $(document).on('click', '#deleteProjectModal .btn-danger', function () {
         const projectId = $('#delete_project_id').val();
         $.ajax({
-            url: 'app/apiProjects.php',
+            url: 'app/apiCompanyProjects.php',
             type: 'POST',
             data: {
                 action: 'delete',

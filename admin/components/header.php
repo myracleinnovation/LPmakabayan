@@ -43,10 +43,4 @@
     <!-- Toastr -->
     <link rel="stylesheet" href="assets/slick/slick_loader/slick-loader.min.css">
     <link rel="stylesheet" href="assets/toastr/css/toastr.css">
-
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
-
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 </head>
