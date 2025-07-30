@@ -31,6 +31,7 @@
 <script src="assets/js/dataTables/processDataTables.js"></script>
 <script src="assets/js/dataTables/projectCategoriesDataTables.js"></script>
 <script src="assets/js/dataTables/contactsDataTables.js"></script>
+<script src="assets/js/dataTables/companyInfoDataTables.js"></script>
 
 <!-- Helpers -->
 <script src="assets/js/helpers.js"></script>

@@ -1,5 +1,13 @@
-// Initialize DataTable for Contacts
-const contactsDataTable = new DataTable('#contactsTable', {
+// Initialize DataTable for Contacts only if the table exists
+let contactsDataTable;
+
+// Only initialize if the contacts table exists on this page
+if ($('#contactsTable').length > 0) {
+    // Check if DataTable already exists
+    if ($.fn.DataTable.isDataTable('#contactsTable')) {
+        contactsDataTable = $('#contactsTable').DataTable();
+    } else {
+        contactsDataTable = new DataTable('#contactsTable', {
     columnDefs: [{ orderable: false, targets: [-1] }],
     order: [[0, 'asc']],
     dom: "<'row'<'col-12 mb-3'tr>>" +
@@ -10,7 +18,7 @@ const contactsDataTable = new DataTable('#contactsTable', {
         type: 'POST',
         data: { action: 'get_contacts' },
         dataSrc: json => {
-            if (json.success) return json.data || [];
+            if (json.status === 1) return json.data || [];
             toastr.error(json.message || 'Error loading data');
             return [];
         },
@@ -29,12 +37,16 @@ const contactsDataTable = new DataTable('#contactsTable', {
             </div>
         ` }
     ]
-});
+    });
+    }
+}
 
-// Search functionality
-$('#contactCustomSearch').on('keyup', function () {
-    contactsDataTable.search(this.value).draw();
-});
+// Only run these functions if the contacts table exists
+if ($('#contactsTable').length > 0) {
+    // Search functionality
+    $('#contactCustomSearch').on('keyup', function () {
+        contactsDataTable.search(this.value).draw();
+    });
 
 // Handle contact form submission (create/update)
 const handleContactSubmit = (action, data) => {
@@ -53,7 +65,7 @@ const handleContactSubmit = (action, data) => {
         type: 'POST',
         data: { action: action, ...data },
         success: response => {
-            if (response.success) {
+            if (response.status === 1) {
                 contactsDataTable.ajax.reload();
                 $('#contactForm')[0].reset();
                 $('#contactId').val('');
@@ -117,7 +129,7 @@ $(document).on('click', '.edit_contact', function () {
         type: 'POST',
         data: { action: 'get', contact_id: contactId },
         success: response => {
-            if (response.success) {
+            if (response.status === 1) {
                 const { IdContact, ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder, Status } = response.data;
                 $('#contactId').val(IdContact);
                 $('#contactType').val(ContactType);
@@ -146,7 +158,7 @@ $(document).on('click', '.delete_contact', function () {
             type: 'POST',
             data: { action: 'delete', contact_id: contactId },
             success: response => {
-                if (response.success) {
+                if (response.status === 1) {
                     contactsDataTable.ajax.reload();
                     toastr.success(response.message);
                 } else {
@@ -156,4 +168,5 @@ $(document).on('click', '.delete_contact', function () {
             error: () => toastr.error('Error deleting contact')
         });
     }
-}); 
+});
+}

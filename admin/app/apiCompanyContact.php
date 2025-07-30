@@ -92,7 +92,74 @@
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['action'])) {
             switch ($_POST['action']) {
-                case 'create':
+                case 'get_contacts':
+                    try {
+                        $search = $_POST['search'] ?? '';
+                        $start = $_POST['start'] ?? 0;
+                        $length = $_POST['length'] ?? 25;
+                        $order = isset($_POST['order']) ? json_decode($_POST['order'], true) : [];
+                        
+                        $data = $companyContact->getAllContacts($search, $start, $length, $order);
+                        
+                        $response = [
+                            'status' => 1,
+                            'message' => 'Contacts retrieved successfully',
+                            'data' => $data
+                        ];
+                    } catch (Exception $e) {
+                        $response = [
+                            'status' => 0,
+                            'message' => $e->getMessage(),
+                            'data' => []
+                        ];
+                    }
+                    break;
+
+                case 'get_active_contacts':
+                    try {
+                        $data = $companyContact->getActiveContacts();
+                        $response = [
+                            'status' => 1,
+                            'message' => 'Active contacts retrieved successfully',
+                            'data' => $data
+                        ];
+                    } catch (Exception $e) {
+                        $response = [
+                            'status' => 0,
+                            'message' => $e->getMessage(),
+                            'data' => []
+                        ];
+                    }
+                    break;
+
+                case 'get':
+                    try {
+                        $id = $_POST['contact_id'] ?? 0;
+                        $data = $companyContact->getContactById($id);
+                        
+                        if ($data) {
+                            $response = [
+                                'status' => 1,
+                                'message' => 'Contact retrieved successfully',
+                                'data' => $data
+                            ];
+                        } else {
+                            $response = [
+                                'status' => 0,
+                                'message' => 'Contact not found',
+                                'data' => null
+                            ];
+                        }
+                    } catch (Exception $e) {
+                        $response = [
+                            'status' => 0,
+                            'message' => $e->getMessage(),
+                            'data' => null
+                        ];
+                    }
+                    break;
+
+                case 'add':
                     try {
                         $contactId = $companyContact->createContact($_POST);
                         $response = [
@@ -109,7 +176,7 @@
                     }
                     break;
 
-                case 'update':
+                case 'edit':
                     try {
                         $companyContact->updateContact($_POST);
                         $response = [

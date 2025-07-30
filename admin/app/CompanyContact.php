@@ -11,7 +11,7 @@ class CompanyContact
 
     public function getAllContacts($search = '', $start = 0, $length = 25, $order = [])
     {
-        $sql = "SELECT * FROM Company_Contact";
+        $sql = "SELECT * FROM company_contact";
         $params = [];
 
         if (!empty($search)) {
@@ -43,7 +43,7 @@ class CompanyContact
 
     public function getContactById($id)
     {
-        $stmt = $this->conn->prepare("SELECT * FROM Company_Contact WHERE IdContact = ?");
+        $stmt = $this->conn->prepare("SELECT * FROM company_contact WHERE IdContact = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -61,7 +61,7 @@ class CompanyContact
             throw new Exception('Contact type and value are required');
         }
 
-        $stmt = $this->conn->prepare("INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt = $this->conn->prepare("INSERT INTO company_contact (ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$contactType, $contactValue, $contactLabel, $contactIcon, $displayOrder, $status]);
 
         if (!$result) {
@@ -85,7 +85,7 @@ class CompanyContact
             throw new Exception('Contact type and value are required');
         }
 
-        $sql = "UPDATE Company_Contact SET ContactType = ?, ContactValue = ?, ContactLabel = ?, ContactIcon = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdContact = ?";
+        $sql = "UPDATE company_contact SET ContactType = ?, ContactValue = ?, ContactLabel = ?, ContactIcon = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdContact = ?";
         $stmt = $this->conn->prepare($sql);
         $result = $stmt->execute([$contactType, $contactValue, $contactLabel, $contactIcon, $displayOrder, $status, $id]);
 
@@ -98,7 +98,7 @@ class CompanyContact
 
     public function deleteContact($id)
     {
-        $stmt = $this->conn->prepare("UPDATE Company_Contact SET Status = 0, UpdatedTimestamp = NOW() WHERE IdContact = ?");
+        $stmt = $this->conn->prepare("UPDATE company_contact SET Status = 0, UpdatedTimestamp = NOW() WHERE IdContact = ?");
         $result = $stmt->execute([$id]);
 
         if (!$result) {
@@ -110,7 +110,7 @@ class CompanyContact
 
     public function getActiveContacts()
     {
-        $stmt = $this->conn->prepare("SELECT * FROM Company_Contact WHERE Status = 1 ORDER BY DisplayOrder ASC, ContactType ASC");
+        $stmt = $this->conn->prepare("SELECT * FROM company_contact WHERE Status = 1 ORDER BY DisplayOrder ASC, ContactType ASC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
