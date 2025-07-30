@@ -1,152 +1,223 @@
-// Initialize DataTable for Specialties
-const specialtiesDataTable = new DataTable('#dataTable', {
-    columnDefs: [{ orderable: false, targets: [-1] }],
-    order: [[0, 'asc']],
-    dom: "<'row'<'col-12 mb-3'tr>>" +
-         "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
-    processing: true,
-    ajax: {
-        url: 'app/apiCompanySpecialties.php',
-        type: 'POST',
-        data: { action: 'get_specialties' },
-        dataSrc: json => {
-            if (json.success) return json.data || [];
-            toastr.error(json.message || 'Error loading data');
-            return [];
-        },
-        error: () => toastr.error('Error loading specialties data')
-    },
-    columns: [
-        { data: 'IdSpecialty', render: data => `<div class="text-center">${data}</div>` },
-        { data: 'SpecialtyName', render: data => `<div class="text-start">${data}</div>` },
-        { data: 'SpecialtyDescription', render: data => `<div class="text-start">${data || '-'}</div>` },
-        { data: 'SpecialtyImage', render: data => `<div class="text-start">${data || '-'}</div>` },
-        { data: 'DisplayOrder', render: data => `<div class="text-center">${data}</div>` },
-        { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
-        { data: null, render: (_, __, row) => `
-            <div class="d-flex gap-1">
-                <i class="bi bi-pen edit_specialty" style="cursor: pointer;" data-specialty-id="${row.IdSpecialty}" title="Edit Specialty"></i>
-                <i class="bi bi-trash delete_specialty" style="cursor: pointer;" data-specialty-id="${row.IdSpecialty}" title="Delete Specialty"></i>
-            </div>
-        ` }
-    ]
-});
-
-// Search functionality
-$('#specialtyCustomSearch').on('keyup', function () {
-    specialtiesDataTable.search(this.value).draw();
-});
-
-// Handle specialty form submission (create/update)
-const handleSpecialtySubmit = (action, data) => {
-    if (!data.specialty_name) {
-        toastr.error('Specialty name is required');
+function initializeSpecialtiesDataTable() {
+    if (typeof $.fn.DataTable === 'undefined') {
+        setTimeout(initializeSpecialtiesDataTable, 1000);
         return;
     }
-
-    $.ajax({
-        url: 'app/apiCompanySpecialties.php',
-        type: 'POST',
-        data: { action: action, ...data },
-        success: response => {
-            if (response.success) {
-                specialtiesDataTable.ajax.reload();
-                $('#specialtyForm')[0].reset();
-                $('#specialtyId').val('');
-                $('#saveSpecialtyBtn').show();
-                $('#updateSpecialtyBtn').hide();
-                toastr.success(response.message);
-            } else {
-                toastr.error(response.message || `Error ${action === 'add' ? 'creating' : 'updating'} specialty`);
-            }
-        },
-        error: () => toastr.error(`Error ${action === 'add' ? 'creating' : 'updating'} specialty`)
-    });
-};
-
-// Save specialty
-$('#saveSpecialtyBtn').on('click', e => {
-    e.preventDefault();
-    const data = {
-        specialty_name: $('#specialtyName').val()?.trim(),
-        specialty_description: $('#specialtyDescription').val()?.trim(),
-        specialty_image: $('#specialtyImage').val()?.trim(),
-        display_order: $('#displayOrder').val() || 0,
-        status: $('#status').val()
-    };
-    handleSpecialtySubmit('add', data);
-});
-
-// Update specialty
-$('#updateSpecialtyBtn').on('click', e => {
-    e.preventDefault();
-    const data = {
-        specialty_id: $('#specialtyId').val()?.trim(),
-        specialty_name: $('#specialtyName').val()?.trim(),
-        specialty_description: $('#specialtyDescription').val()?.trim(),
-        specialty_image: $('#specialtyImage').val()?.trim(),
-        display_order: $('#displayOrder').val() || 0,
-        status: $('#status').val()
-    };
-    if (!data.specialty_id) {
-        toastr.error('Specialty ID is required');
-        return;
-    }
-    handleSpecialtySubmit('edit', data);
-});
-
-// Reset form
-$('#resetSpecialtyForm').on('click', () => {
-    $('#specialtyForm')[0].reset();
-    $('#specialtyId').val('');
-    $('#saveSpecialtyBtn').show();
-    $('#updateSpecialtyBtn').hide();
-});
-
-// Edit specialty
-$(document).on('click', '.edit_specialty', function () {
-    const specialtyId = $(this).data('specialty-id');
-    $.ajax({
-        url: 'app/apiCompanySpecialties.php',
-        type: 'POST',
-        data: { action: 'get', specialty_id: specialtyId },
-        success: response => {
-            if (response.success) {
-                const { IdSpecialty, SpecialtyName, SpecialtyDescription, SpecialtyImage, DisplayOrder, Status } = response.data;
-                $('#specialtyId').val(IdSpecialty);
-                $('#specialtyName').val(SpecialtyName);
-                $('#specialtyDescription').val(SpecialtyDescription);
-                $('#specialtyImage').val(SpecialtyImage);
-                $('#displayOrder').val(DisplayOrder);
-                $('#status').val(Status);
-                $('#saveSpecialtyBtn').hide();
-                $('#updateSpecialtyBtn').show();
-            } else {
-                toastr.error(response.message || 'Error retrieving specialty data');
-            }
-        },
-        error: () => toastr.error('Error retrieving specialty data')
-    });
-});
-
-// Delete specialty
-$(document).on('click', '.delete_specialty', function () {
-    const specialtyId = $(this).data('specialty-id');
     
-    if (confirm('Are you sure you want to delete this specialty?')) {
+    if ($('#specialtiesTable').length === 0) {
+        return;
+    }
+    
+    const specialtiesDataTable = $('#specialtiesTable').DataTable({
+        columnDefs: [{ orderable: false, targets: [-1] }],
+        order: [[0, 'asc']],
+        dom: "<'row'<'col-12 mb-3'tr>>" +
+             "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
+        processing: true,
+        serverSide: false,
+        ajax: {
+            url: 'app/apiCompanySpecialties.php',
+            type: 'GET',
+            data: { get_specialties: 1 },
+            dataSrc: function (json) {
+                if (json.status === 1) return json.data || [];
+                toastr.error(json.message || 'Error loading data');
+                return [];
+            },
+            error: function (xhr, status, error) {
+                console.error('Ajax error:', status, error);
+                toastr.error('Error loading specialties data');
+            }
+        },
+        columns: [
+            {
+                data: 'SpecialtyImage',
+                render: function (data) {
+                    return data ? `<img src="${data}" alt="Specialty" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
+                }
+            },
+            {
+                data: 'SpecialtyName',
+                render: function (data) {
+                    return `<strong>${data}</strong>`;
+                }
+            },
+            {
+                data: 'SpecialtyDescription',
+                render: function (data) {
+                    return data ? (data.length > 50 ? data.substring(0, 50) + '...' : data) : '<span class="text-muted">No description</span>';
+                }
+            },
+            {
+                data: 'DisplayOrder',
+                render: function (data) {
+                    return `<span class="badge bg-secondary">${data}</span>`;
+                }
+            },
+            {
+                data: 'Status',
+                render: function (data) {
+                    return `<span class="badge bg-${data ? 'success' : 'secondary'}">${data ? 'Active' : 'Inactive'}</span>`;
+                }
+            },
+            {
+                data: null,
+                render: function (data, type, row) {
+                    return `
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-warning btn-sm edit-specialty" 
+                                    data-specialty-id="${row.IdSpecialty}" 
+                                    title="Edit Specialty">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-specialty" 
+                                    data-specialty-id="${row.IdSpecialty}" 
+                                    data-specialty-name="${row.SpecialtyName}" 
+                                    title="Delete Specialty">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        ]
+    });
+
+    $('#specialtiesCustomSearch').on('keyup', function () {
+        specialtiesDataTable.search(this.value).draw();
+    });
+
+    // Handle Edit Button Click
+    $(document).on('click', '.edit-specialty', function () {
+        const specialtyId = $(this).data('specialty-id');
+        loadSpecialtyData(specialtyId);
+        $('#editSpecialtyModal').modal('show');
+    });
+
+    // Handle Delete Button Click
+    $(document).on('click', '.delete-specialty', function () {
+        const specialtyId = $(this).data('specialty-id');
+        const specialtyName = $(this).data('specialty-name');
+        $('#delete_specialty_id').val(specialtyId);
+        $('#delete_specialty_name').text(specialtyName);
+        $('#deleteSpecialtyModal').modal('show');
+    });
+
+    // Handle Delete Confirmation
+    $('#deleteSpecialtyModal .btn-danger').on('click', function () {
+        const specialtyId = $('#delete_specialty_id').val();
+        
         $.ajax({
             url: 'app/apiCompanySpecialties.php',
             type: 'POST',
-            data: { action: 'delete', specialty_id: specialtyId },
-            success: response => {
-                if (response.success) {
+            data: {
+                action: 'delete',
+                specialty_id: specialtyId
+            },
+            success: function (response) {
+                if (response.status === 1) {
                     specialtiesDataTable.ajax.reload();
                     toastr.success(response.message);
+                    $('#deleteSpecialtyModal').modal('hide');
                 } else {
                     toastr.error(response.message || 'Error deleting specialty');
                 }
             },
-            error: () => toastr.error('Error deleting specialty')
+            error: function (xhr, status, error) {
+                console.error('Delete specialty error:', xhr.responseText);
+                toastr.error('Error deleting specialty');
+            }
         });
-    }
+    });
+
+    return specialtiesDataTable;
+}
+
+function loadSpecialtyData(specialtyId) {
+    $.ajax({
+        url: 'app/apiCompanySpecialties.php',
+        type: 'GET',
+        data: {
+            get_specialty: 1,
+            id: specialtyId
+        },
+        success: function (response) {
+            if (response.status === 1) {
+                const specialty = response.data;
+                $('#edit_specialty_id').val(specialty.IdSpecialty);
+                $('#edit_specialty_name').val(specialty.SpecialtyName);
+                $('#edit_specialty_description').val(specialty.SpecialtyDescription);
+                $('#edit_specialty_image').val(specialty.SpecialtyImage);
+                $('#edit_display_order').val(specialty.DisplayOrder);
+                $('#edit_status').val(specialty.Status);
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function () {
+            toastr.error('Error loading specialty data');
+        }
+    });
+}
+
+$(document).ready(function () {
+    // Initialize DataTable
+    const specialtiesDataTable = initializeSpecialtiesDataTable();
+
+    // Handle Add Specialty Form
+    $('#addSpecialtyForm').on('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('action', 'create');
+
+        $.ajax({
+            url: 'app/apiCompanySpecialties.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status === 1) {
+                    toastr.success(response.message);
+                    $('#addSpecialtyModal').modal('hide');
+                    $('#addSpecialtyForm')[0].reset();
+                    specialtiesDataTable.ajax.reload();
+                } else {
+                    toastr.error(response.message || 'Error adding specialty');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Add specialty error:', xhr.responseText);
+                toastr.error('Error adding specialty');
+            }
+        });
+    });
+
+    // Handle Edit Specialty Form
+    $('#editSpecialtyForm').on('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('action', 'update');
+
+        $.ajax({
+            url: 'app/apiCompanySpecialties.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status === 1) {
+                    toastr.success(response.message);
+                    $('#editSpecialtyModal').modal('hide');
+                    specialtiesDataTable.ajax.reload();
+                } else {
+                    toastr.error(response.message || 'Error updating specialty');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Edit specialty error:', xhr.responseText);
+                toastr.error('Error updating specialty');
+            }
+        });
+    });
 }); 

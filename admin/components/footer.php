@@ -30,6 +30,7 @@
 <script src="assets/js/dataTables/featuresDataTables.js"></script>
 <script src="assets/js/dataTables/processDataTables.js"></script>
 <script src="assets/js/dataTables/projectCategoriesDataTables.js"></script>
+<script src="assets/js/dataTables/projectsDataTables.js"></script>
 <script src="assets/js/dataTables/contactsDataTables.js"></script>
 <script src="assets/js/dataTables/companyInfoDataTables.js"></script>
 

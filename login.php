@@ -3,12 +3,18 @@
     require_once 'app/Db.php';
     $pdo = Db::connect();
 
+    // Check if admin is already logged in
     if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
         $loginTime = $_SESSION['login_time'] ?? 0;
-        if (time() - $loginTime > 300) {
+        $currentTime = time();
+        
+        // Check if session has expired (30 minutes = 1800 seconds)
+        if ($currentTime - $loginTime > 1800) {
+            // Session expired, clear it
             session_unset();
             session_destroy();
         } else {
+            // Still logged in, redirect to admin dashboard
             header('Location: admin/index.php');
             exit();
         }
@@ -50,6 +56,9 @@
                         $_SESSION['admin_username'] = $user['Username'];
                         $_SESSION['admin_id'] = $user['IdAdmin'];
                         $_SESSION['login_time'] = time();
+                        
+                        // Set session timeout to 30 minutes (1800 seconds)
+                        $_SESSION['session_timeout'] = 1800;
                         
                         header('Location: admin/index.php');
                         exit();
@@ -244,8 +253,11 @@
                             placeholder="Enter your password" required>
                     </div>
 
-                    <div class="d-grid">
+                    <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-login">Login</button>
+                        <a href="index.php" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Website
+                        </a>
                     </div>
                 </form>
 

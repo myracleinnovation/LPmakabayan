@@ -1,12 +1,6 @@
 <?php
     session_start();
-    
-    // Check if admin is logged in
-    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-        header('Location: ../login.php');
-        exit();
-    }
-    
+    include 'components/sessionCheck.php';
     include 'components/header.php';
     require_once '../app/Db.php';
 
@@ -137,48 +131,7 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">Quick Actions</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                                    <a href="projects.php" class="btn btn-outline-primary w-100">
-                                        <i class="bi bi-briefcase me-2"></i>Manage Projects
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                                    <a href="projectCategories.php" class="btn btn-outline-secondary w-100">
-                                        <i class="bi bi-folder me-2"></i>Project Categories
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                                    <a href="specialties.php" class="btn btn-outline-success w-100">
-                                        <i class="bi bi-tools me-2"></i>Specialties
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                                    <a href="industries.php" class="btn btn-outline-info w-100">
-                                        <i class="bi bi-building me-2"></i>Industries
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                                    <a href="features.php" class="btn btn-outline-warning w-100">
-                                        <i class="bi bi-star me-2"></i>Features
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                                    <a href="process.php" class="btn btn-outline-dark w-100">
-                                        <i class="bi bi-list-check me-2"></i>Process
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Recent Projects -->
                 <div class="col-12">
@@ -243,49 +196,7 @@
                     </div>
                 </div>
 
-                <!-- System Information -->
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">System Information</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <p><strong>Total Process Steps:</strong> <?php echo $totalProcess; ?></p>
-                                    <p><strong>Total Categories:</strong> <?php echo $totalCategories; ?></p>
-                                </div>
-                                <div class="col-6">
-                                    <p><strong>Admin User:</strong> <?php echo htmlspecialchars($admin_username); ?></p>
-                                    <p><strong>Last Login:</strong> <?php echo date('M d, Y H:i'); ?></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Quick Links -->
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">Quick Links</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6 mb-2">
-                                    <a href="companyInfo.php" class="btn btn-outline-info btn-sm w-100">
-                                        <i class="bi bi-info-circle me-1"></i>Company Info
-                                    </a>
-                                </div>
-                                <div class="col-6 mb-2">
-                                    <a href="settings.php" class="btn btn-outline-secondary btn-sm w-100">
-                                        <i class="bi bi-gear me-1"></i>Settings
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
     </main>

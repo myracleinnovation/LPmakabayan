@@ -31,21 +31,22 @@
                 $order = isset($_GET['order']) ? json_decode($_GET['order'], true) : [];
                 
                 $data = $companyIndustries->getAllIndustries($search, $start, $length, $order);
+                $totalRecords = $companyIndustries->getTotalIndustries($search);
                 
                 $response = [
                     'status' => 1,
                     'message' => 'Industries retrieved successfully',
-                    'data' => [
-                        'data' => $data
-                    ]
+                    'data' => $data,
+                    'recordsTotal' => $totalRecords,
+                    'recordsFiltered' => $totalRecords
                 ];
             } catch (Exception $e) {
                 $response = [
                     'status' => 0,
                     'message' => $e->getMessage(),
-                    'data' => [
-                        'data' => []
-                    ]
+                    'data' => [],
+                    'recordsTotal' => 0,
+                    'recordsFiltered' => 0
                 ];
             }
         } elseif (isset($_GET['get_active_industries'])) {

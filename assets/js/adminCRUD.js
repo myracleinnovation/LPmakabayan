@@ -138,14 +138,14 @@ class AdminCRUD {
     }
 
     loadCompanyInfo() {
-        this.currentTable = 'company_info';
+        this.currentTable = 'Company_Info';
         $.ajax({
             url: 'app/apiCompanyInfo.php',
             type: 'POST',
-            data: { action: 'get_company_info' },
+            data: { action: 'get_Company_Info' },
             success: (response) => {
                 if (response.success) {
-                    this.renderTable(response.data, 'company_info');
+                    this.renderTable(response.data, 'Company_Info');
                 } else {
                     this.showAlert('error', response.message);
                 }
@@ -399,7 +399,7 @@ class AdminCRUD {
     getFormTemplate() {
         const templates = {
             admins: this.getAdminForm(),
-            company_info: this.getCompanyInfoForm(),
+            Company_Info: this.getCompanyInfoForm(),
             features: this.getFeatureForm(),
             specialties: this.getSpecialtyForm(),
             industries: this.getIndustryForm(),
@@ -1024,7 +1024,7 @@ class AdminCRUD {
     getApiFile() {
         const apiFiles = {
             admins: 'Admins',
-            company_info: 'CompanyInfo',
+            Company_Info: 'CompanyInfo',
             features: 'Features',
             specialties: 'Specialties',
             industries: 'Industries',
@@ -1041,7 +1041,7 @@ class AdminCRUD {
     getIdField() {
         const idFields = {
             admins: 'admin_id',
-            company_info: 'company_id',
+            Company_Info: 'company_id',
             features: 'feature_id',
             specialties: 'specialty_id',
             industries: 'industry_id',

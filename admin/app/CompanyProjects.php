@@ -41,6 +41,26 @@ class CompanyProjects
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getTotalProjects($search = '')
+    {
+        $sql = "SELECT COUNT(*) as total FROM Company_Projects p LEFT JOIN Project_Categories pc ON p.ProjectCategoryId = pc.IdCategory";
+        
+        if (!empty($search)) {
+            $sql .= " WHERE p.ProjectTitle LIKE :search OR p.ProjectDescription LIKE :search OR p.ProjectOwner LIKE :search OR p.ProjectLocation LIKE :search";
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!empty($search)) {
+            $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return (int)$result['total'];
+    }
+
     public function getProjectById($id)
     {
         $stmt = $this->conn->prepare("SELECT p.*, pc.CategoryName FROM Company_Projects p LEFT JOIN Project_Categories pc ON p.ProjectCategoryId = pc.IdCategory WHERE p.IdProject = ?");
@@ -131,6 +151,13 @@ class CompanyProjects
     public function getActiveProjects()
     {
         $stmt = $this->conn->prepare("SELECT p.*, pc.CategoryName FROM Company_Projects p LEFT JOIN Project_Categories pc ON p.ProjectCategoryId = pc.IdCategory WHERE p.Status = 1 ORDER BY p.DisplayOrder ASC, p.CreatedTimestamp DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getProjectCategories()
+    {
+        $stmt = $this->conn->prepare("SELECT IdCategory, CategoryName FROM Project_Categories WHERE Status = 1 ORDER BY DisplayOrder ASC, CategoryName ASC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

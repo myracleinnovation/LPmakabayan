@@ -1,152 +1,223 @@
-// Initialize DataTable for Project Categories
-const projectCategoriesDataTable = new DataTable('#categoriesTable', {
-    columnDefs: [{ orderable: false, targets: [-1] }],
-    order: [[0, 'asc']],
-    dom: "<'row'<'col-12 mb-3'tr>>" +
-         "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
-    processing: true,
-    ajax: {
-        url: 'app/apiProjectCategories.php',
-        type: 'POST',
-        data: { action: 'get_categories' },
-        dataSrc: json => {
-            if (json.success) return json.data || [];
-            toastr.error(json.message || 'Error loading data');
-            return [];
-        },
-        error: () => toastr.error('Error loading project categories data')
-    },
-    columns: [
-        { data: 'IdCategory', render: data => `<div class="text-center">${data}</div>` },
-        { data: 'CategoryName', render: data => `<div class="text-start">${data}</div>` },
-        { data: 'CategoryDescription', render: data => `<div class="text-start">${data || '-'}</div>` },
-        { data: 'CategoryImage', render: data => `<div class="text-start">${data || '-'}</div>` },
-        { data: 'DisplayOrder', render: data => `<div class="text-center">${data}</div>` },
-        { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
-        { data: null, render: (_, __, row) => `
-            <div class="d-flex gap-1">
-                <i class="bi bi-pen edit_category" style="cursor: pointer;" data-category-id="${row.IdCategory}" title="Edit Category"></i>
-                <i class="bi bi-trash delete_category" style="cursor: pointer;" data-category-id="${row.IdCategory}" title="Delete Category"></i>
-            </div>
-        ` }
-    ]
-});
-
-// Search functionality
-$('#categoryCustomSearch').on('keyup', function () {
-    projectCategoriesDataTable.search(this.value).draw();
-});
-
-// Handle category form submission (create/update)
-const handleCategorySubmit = (action, data) => {
-    if (!data.category_name) {
-        toastr.error('Category name is required');
+function initializeProjectCategoriesDataTable() {
+    if (typeof $.fn.DataTable === 'undefined') {
+        setTimeout(initializeProjectCategoriesDataTable, 1000);
         return;
     }
-
-    $.ajax({
-        url: 'app/apiProjectCategories.php',
-        type: 'POST',
-        data: { action: action, ...data },
-        success: response => {
-            if (response.success) {
-                projectCategoriesDataTable.ajax.reload();
-                $('#categoryForm')[0].reset();
-                $('#categoryId').val('');
-                $('#saveCategoryBtn').show();
-                $('#updateCategoryBtn').hide();
-                toastr.success(response.message);
-            } else {
-                toastr.error(response.message || `Error ${action === 'add' ? 'creating' : 'updating'} category`);
-            }
-        },
-        error: () => toastr.error(`Error ${action === 'add' ? 'creating' : 'updating'} category`)
-    });
-};
-
-// Save category
-$('#saveCategoryBtn').on('click', e => {
-    e.preventDefault();
-    const data = {
-        category_name: $('#categoryName').val()?.trim(),
-        category_description: $('#categoryDescription').val()?.trim(),
-        category_image: $('#categoryImage').val()?.trim(),
-        display_order: $('#displayOrder').val() || 0,
-        status: $('#status').val()
-    };
-    handleCategorySubmit('add', data);
-});
-
-// Update category
-$('#updateCategoryBtn').on('click', e => {
-    e.preventDefault();
-    const data = {
-        category_id: $('#categoryId').val()?.trim(),
-        category_name: $('#categoryName').val()?.trim(),
-        category_description: $('#categoryDescription').val()?.trim(),
-        category_image: $('#categoryImage').val()?.trim(),
-        display_order: $('#displayOrder').val() || 0,
-        status: $('#status').val()
-    };
-    if (!data.category_id) {
-        toastr.error('Category ID is required');
-        return;
-    }
-    handleCategorySubmit('edit', data);
-});
-
-// Reset form
-$('#resetCategoryForm').on('click', () => {
-    $('#categoryForm')[0].reset();
-    $('#categoryId').val('');
-    $('#saveCategoryBtn').show();
-    $('#updateCategoryBtn').hide();
-});
-
-// Edit category
-$(document).on('click', '.edit_category', function () {
-    const categoryId = $(this).data('category-id');
-    $.ajax({
-        url: 'app/apiProjectCategories.php',
-        type: 'POST',
-        data: { action: 'get', category_id: categoryId },
-        success: response => {
-            if (response.success) {
-                const { IdCategory, CategoryName, CategoryDescription, CategoryImage, DisplayOrder, Status } = response.data;
-                $('#categoryId').val(IdCategory);
-                $('#categoryName').val(CategoryName);
-                $('#categoryDescription').val(CategoryDescription);
-                $('#categoryImage').val(CategoryImage);
-                $('#displayOrder').val(DisplayOrder);
-                $('#status').val(Status);
-                $('#saveCategoryBtn').hide();
-                $('#updateCategoryBtn').show();
-            } else {
-                toastr.error(response.message || 'Error retrieving category data');
-            }
-        },
-        error: () => toastr.error('Error retrieving category data')
-    });
-});
-
-// Delete category
-$(document).on('click', '.delete_category', function () {
-    const categoryId = $(this).data('category-id');
     
-    if (confirm('Are you sure you want to delete this category?')) {
+    if ($('#categoriesTable').length === 0) {
+        return;
+    }
+    
+    const projectCategoriesDataTable = $('#categoriesTable').DataTable({
+        columnDefs: [{ orderable: false, targets: [-1] }],
+        order: [[0, 'asc']],
+        dom: "<'row'<'col-12 mb-3'tr>>" +
+             "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
+        processing: true,
+        serverSide: false,
+        ajax: {
+            url: 'app/apiProjectCategories.php',
+            type: 'GET',
+            data: { get_categories: 1 },
+            dataSrc: function (json) {
+                if (json.status === 1) return json.data || [];
+                toastr.error(json.message || 'Error loading data');
+                return [];
+            },
+            error: function (xhr, status, error) {
+                console.error('Ajax error:', status, error);
+                toastr.error('Error loading project categories data');
+            }
+        },
+            columns: [
+            {
+                data: 'CategoryImage',
+                render: function (data) {
+                    return data ? `<img src="${data}" alt="Category" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
+                }
+            },
+            {
+                data: 'CategoryName',
+                render: function (data) {
+                    return `<strong>${data}</strong>`;
+                }
+            },
+            {
+                data: 'CategoryDescription',
+                render: function (data) {
+                    return data ? (data.length > 50 ? data.substring(0, 50) + '...' : data) : '<span class="text-muted">No description</span>';
+                }
+            },
+            {
+                data: 'DisplayOrder',
+                render: function (data) {
+                    return `<span class="badge bg-secondary">${data}</span>`;
+                }
+            },
+            {
+                data: 'Status',
+                render: function (data) {
+                    return `<span class="badge bg-${data ? 'success' : 'secondary'}">${data ? 'Active' : 'Inactive'}</span>`;
+                }
+            },
+            {
+                data: null,
+                render: function (data, type, row) {
+                    return `
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-warning btn-sm edit-category" 
+                                    data-category-id="${row.IdCategory}" 
+                                    title="Edit Category">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-category" 
+                                    data-category-id="${row.IdCategory}" 
+                                    data-category-name="${row.CategoryName}" 
+                                    title="Delete Category">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        ]
+    });
+
+    $('#categoriesCustomSearch').on('keyup', function () {
+        projectCategoriesDataTable.search(this.value).draw();
+    });
+
+    // Handle Edit Button Click
+    $(document).on('click', '.edit-category', function () {
+        const categoryId = $(this).data('category-id');
+        loadCategoryData(categoryId);
+        $('#editCategoryModal').modal('show');
+    });
+
+    // Handle Delete Button Click
+    $(document).on('click', '.delete-category', function () {
+        const categoryId = $(this).data('category-id');
+        const categoryName = $(this).data('category-name');
+        $('#delete_category_id').val(categoryId);
+        $('#delete_category_name').text(categoryName);
+        $('#deleteCategoryModal').modal('show');
+    });
+
+    // Handle Delete Confirmation
+    $('#deleteCategoryModal .btn-danger').on('click', function () {
+        const categoryId = $('#delete_category_id').val();
+        
         $.ajax({
             url: 'app/apiProjectCategories.php',
             type: 'POST',
-            data: { action: 'delete', category_id: categoryId },
-            success: response => {
-                if (response.success) {
+            data: {
+                action: 'delete',
+                category_id: categoryId
+            },
+            success: function (response) {
+                if (response.status === 1) {
                     projectCategoriesDataTable.ajax.reload();
                     toastr.success(response.message);
+                    $('#deleteCategoryModal').modal('hide');
                 } else {
                     toastr.error(response.message || 'Error deleting category');
                 }
             },
-            error: () => toastr.error('Error deleting category')
+            error: function (xhr, status, error) {
+                console.error('Delete category error:', xhr.responseText);
+                toastr.error('Error deleting category');
+            }
         });
-    }
+    });
+
+    return projectCategoriesDataTable;
+}
+
+function loadCategoryData(categoryId) {
+    $.ajax({
+        url: 'app/apiProjectCategories.php',
+        type: 'GET',
+        data: {
+            get_category: 1,
+            id: categoryId
+        },
+        success: function (response) {
+            if (response.status === 1) {
+                const category = response.data;
+                $('#edit_category_id').val(category.IdCategory);
+                $('#edit_category_name').val(category.CategoryName);
+                $('#edit_category_description').val(category.CategoryDescription);
+                $('#edit_category_image').val(category.CategoryImage);
+                $('#edit_display_order').val(category.DisplayOrder);
+                $('#edit_status').val(category.Status);
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function () {
+            toastr.error('Error loading category data');
+        }
+    });
+}
+
+$(document).ready(function () {
+    // Initialize DataTable
+    const projectCategoriesDataTable = initializeProjectCategoriesDataTable();
+
+    // Handle Add Category Form
+    $('#addCategoryForm').on('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('action', 'create');
+
+        $.ajax({
+            url: 'app/apiProjectCategories.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status === 1) {
+                    toastr.success(response.message);
+                    $('#addCategoryModal').modal('hide');
+                    $('#addCategoryForm')[0].reset();
+                    projectCategoriesDataTable.ajax.reload();
+                } else {
+                    toastr.error(response.message || 'Error adding category');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Add category error:', xhr.responseText);
+                toastr.error('Error adding category');
+            }
+        });
+    });
+
+    // Handle Edit Category Form
+    $('#editCategoryForm').on('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('action', 'update');
+
+        $.ajax({
+            url: 'app/apiProjectCategories.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status === 1) {
+                    toastr.success(response.message);
+                    $('#editCategoryModal').modal('hide');
+                    projectCategoriesDataTable.ajax.reload();
+                } else {
+                    toastr.error(response.message || 'Error updating category');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Edit category error:', xhr.responseText);
+                toastr.error('Error updating category');
+            }
+        });
+    });
 }); 

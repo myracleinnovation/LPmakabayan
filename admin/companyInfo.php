@@ -38,18 +38,18 @@
                         $pdo = Db::connect();
                         
                         // Check if company info exists
-                        $stmt = $pdo->prepare("SELECT IdCompany FROM company_info WHERE IdCompany = ?");
+                        $stmt = $pdo->prepare("SELECT IdCompany FROM Company_Info WHERE IdCompany = ?");
                         $stmt->execute([$company_id]);
                         $exists = $stmt->fetch();
 
                         if ($exists) {
                             // Update existing
-                            $sql = "UPDATE company_info SET CompanyName = ?, Tagline = ?, Description = ?, Mission = ?, Vision = ?, AboutImage = ?, LogoImage = ?, UpdatedTimestamp = NOW() WHERE IdCompany = ?";
+                            $sql = "UPDATE Company_Info SET CompanyName = ?, Tagline = ?, Description = ?, Mission = ?, Vision = ?, AboutImage = ?, LogoImage = ?, UpdatedTimestamp = NOW() WHERE IdCompany = ?";
                             $stmt = $pdo->prepare($sql);
                             $stmt->execute([$company_name, $tagline, $description, $mission, $vision, $about_image, $logo_image, $company_id]);
                         } else {
                             // Insert new
-                            $sql = "INSERT INTO company_info (CompanyName, Tagline, Description, Mission, Vision, AboutImage, LogoImage, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW())";
+                            $sql = "INSERT INTO Company_Info (CompanyName, Tagline, Description, Mission, Vision, AboutImage, LogoImage, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW())";
                             $stmt = $pdo->prepare($sql);
                             $stmt->execute([$company_name, $tagline, $description, $mission, $vision, $about_image, $logo_image]);
                         }
@@ -136,8 +136,8 @@
     try {
         $pdo = Db::connect();
         
-        $stmt = $pdo->query("SELECT * FROM company_info WHERE Status = 1 LIMIT 1");
-        $company_info = $stmt->fetch();
+        $stmt = $pdo->query("SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1");
+        $Company_Info = $stmt->fetch();
     } catch (Exception $e) {
         $error_message = 'Database error: ' . $e->getMessage();
     }
@@ -180,50 +180,50 @@
                             <form id="companyInfoForm">
                                 <input type="hidden" name="action" value="update_company">
                                 <input type="hidden" name="company_id"
-                                    value="<?php echo $company_info['IdCompany'] ?? 1; ?>">
+                                    value="<?php echo $Company_Info['IdCompany'] ?? 1; ?>">
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Company Name *</label>
                                         <input type="text" class="form-control" name="company_name"
-                                            value="<?php echo htmlspecialchars($company_info['CompanyName'] ?? ''); ?>"
+                                            value="<?php echo htmlspecialchars($Company_Info['CompanyName'] ?? ''); ?>"
                                             required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Tagline</label>
                                         <input type="text" class="form-control" name="tagline"
-                                            value="<?php echo htmlspecialchars($company_info['Tagline'] ?? ''); ?>">
+                                            value="<?php echo htmlspecialchars($Company_Info['Tagline'] ?? ''); ?>">
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Company Description</label>
                                     <textarea class="form-control" name="description"
-                                        rows="3"><?php echo htmlspecialchars($company_info['Description'] ?? ''); ?></textarea>
+                                        rows="3"><?php echo htmlspecialchars($Company_Info['Description'] ?? ''); ?></textarea>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Mission</label>
                                     <textarea class="form-control" name="mission"
-                                        rows="4"><?php echo htmlspecialchars($company_info['Mission'] ?? ''); ?></textarea>
+                                        rows="4"><?php echo htmlspecialchars($Company_Info['Mission'] ?? ''); ?></textarea>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Vision</label>
                                     <textarea class="form-control" name="vision"
-                                        rows="4"><?php echo htmlspecialchars($company_info['Vision'] ?? ''); ?></textarea>
+                                        rows="4"><?php echo htmlspecialchars($Company_Info['Vision'] ?? ''); ?></textarea>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">About Image URL</label>
                                         <input type="text" class="form-control" name="about_image"
-                                            value="<?php echo htmlspecialchars($company_info['AboutImage'] ?? ''); ?>">
+                                            value="<?php echo htmlspecialchars($Company_Info['AboutImage'] ?? ''); ?>">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Logo Image URL</label>
                                         <input type="text" class="form-control" name="logo_image"
-                                            value="<?php echo htmlspecialchars($company_info['LogoImage'] ?? ''); ?>">
+                                            value="<?php echo htmlspecialchars($Company_Info['LogoImage'] ?? ''); ?>">
                                     </div>
                                 </div>
 

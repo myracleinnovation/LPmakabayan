@@ -11,14 +11,14 @@ class CompanyInfo
 
     public function getCompanyInfo()
     {
-        $stmt = $this->conn->prepare("SELECT * FROM company_info WHERE Status = 1 ORDER BY IdCompany ASC LIMIT 1");
+        $stmt = $this->conn->prepare("SELECT * FROM Company_Info WHERE Status = 1 ORDER BY IdCompany ASC LIMIT 1");
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getCompanyInfoById($id)
     {
-        $stmt = $this->conn->prepare("SELECT * FROM company_info WHERE IdCompany = ?");
+        $stmt = $this->conn->prepare("SELECT * FROM Company_Info WHERE IdCompany = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -40,7 +40,7 @@ class CompanyInfo
             throw new Exception('Company name is required');
         }
 
-        $sql = "UPDATE company_info SET CompanyName = ?, Tagline = ?, Description = ?, Mission = ?, Vision = ?, AboutImage = ?, LogoImage = ?, FaviconImage = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdCompany = ?";
+        $sql = "UPDATE Company_Info SET CompanyName = ?, Tagline = ?, Description = ?, Mission = ?, Vision = ?, AboutImage = ?, LogoImage = ?, FaviconImage = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdCompany = ?";
         $stmt = $this->conn->prepare($sql);
         $result = $stmt->execute([$companyName, $tagline, $description, $mission, $vision, $aboutImage, $logoImage, $faviconImage, $status, $id]);
 
@@ -67,7 +67,7 @@ class CompanyInfo
             throw new Exception('Company name is required');
         }
 
-        $stmt = $this->conn->prepare("INSERT INTO company_info (CompanyName, Tagline, Description, Mission, Vision, AboutImage, LogoImage, FaviconImage, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt = $this->conn->prepare("INSERT INTO Company_Info (CompanyName, Tagline, Description, Mission, Vision, AboutImage, LogoImage, FaviconImage, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$companyName, $tagline, $description, $mission, $vision, $aboutImage, $logoImage, $faviconImage, $status]);
 
         if (!$result) {

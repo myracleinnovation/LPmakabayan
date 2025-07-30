@@ -1,12 +1,6 @@
 <?php
     session_start();
-    
-    // Check if admin is logged in
-    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-        header('Location: ../login.php');
-        exit();
-    }
-    
+    include 'components/sessionCheck.php';
     include 'components/header.php';
     require_once '../app/Db.php';
 

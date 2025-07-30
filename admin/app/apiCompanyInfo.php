@@ -23,7 +23,7 @@
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (isset($_GET['get_company_info'])) {
+        if (isset($_GET['get_Company_Info'])) {
             try {
                 $data = $companyInfo->getCompanyInfo();
                 $response = [
@@ -38,7 +38,7 @@
                     'data' => null
                 ];
             }
-        } elseif (isset($_GET['get_company_info_by_id'])) {
+        } elseif (isset($_GET['get_Company_Info_by_id'])) {
             try {
                 $id = $_GET['id'] ?? 0;
                 $data = $companyInfo->getCompanyInfoById($id);

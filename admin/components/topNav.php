@@ -35,7 +35,16 @@
 <script>
     function clearSession() {
         fetch('logout.php')
-            .then(() => {
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '../login.php';
+                } else {
+                    console.error('Logout failed');
+                    window.location.href = '../login.php';
+                }
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
                 window.location.href = '../login.php';
             });
     }

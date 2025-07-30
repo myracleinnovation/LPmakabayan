@@ -22,12 +22,19 @@ function initializeProjectsDataTable() {
         serverSide: false,
         ajax: {
             url: 'app/apiCompanyProjects.php',
-            type: 'POST',
-            data: {
-                action: 'get_projects'
+            type: 'GET',
+            data: function (d) {
+                d.get_projects = 1;
+                return d;
             },
             dataSrc: function (json) {
-                if (json.success) return json.data || [];
+                if (json.status === 1) {
+                    // Update DataTables with total records for pagination
+                    if (json.recordsTotal !== undefined) {
+                        $('#projectsTable').DataTable().page.len(json.recordsTotal).draw();
+                    }
+                    return json.data || [];
+                }
                 toastr.error(json.message || 'Error loading data');
                 return [];
             },
@@ -134,7 +141,7 @@ function initializeProjectsDataTable() {
                 project_id: projectId
             },
             success: function (response) {
-                if (response.success) {
+                if (response.status === 1) {
                     projectsDataTable.ajax.reload();
                     toastr.success(response.message);
                     $('#deleteProjectModal').modal('hide');
@@ -142,7 +149,8 @@ function initializeProjectsDataTable() {
                     toastr.error(response.message || 'Error deleting project');
                 }
             },
-            error: function () {
+            error: function (xhr, status, error) {
+                console.error('Delete project error:', xhr.responseText);
                 toastr.error('Error deleting project');
             }
         });
@@ -153,10 +161,10 @@ function initializeProjectsDataTable() {
 
 function loadCategories() {
     $.ajax({
-        url: 'app/apiProjectCategories.php',
-        type: 'POST',
+        url: 'app/apiCompanyProjects.php',
+        type: 'GET',
         data: {
-            action: 'get_categories'
+            get_categories: 1
         },
         success: function (response) {
             if (response.status === 1) {
@@ -179,13 +187,13 @@ function loadCategories() {
 function loadProjectData(projectId) {
     $.ajax({
         url: 'app/apiCompanyProjects.php',
-        type: 'POST',
+        type: 'GET',
         data: {
-            action: 'get',
-            project_id: projectId
+            get_project: 1,
+            id: projectId
         },
         success: function (response) {
-            if (response.success) {
+            if (response.status === 1) {
                 const project = response.data;
                 $('#edit_project_id').val(project.IdProject);
                 $('#edit_project_title').val(project.ProjectTitle);
@@ -225,7 +233,7 @@ $(document).ready(function () {
     $('#addProjectForm').on('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
-        formData.append('action', 'add');
+        formData.append('action', 'create');
 
         $.ajax({
             url: 'app/apiCompanyProjects.php',
@@ -234,16 +242,17 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
-                if (response.success) {
+                if (response.status === 1) {
                     toastr.success(response.message);
                     $('#addProjectModal').modal('hide');
                     $('#addProjectForm')[0].reset();
                     projectsDataTable.ajax.reload();
                 } else {
-                    toastr.error(response.message);
+                    toastr.error(response.message || 'Error adding project');
                 }
             },
-            error: function () {
+            error: function (xhr, status, error) {
+                console.error('Add project error:', xhr.responseText);
                 toastr.error('Error adding project');
             }
         });
@@ -253,7 +262,7 @@ $(document).ready(function () {
     $('#editProjectForm').on('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
-        formData.append('action', 'edit');
+        formData.append('action', 'update');
 
         $.ajax({
             url: 'app/apiCompanyProjects.php',
@@ -262,15 +271,16 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
-                if (response.success) {
+                if (response.status === 1) {
                     toastr.success(response.message);
                     $('#editProjectModal').modal('hide');
                     projectsDataTable.ajax.reload();
                 } else {
-                    toastr.error(response.message);
+                    toastr.error(response.message || 'Error updating project');
                 }
             },
-            error: function () {
+            error: function (xhr, status, error) {
+                console.error('Edit project error:', xhr.responseText);
                 toastr.error('Error updating project');
             }
         });

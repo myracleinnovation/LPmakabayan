@@ -41,6 +41,26 @@ class CompanyIndustries
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getTotalIndustries($search = '')
+    {
+        $sql = "SELECT COUNT(*) as total FROM Company_Industries";
+        
+        if (!empty($search)) {
+            $sql .= " WHERE IndustryName LIKE :search OR IndustryDescription LIKE :search";
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!empty($search)) {
+            $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return (int)$result['total'];
+    }
+
     public function getIndustryById($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM Company_Industries WHERE IdIndustry = ?");

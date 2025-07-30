@@ -44,4 +44,207 @@
     display: none;
 }
 
-/* VAT input disabled state styling removed - VAT amount is now always editable */
+/* Search Functionality Styles */
+.search-section .form-control:focus,
+.search-section .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Search button improvements */
+#searchFilter {
+    transition: all 0.2s ease;
+}
+
+#searchFilter:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading state for search */
+.search-section.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.search-section.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0d6efd;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive improvements */
+@media (max-width: 1200px) {
+    .search-section .row-cols-1 > .col {
+        margin-bottom: 1rem;
+    }
+    
+    .search-section .d-flex.align-items-end {
+        align-items: stretch !important;
+    }
+}
+
+/* DataTable search improvements */
+.dataTables_wrapper .dataTables_processing {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.375rem;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Empty state styling */
+.dataTables_empty {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Prevent unnecessary scrolling when content is minimal */
+#main {
+    min-height: auto !important;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#main .section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#main .section .card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#main .section .card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#main .section .card .card-body .table-responsive {
+    flex: 1;
+    min-height: 0;
+}
+
+/* Horizontal scrolling for tables */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scroll-x {
+    min-width: 800px; /* Ensure minimum width for proper scrolling */
+}
+
+/* Ensure table headers stay visible during horizontal scroll */
+.table-responsive thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+/* Ensure the page doesn't scroll unnecessarily on small content */
+@media (max-height: 600px) {
+    #main {
+        padding: 10px 20px;
+    }
+    
+    .pagetitle {
+        margin-bottom: 5px;
+    }
+    
+    .search-section {
+        padding-bottom: 10px;
+    }
+}
+
+/* Optimize layout for different screen sizes */
+@media (min-height: 800px) {
+    #main {
+        min-height: calc(100vh - 60px);
+    }
+}
+
+/* Ensure proper spacing without forcing full height */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+html, body {
+    height: auto;
+    overflow-x: hidden;
+}
+
+/* Item Search Suggestions Styling */
+.suggestions-container {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.375rem 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+}
+
+.suggestion-item {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.suggestion-item:hover,
+.suggestion-item.selected {
+    background-color: #f8f9fa !important;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none !important;
+}
+
+.suggestion-item .fw-bold {
+    color: #212529;
+    font-size: 0.875rem;
+}
+
+.suggestion-item small {
+    font-size: 0.75rem;
+}
+
+/* Ensure the search input has proper border radius when suggestions are shown */
+.item-desc-container input:focus {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Loading state for suggestions */
+.suggestions-loading {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* No results state */
+.suggestions-no-results {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}

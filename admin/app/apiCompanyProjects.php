@@ -31,21 +31,22 @@
                 $order = isset($_GET['order']) ? json_decode($_GET['order'], true) : [];
                 
                 $data = $companyProjects->getAllProjects($search, $start, $length, $order);
+                $totalRecords = $companyProjects->getTotalProjects($search);
                 
                 $response = [
                     'status' => 1,
                     'message' => 'Projects retrieved successfully',
-                    'data' => [
-                        'data' => $data
-                    ]
+                    'data' => $data,
+                    'recordsTotal' => $totalRecords,
+                    'recordsFiltered' => $totalRecords
                 ];
             } catch (Exception $e) {
                 $response = [
                     'status' => 0,
                     'message' => $e->getMessage(),
-                    'data' => [
-                        'data' => []
-                    ]
+                    'data' => [],
+                    'recordsTotal' => 0,
+                    'recordsFiltered' => 0
                 ];
             }
         } elseif (isset($_GET['get_active_projects'])) {
@@ -86,6 +87,21 @@
                     'status' => 0,
                     'message' => $e->getMessage(),
                     'data' => null
+                ];
+            }
+        } elseif (isset($_GET['get_categories'])) {
+            try {
+                $data = $companyProjects->getProjectCategories();
+                $response = [
+                    'status' => 1,
+                    'message' => 'Categories retrieved successfully',
+                    'data' => $data
+                ];
+            } catch (Exception $e) {
+                $response = [
+                    'status' => 0,
+                    'message' => $e->getMessage(),
+                    'data' => []
                 ];
             }
         }
