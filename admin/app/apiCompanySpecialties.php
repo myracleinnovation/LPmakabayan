@@ -95,7 +95,33 @@
             switch ($_POST['action']) {
                 case 'create':
                     try {
-                        $specialtyId = $companySpecialties->createSpecialty($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        
+                        // Handle specialty_image (only if file is uploaded)
+                        if (isset($_FILES['specialty_image']) && $_FILES['specialty_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['specialty_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                $nextSpecialtyNumber = $companySpecialties->getNextSpecialtyNumber();
+                                $filename = 'specialty' . $nextSpecialtyNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['specialty_image'] = $filename;
+                                }
+                            }
+                        }
+
+                        $specialtyId = $companySpecialties->createSpecialty($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Specialty created successfully',
@@ -112,7 +138,48 @@
 
                 case 'update':
                     try {
-                        $companySpecialties->updateSpecialty($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        $specialtyId = (int)$_POST['specialty_id'];
+                        
+                        // Get current specialty data to preserve existing image
+                        $currentSpecialty = $companySpecialties->getSpecialtyById($specialtyId);
+                        
+                        // Handle specialty_image (only if new file is uploaded)
+                        if (isset($_FILES['specialty_image']) && $_FILES['specialty_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['specialty_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old specialty image file if it exists
+                                if (!empty($currentSpecialty['SpecialtyImage'])) {
+                                    $oldFile = $uploadDir . $currentSpecialty['SpecialtyImage'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextSpecialtyNumber = $companySpecialties->getNextSpecialtyNumber();
+                                $filename = 'specialty' . $nextSpecialtyNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['specialty_image'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing image if no new file uploaded
+                            $postData['specialty_image'] = $currentSpecialty['SpecialtyImage'] ?? '';
+                        }
+
+                        $companySpecialties->updateSpecialty($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Specialty updated successfully',
@@ -130,6 +197,21 @@
                 case 'delete':
                     try {
                         $id = $_POST['specialty_id'] ?? 0;
+                        
+                        // Get specialty data to delete associated image
+                        $specialty = $companySpecialties->getSpecialtyById($id);
+                        if ($specialty) {
+                            $uploadDir = '../../assets/img/';
+                            
+                            // Delete specialty image file if it exists
+                            if (!empty($specialty['SpecialtyImage'])) {
+                                $imageFile = $uploadDir . $specialty['SpecialtyImage'];
+                                if (file_exists($imageFile)) {
+                                    unlink($imageFile);
+                                }
+                            }
+                        }
+                        
                         $companySpecialties->deleteSpecialty($id);
                         $response = [
                             'status' => 1,

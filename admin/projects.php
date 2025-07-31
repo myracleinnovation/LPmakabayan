@@ -1,4 +1,4 @@
-<?php
+php<?php
     session_start();
     include 'components/sessionCheck.php';
     include 'components/header.php';
@@ -124,34 +124,14 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 1 URL</label>
-                                <input type="text" class="form-control" name="project_image1">
+                                <label class="form-label">Image 1</label>
+                                <input type="file" class="form-control" name="project_image1" accept="image/*">
+                                <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 2 URL</label>
-                                <input type="text" class="form-control" name="project_image2">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 3 URL</label>
-                                <input type="text" class="form-control" name="project_image3">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 4 URL</label>
-                                <input type="text" class="form-control" name="project_image4">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 5 URL</label>
-                                <input type="text" class="form-control" name="project_image5">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 6 URL</label>
-                                <input type="text" class="form-control" name="project_image6">
+                                <label class="form-label">Image 2</label>
+                                <input type="file" class="form-control" name="project_image2" accept="image/*">
+                                <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             </div>
                         </div>
 
@@ -241,34 +221,16 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 1 URL</label>
-                                <input type="text" class="form-control" name="project_image1" id="edit_project_image1">
+                                <label class="form-label">Image 1</label>
+                                <input type="file" class="form-control" name="project_image1" id="edit_project_image1" accept="image/*">
+                                <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
+                                <div id="current_image1_preview" class="mt-2"></div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 2 URL</label>
-                                <input type="text" class="form-control" name="project_image2" id="edit_project_image2">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 3 URL</label>
-                                <input type="text" class="form-control" name="project_image3" id="edit_project_image3">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 4 URL</label>
-                                <input type="text" class="form-control" name="project_image4" id="edit_project_image4">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 5 URL</label>
-                                <input type="text" class="form-control" name="project_image5" id="edit_project_image5">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Image 6 URL</label>
-                                <input type="text" class="form-control" name="project_image6" id="edit_project_image6">
+                                <label class="form-label">Image 2</label>
+                                <input type="file" class="form-control" name="project_image2" id="edit_project_image2" accept="image/*">
+                                <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
+                                <div id="current_image2_preview" class="mt-2"></div>
                             </div>
                         </div>
 

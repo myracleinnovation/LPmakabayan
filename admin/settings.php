@@ -12,18 +12,6 @@
 
     $admin_username = $_SESSION['admin_username'];
     $admin_id = $_SESSION['admin_id'];
-
-    $message = '';
-    $message_type = '';
-
-    try {
-        $pdo = Db::connect();
-        
-        $stmt = $pdo->query("SELECT * FROM Admin_Accounts WHERE Status = 1 ORDER BY CreatedTimestamp DESC");
-        $admins = $stmt->fetchAll();
-    } catch (Exception $e) {
-        $admins = [];
-    }
 ?>
 
 <body>
@@ -44,18 +32,6 @@
 
         <section class="section">
             <div class="row">
-                <!-- Alert Messages -->
-                <?php if (!empty($message)): ?>
-                <div class="col-12">
-                    <div class="alert alert-<?php echo $message_type; ?> alert-dismissible fade show" role="alert">
-                        <i
-                            class="bi bi-<?php echo $message_type == 'success' ? 'check-circle' : 'exclamation-triangle'; ?> me-2"></i>
-                        <?php echo htmlspecialchars($message); ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                </div>
-                <?php endif; ?>
-
                 <div class="row">
                     <!-- Change Password -->
                     <div class="col-lg-6 mb-4">
@@ -64,9 +40,7 @@
                                 <h5 class="card-title"><i class="bi bi-key me-2"></i>Change Password</h5>
                             </div>
                             <div class="card-body">
-                                <form method="POST">
-                                    <input type="hidden" name="action" value="change_password">
-
+                                <form id="changePasswordForm">
                                     <div class="mb-3">
                                         <label class="form-label">Current Password *</label>
                                         <input type="password" class="form-control" name="current_password" required>
@@ -97,14 +71,14 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="card-title"><i class="bi bi-people me-2"></i>Admin Accounts</h5>
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                <button class="btn  btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#addAdminModal">
                                     <i class="bi bi-plus me-1"></i>Add Admin
                                 </button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="adminsTable" class="table table-hover admins_table">
+                                    <table id="adminsTable" class="table table-hover admins_table" data-current-admin="<?php echo $admin_id; ?>">
                                         <thead>
                                             <tr>
                                                 <th>Username</th>
@@ -134,10 +108,8 @@
                     <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Add New Admin</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST">
+                <form id="addAdminForm">
                     <div class="modal-body">
-                        <input type="hidden" name="action" value="add_admin">
-
                         <div class="mb-3">
                             <label class="form-label">Username *</label>
                             <input type="text" class="form-control" name="username" required>
@@ -173,9 +145,8 @@
                     <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Admin</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST">
+                <form id="editAdminForm">
                     <div class="modal-body">
-                        <input type="hidden" name="action" value="edit_admin">
                         <input type="hidden" name="admin_id" id="edit_admin_id">
 
                         <div class="mb-3">
@@ -212,8 +183,7 @@
                     <p>Are you sure you want to delete the admin account "<span id="delete_admin_username"></span>"?</p>
                     <p class="text-muted">This action cannot be undone.</p>
                 </div>
-                <form method="POST">
-                    <input type="hidden" name="action" value="delete_admin">
+                <form id="deleteAdminForm">
                     <input type="hidden" name="admin_id" id="delete_admin_id">
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -223,7 +193,156 @@
             </div>
         </div>
     </div>
+
     <?php include 'components/footer.php'; ?>
+
+    <script>
+    $(document).ready(function() {
+        // Handle Change Password Form
+        $('#changePasswordForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = $('input[name="current_password"]').val();
+            const newPassword = $('input[name="new_password"]').val();
+            const confirmPassword = $('input[name="confirm_password"]').val();
+            
+            if (newPassword !== confirmPassword) {
+                toastr.error('New passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                toastr.error('Password must be at least 6 characters long');
+                return;
+            }
+            
+            $.ajax({
+                url: 'app/apiAdminAccounts.php',
+                type: 'POST',
+                data: {
+                    action: 'update_password',
+                    admin_id: <?php echo $admin_id; ?>,
+                    current_password: currentPassword,
+                    new_password: newPassword
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#changePasswordForm')[0].reset();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while changing password');
+                }
+            });
+        });
+
+        // Handle Add Admin Form
+        $('#addAdminForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                action: 'create',
+                username: $('input[name="username"]').val(),
+                password: $('input[name="password"]').val(),
+                status: $('select[name="status"]').val()
+            };
+            
+            $.ajax({
+                url: 'app/apiAdminAccounts.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#addAdminForm')[0].reset();
+                        $('#addAdminModal').modal('hide');
+                        if (window.adminsDataTable) {
+                            window.adminsDataTable.ajax.reload();
+                        }
+                    } else {
+                        toastr.error(response.message || 'Error adding admin');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('An error occurred while adding admin: ' + error);
+                }
+            });
+        });
+
+        // Handle Edit Admin Form
+        $('#editAdminForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                action: 'update',
+                admin_id: $('#edit_admin_id').val(),
+                username: $('#edit_username').val(),
+                status: $('#edit_status').val()
+            };
+            
+            $.ajax({
+                url: 'app/apiAdminAccounts.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {   
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#editAdminForm')[0].reset();
+                        $('#editAdminModal').modal('hide');
+                        if (window.adminsDataTable) {
+                            window.adminsDataTable.ajax.reload();
+                        }
+                    } else {
+                        toastr.error(response.message || 'Error updating admin');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Edit admin error:', xhr.responseText);
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    toastr.error('An error occurred while updating admin: ' + error);
+                }
+            });
+        });
+
+        // Handle Delete Admin Form
+        $('#deleteAdminForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                action: 'delete',
+                admin_id: $('#delete_admin_id').val()
+            };
+            
+            $.ajax({
+                url: 'app/apiAdminAccounts.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#deleteAdminModal').modal('hide');
+                        if (window.adminsDataTable) {
+                            window.adminsDataTable.ajax.reload();
+                        }
+                    } else {
+                        toastr.error(response.message || 'Error deleting admin');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('An error occurred while deleting admin: ' + error);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 
 </html>

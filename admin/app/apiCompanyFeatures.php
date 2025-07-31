@@ -94,7 +94,33 @@
             switch ($_POST['action']) {
                 case 'create':
                     try {
-                        $featureId = $companyFeatures->createFeature($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        
+                        // Handle feature_image (only if file is uploaded)
+                        if (isset($_FILES['feature_image']) && $_FILES['feature_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['feature_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                $nextFeatureNumber = $companyFeatures->getNextFeatureNumber();
+                                $filename = 'feature' . $nextFeatureNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['feature_image'] = $filename;
+                                }
+                            }
+                        }
+
+                        $featureId = $companyFeatures->createFeature($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Feature created successfully',
@@ -111,7 +137,48 @@
 
                 case 'update':
                     try {
-                        $companyFeatures->updateFeature($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        $featureId = (int)$_POST['feature_id'];
+                        
+                        // Get current feature data to preserve existing image
+                        $currentFeature = $companyFeatures->getFeatureById($featureId);
+                        
+                        // Handle feature_image (only if new file is uploaded)
+                        if (isset($_FILES['feature_image']) && $_FILES['feature_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['feature_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old feature image file if it exists
+                                if (!empty($currentFeature['FeatureImage'])) {
+                                    $oldFile = $uploadDir . $currentFeature['FeatureImage'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextFeatureNumber = $companyFeatures->getNextFeatureNumber();
+                                $filename = 'feature' . $nextFeatureNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['feature_image'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing image if no new file uploaded
+                            $postData['feature_image'] = $currentFeature['FeatureImage'] ?? '';
+                        }
+
+                        $companyFeatures->updateFeature($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Feature updated successfully',
@@ -129,6 +196,21 @@
                 case 'delete':
                     try {
                         $id = $_POST['feature_id'] ?? 0;
+                        
+                        // Get feature data to delete associated image
+                        $feature = $companyFeatures->getFeatureById($id);
+                        if ($feature) {
+                            $uploadDir = '../../assets/img/';
+                            
+                            // Delete feature image file if it exists
+                            if (!empty($feature['FeatureImage'])) {
+                                $imageFile = $uploadDir . $feature['FeatureImage'];
+                                if (file_exists($imageFile)) {
+                                    unlink($imageFile);
+                                }
+                            }
+                        }
+                        
                         $companyFeatures->deleteFeature($id);
                         $response = [
                             'status' => 1,

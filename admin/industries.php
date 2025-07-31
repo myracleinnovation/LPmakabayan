@@ -90,10 +90,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Industry Image URL</label>
-                            <input type="text" class="form-control" name="industry_image"
-                                placeholder="Enter the URL of the industry image">
-                            <small class="text-muted">Example: assets/img/industry1.png</small>
+                            <label class="form-label">Industry Image</label>
+                            <input type="file" class="form-control" name="industry_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                         </div>
 
                         <div class="mb-3">
@@ -144,8 +143,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Industry Image URL</label>
-                            <input type="text" class="form-control" name="industry_image" id="edit_industry_image">
+                            <label class="form-label">Industry Image</label>
+                            <input type="file" class="form-control" name="industry_image" id="edit_industry_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
+                            <div id="current_industry_image_preview" class="mt-2"></div>
                         </div>
 
                         <div class="mb-3">

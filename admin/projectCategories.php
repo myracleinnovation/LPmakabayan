@@ -96,10 +96,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Category Image URL</label>
-                            <input type="text" class="form-control" name="category_image"
-                                placeholder="Enter the URL of the category image">
-                            <small class="text-muted">Example: assets/img/project1.png</small>
+                            <label class="form-label">Category Image</label>
+                            <input type="file" class="form-control" name="category_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                         </div>
 
                         <div class="mb-3">
@@ -150,8 +149,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Category Image URL</label>
-                            <input type="text" class="form-control" name="category_image" id="edit_category_image">
+                            <label class="form-label">Category Image</label>
+                            <input type="file" class="form-control" name="category_image" id="edit_category_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
+                            <div id="current_category_image_preview" class="mt-2"></div>
                         </div>
 
                         <div class="mb-3">

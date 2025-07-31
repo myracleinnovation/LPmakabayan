@@ -33,7 +33,7 @@ function initializeProjectCategoriesDataTable() {
             {
                 data: 'CategoryImage',
                 render: function (data) {
-                    return data ? `<img src="${data}" alt="Category" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
+                    return data ? `<img src="../assets/img/${data}" alt="Category" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
                 }
             },
             {
@@ -65,12 +65,12 @@ function initializeProjectCategoriesDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning btn-sm edit-category" 
+                            <button class="btn btn-warning  edit-category" 
                                     data-category-id="${row.IdCategory}" 
                                     title="Edit Category">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-danger btn-sm delete-category" 
+                            <button class="btn btn-danger  delete-category" 
                                     data-category-id="${row.IdCategory}" 
                                     data-category-name="${row.CategoryName}" 
                                     title="Delete Category">
@@ -134,6 +134,13 @@ function initializeProjectCategoriesDataTable() {
 }
 
 function loadCategoryData(categoryId) {
+    // Check if jQuery is available
+    if (typeof $ === 'undefined') {
+        console.warn('jQuery not available, retrying in 100ms...');
+        setTimeout(() => loadCategoryData(categoryId), 100);
+        return;
+    }
+    
     $.ajax({
         url: 'app/apiProjectCategories.php',
         type: 'GET',
@@ -144,12 +151,24 @@ function loadCategoryData(categoryId) {
         success: function (response) {
             if (response.status === 1) {
                 const category = response.data;
+                
+                // Fill form fields
                 $('#edit_category_id').val(category.IdCategory);
                 $('#edit_category_name').val(category.CategoryName);
                 $('#edit_category_description').val(category.CategoryDescription);
-                $('#edit_category_image').val(category.CategoryImage);
                 $('#edit_display_order').val(category.DisplayOrder);
                 $('#edit_status').val(category.Status);
+                
+                // Show current image if it exists
+                if (category.CategoryImage) {
+                    $('#current_category_image_preview').html(`
+                        <small class="text-muted">Current Image:</small><br>
+                        <img src="../assets/img/${category.CategoryImage}" alt="Current Category Image" 
+                             style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
+                    `);
+                } else {
+                    $('#current_category_image_preview').html('');
+                }
             } else {
                 toastr.error(response.message);
             }
@@ -161,63 +180,66 @@ function loadCategoryData(categoryId) {
 }
 
 $(document).ready(function () {
-    // Initialize DataTable
-    const projectCategoriesDataTable = initializeProjectCategoriesDataTable();
+    // Only initialize if the categories table exists on this page
+    if ($('#categoriesTable').length > 0) {
+        // Initialize DataTable
+        const projectCategoriesDataTable = initializeProjectCategoriesDataTable();
 
-    // Handle Add Category Form
-    $('#addCategoryForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'create');
+        // Handle Add Category Form
+        $('#addCategoryForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'create');
 
-        $.ajax({
-            url: 'app/apiProjectCategories.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#addCategoryModal').modal('hide');
-                    $('#addCategoryForm')[0].reset();
-                    projectCategoriesDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error adding category');
+            $.ajax({
+                url: 'app/apiProjectCategories.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#addCategoryModal').modal('hide');
+                        $('#addCategoryForm')[0].reset();
+                        projectCategoriesDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error adding category');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Add category error:', xhr.responseText);
+                    toastr.error('Error adding category');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Add category error:', xhr.responseText);
-                toastr.error('Error adding category');
-            }
+            });
         });
-    });
 
-    // Handle Edit Category Form
-    $('#editCategoryForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'update');
+        // Handle Edit Category Form
+        $('#editCategoryForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'update');
 
-        $.ajax({
-            url: 'app/apiProjectCategories.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#editCategoryModal').modal('hide');
-                    projectCategoriesDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error updating category');
+            $.ajax({
+                url: 'app/apiProjectCategories.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#editCategoryModal').modal('hide');
+                        projectCategoriesDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error updating category');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Edit category error:', xhr.responseText);
+                    toastr.error('Error updating category');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Edit category error:', xhr.responseText);
-                toastr.error('Error updating category');
-            }
+            });
         });
-    });
+    }
 }); 

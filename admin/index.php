@@ -138,7 +138,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Recent Projects</h5>
-                            <a href="projects.php" class="btn btn-primary btn-sm">View All Projects</a>
+                            <a href="projects.php" class="btn btn-primary">View All Projects</a>
                         </div>
                         <div class="card-body">
                             <?php if (!empty($recentProjects)): ?>
@@ -176,7 +176,7 @@
                                                 <span class="badge bg-success">Active</span>
                                             </td>
                                             <td>
-                                                <a href="projects.php" class="btn btn-sm btn-outline-primary">
+                                                <a href="projects.php" class="btn btn-outline-primary">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                             </td>

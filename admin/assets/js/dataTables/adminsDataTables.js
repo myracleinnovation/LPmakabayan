@@ -1,167 +1,170 @@
-// Initialize DataTable for Admin Accounts
-let adminsDataTable;
-
-// Only initialize if the admins table exists on this page
-if ($('#adminsTable').length > 0) {
-    // Check if DataTable already exists
-    if ($.fn.DataTable.isDataTable('#adminsTable')) {
-        adminsDataTable = $('#adminsTable').DataTable();
-    } else {
-        adminsDataTable = $('#adminsTable').DataTable({
-    columnDefs: [{ orderable: false, targets: [-1] }],
-    order: [[0, 'asc']],
-    dom: "<'row'<'col-12 mb-3'tr>>" +
-         "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
-    processing: true,
-    ajax: {
-        url: 'app/apiAdminAccounts.php',
-        type: 'POST',
-        data: { action: 'get_admins' },
-        dataSrc: json => {
-            if (json.success) return json.data || [];
-            toastr.error(json.message || 'Error loading data');
-            return [];
-        },
-        error: () => toastr.error('Error loading admin data')
-    },
-    columns: [
-        { data: 'Username', render: data => `<div class="text-start">${data}</div>` },
-        { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
-        { data: 'CreatedTimestamp', render: data => `<div class="text-start">${moment(data).format('MMM DD, YYYY')}</div>` },
-        { data: null, render: (_, __, row) => `
-            <div class="btn-group" role="group">
-                <button class="btn btn-warning btn-sm edit-admin" 
-                        data-admin-id="${row.IdAdmin}" 
-                        title="Edit Admin">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                ${row.IdAdmin != currentAdminId ? `<button class="btn btn-danger btn-sm delete-admin" 
-                        data-admin-id="${row.IdAdmin}" 
-                        title="Delete Admin">
-                    <i class="bi bi-trash"></i>
-                </button>` : ''}
-            </div>
-        ` }
-    ]
-    });
-    }
-}
-
-// Only run these functions if the admins table exists
-if ($('#adminsTable').length > 0) {
-    // Search functionality
-    $('#adminCustomSearch').on('keyup', function () {
-        adminsDataTable.search(this.value).draw();
-    });
-
-    // Handle admin form submission (create/update)
-    const handleAdminSubmit = (action, data) => {
-    if (!data.username) {
-        toastr.error('Username is required');
-        return;
-    }
+$(document).ready(function() {
+    // Get current admin ID from data attribute
+    const currentAdminId = parseInt($('#adminsTable').data('current-admin') || 0);
     
-    if (action === 'add' && !data.password) {
-        toastr.error('Password is required');
-        return;
-    }
-
-    $.ajax({
-        url: 'app/apiAdminAccounts.php',
-        type: 'POST',
-        data: { action: action, ...data },
-        success: response => {
-            if (response.success) {
-                adminsDataTable.ajax.reload();
-                $('#adminForm')[0].reset();
-                $('#adminId').val('');
-                $('#saveAdminBtn').show();
-                $('#updateAdminBtn').hide();
-                toastr.success(response.message);
-            } else {
-                toastr.error(response.message || `Error ${action === 'add' ? 'creating' : 'updating'} admin`);
-            }
-        },
-        error: () => toastr.error(`Error ${action === 'add' ? 'creating' : 'updating'} admin`)
-    });
-};
-
-// Save admin
-$('#saveAdminBtn').on('click', e => {
-    e.preventDefault();
-    const data = {
-        username: $('#username').val()?.trim(),
-        password: $('#password').val(),
-        status: $('#status').val()
-    };
-    handleAdminSubmit('add', data);
-});
-
-// Update admin
-$('#updateAdminBtn').on('click', e => {
-    e.preventDefault();
-    const data = {
-        admin_id: $('#adminId').val()?.trim(),
-        username: $('#username').val()?.trim(),
-        status: $('#status').val()
-    };
-    if (!data.admin_id) {
-        toastr.error('Admin ID is required');
-        return;
-    }
-    handleAdminSubmit('edit', data);
-});
-
-// Reset form
-$('#resetAdminForm').on('click', () => {
-    $('#adminForm')[0].reset();
-    $('#adminId').val('');
-    $('#saveAdminBtn').show();
-    $('#updateAdminBtn').hide();
-});
-
-// Edit admin
-$(document).on('click', '.edit-admin', function () {
-    const adminId = $(this).data('admin-id');
-    $.ajax({
-        url: 'app/apiAdminAccounts.php',
-        type: 'POST',
-        data: { action: 'get', admin_id: adminId },
-        success: response => {
-            if (response.success) {
-                const { IdAdmin, Username, Status } = response.data;
-                $('#adminId').val(IdAdmin);
-                $('#username').val(Username);
-                $('#status').val(Status);
-                $('#saveAdminBtn').hide();
-                $('#updateAdminBtn').show();
-            } else {
-                toastr.error(response.message || 'Error retrieving admin data');
-            }
-        },
-        error: () => toastr.error('Error retrieving admin data')
-    });
-});
-
-// Delete admin
-$(document).on('click', '.delete-admin', function () {
-    const adminId = $(this).data('admin-id');
-    
-    if (confirm('Are you sure you want to delete this admin account?')) {
-        $.ajax({
-            url: 'app/apiAdminAccounts.php',
-            type: 'POST',
-            data: { action: 'delete', admin_id: adminId },
-            success: response => {
-                if (response.success) {
-                    adminsDataTable.ajax.reload();
-                    toastr.success(response.message);
-                } else {
-                    toastr.error(response.message || 'Error deleting admin');
+    if ($('#adminsTable').length > 0) {
+        if ($.fn.DataTable.isDataTable('#adminsTable')) {
+            window.adminsDataTable = $('#adminsTable').DataTable();
+        } else {
+            window.adminsDataTable = $('#adminsTable').DataTable({
+                columnDefs: [{ orderable: false, targets: [-1] }],
+                order: [[0, 'asc']],
+                dom: "<'row'<'col-12 mb-3'tr>>" +
+                     "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
+                processing: true,
+                serverSide: false,
+                ajax: {
+                    url: 'app/apiAdminAccounts.php',
+                    type: 'GET',
+                    data: { get_admins: true },
+                    dataSrc: function(json) {
+                        if (json.status === 1) {
+                            return json.data.data || [];
+                        } else {
+                            toastr.error(json.message || 'Error loading data');
+                            return [];
+                        }
+                    },
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTable AJAX Error:', error, thrown);
+                        toastr.error('Error loading admin data');
+                    }
+                },
+                columns: [
+                    { data: 'Username', render: function(data) {
+                        return `<div class="text-start">${data || ''}</div>`;
+                    }},
+                    { data: 'Status', render: function(data) {
+                        const status = data == 1 ? 'Active' : 'Inactive';
+                        const badgeClass = data == 1 ? 'bg-success' : 'bg-danger';
+                        return `<span class="badge ${badgeClass}">${status}</span>`;
+                    }},
+                    { data: 'CreatedTimestamp', render: function(data) {
+                        if (!data) return '<div class="text-start">-</div>';
+                        return `<div class="text-start">${moment(data).format('MMM DD, YYYY')}</div>`;
+                    }},
+                    { data: null, render: function(data, type, row) {
+                        const editBtn = `<button class="btn btn-warning  edit-admin" 
+                                    data-admin-id="${row.IdAdmin}" 
+                                    title="Edit Admin">
+                                <i class="bi bi-pencil"></i>
+                            </button>`;
+                        
+                        const deleteBtn = row.IdAdmin != currentAdminId ? 
+                            `<button class="btn btn-danger  delete-admin" 
+                                    data-admin-id="${row.IdAdmin}" 
+                                    title="Delete Admin">
+                                <i class="bi bi-trash"></i>
+                            </button>` : '';
+                        
+                        return `<div class="btn-group" role="group">${editBtn}${deleteBtn}</div>`;
+                    }}
+                ],
+                initComplete: function() {
                 }
-            },
-            error: () => toastr.error('Error deleting admin')
+            });
+        }
+    }
+
+    if ($('#adminsTable').length > 0) {
+        $('#adminCustomSearch').on('keyup', function () {
+            if (window.adminsDataTable) {
+                window.adminsDataTable.search(this.value).draw();
+            }
+        });
+
+        const handleAdminSubmit = (action, data) => {
+            if (!data.username) {
+                toastr.error('Username is required');
+                return;
+            }
+            
+            if (action === 'add' && !data.password) {
+                toastr.error('Password is required');
+                return;
+            }
+
+            $.ajax({
+                url: 'app/apiAdminAccounts.php',
+                type: 'POST',
+                data: { action: action, ...data },
+                success: response => {
+                    if (response.status === 1) {
+                        if (window.adminsDataTable) {
+                            window.adminsDataTable.ajax.reload();
+                        }
+                        $('#adminForm')[0].reset();
+                        $('#adminId').val('');
+                        $('#saveAdminBtn').show();
+                        $('#updateAdminBtn').hide();
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message || `Error ${action === 'add' ? 'creating' : 'updating'} admin`);
+                    }
+                },
+                error: () => toastr.error(`Error ${action === 'add' ? 'creating' : 'updating'} admin`)
+            });
+        };
+
+        $('#saveAdminBtn').on('click', e => {
+            e.preventDefault();
+            const data = {
+                username: $('#username').val()?.trim(),
+                password: $('#password').val(),
+                status: $('#status').val()
+            };
+            handleAdminSubmit('create', data);
+        });
+
+        $('#updateAdminBtn').on('click', e => {
+            e.preventDefault();
+            const data = {
+                admin_id: $('#adminId').val()?.trim(),
+                username: $('#username').val()?.trim(),
+                status: $('#status').val()
+            };
+            if (!data.admin_id) {
+                toastr.error('Admin ID is required');
+                return;
+            }
+            handleAdminSubmit('update', data);
+        });
+
+        $('#resetAdminForm').on('click', () => {
+            $('#adminForm')[0].reset();
+            $('#adminId').val('');
+            $('#saveAdminBtn').show();
+            $('#updateAdminBtn').hide();
+        });
+
+        $(document).on('click', '.edit-admin', function () {
+            const adminId = $(this).data('admin-id');
+            $.ajax({
+                url: 'app/apiAdminAccounts.php',
+                type: 'GET',
+                data: { get_admin: true, id: adminId },
+                success: response => {
+                    if (response.status === 1) {
+                        const { IdAdmin, Username, Status } = response.data;
+                        $('#edit_admin_id').val(IdAdmin);
+                        $('#edit_username').val(Username);
+                        $('#edit_status').val(Status);
+                        $('#editAdminModal').modal('show');
+                    } else {
+                        toastr.error(response.message || 'Error retrieving admin data');
+                    }
+                },
+                error: () => toastr.error('Error retrieving admin data')
+            });
+        });
+
+        $(document).on('click', '.delete-admin', function () {
+            const adminId = $(this).data('admin-id');
+            const username = $(this).closest('tr').find('td:first').text();
+            
+            $('#delete_admin_id').val(adminId);
+            $('#delete_admin_username').text(username);
+            $('#deleteAdminModal').modal('show');
         });
     }
 });
-}

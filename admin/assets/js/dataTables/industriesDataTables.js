@@ -38,7 +38,7 @@ function initializeIndustriesDataTable() {
             {
                 data: 'IndustryImage',
                 render: function (data) {
-                    return data ? `<img src="${data}" alt="Industry" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
+                    return data ? `<img src="../assets/img/${data}" alt="Industry" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
                 }
             },
             {
@@ -70,12 +70,12 @@ function initializeIndustriesDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning btn-sm edit-industry" 
+                            <button class="btn btn-warning  edit-industry" 
                                     data-industry-id="${row.IdIndustry}" 
                                     title="Edit Industry">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-danger btn-sm delete-industry" 
+                            <button class="btn btn-danger  delete-industry" 
                                     data-industry-id="${row.IdIndustry}" 
                                     data-industry-name="${row.IndustryName}" 
                                     title="Delete Industry">
@@ -139,6 +139,13 @@ function initializeIndustriesDataTable() {
 }
 
 function loadIndustryData(industryId) {
+    // Check if jQuery is available
+    if (typeof $ === 'undefined') {
+        console.warn('jQuery not available, retrying in 100ms...');
+        setTimeout(() => loadIndustryData(industryId), 100);
+        return;
+    }
+    
     $.ajax({
         url: 'app/apiCompanyIndustries.php',
         type: 'GET',
@@ -149,12 +156,24 @@ function loadIndustryData(industryId) {
         success: function (response) {
             if (response.status === 1) {
                 const industry = response.data;
+                
+                // Fill form fields
                 $('#edit_industry_id').val(industry.IdIndustry);
                 $('#edit_industry_name').val(industry.IndustryName);
                 $('#edit_industry_description').val(industry.IndustryDescription);
-                $('#edit_industry_image').val(industry.IndustryImage);
                 $('#edit_display_order').val(industry.DisplayOrder);
                 $('#edit_status').val(industry.Status);
+                
+                // Show current image if it exists
+                if (industry.IndustryImage) {
+                    $('#current_industry_image_preview').html(`
+                        <small class="text-muted">Current Image:</small><br>
+                        <img src="../assets/img/${industry.IndustryImage}" alt="Current Industry Image" 
+                             style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
+                    `);
+                } else {
+                    $('#current_industry_image_preview').html('');
+                }
             } else {
                 toastr.error(response.message);
             }
@@ -166,63 +185,66 @@ function loadIndustryData(industryId) {
 }
 
 $(document).ready(function () {
-    // Initialize DataTable
-    const industriesDataTable = initializeIndustriesDataTable();
+    // Only initialize if the industries table exists on this page
+    if ($('#industriesTable').length > 0) {
+        // Initialize DataTable
+        const industriesDataTable = initializeIndustriesDataTable();
 
-    // Handle Add Industry Form
-    $('#addIndustryForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'create');
+        // Handle Add Industry Form
+        $('#addIndustryForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'create');
 
-        $.ajax({
-            url: 'app/apiCompanyIndustries.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#addIndustryModal').modal('hide');
-                    $('#addIndustryForm')[0].reset();
-                    industriesDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error adding industry');
+            $.ajax({
+                url: 'app/apiCompanyIndustries.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#addIndustryModal').modal('hide');
+                        $('#addIndustryForm')[0].reset();
+                        industriesDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error adding industry');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Add industry error:', xhr.responseText);
+                    toastr.error('Error adding industry');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Add industry error:', xhr.responseText);
-                toastr.error('Error adding industry');
-            }
+            });
         });
-    });
 
-    // Handle Edit Industry Form
-    $('#editIndustryForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'update');
+        // Handle Edit Industry Form
+        $('#editIndustryForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'update');
 
-        $.ajax({
-            url: 'app/apiCompanyIndustries.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#editIndustryModal').modal('hide');
-                    industriesDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error updating industry');
+            $.ajax({
+                url: 'app/apiCompanyIndustries.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#editIndustryModal').modal('hide');
+                        industriesDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error updating industry');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Edit industry error:', xhr.responseText);
+                    toastr.error('Error updating industry');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Edit industry error:', xhr.responseText);
-                toastr.error('Error updating industry');
-            }
+            });
         });
-    });
+    }
 }); 

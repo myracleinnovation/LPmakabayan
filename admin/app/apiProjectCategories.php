@@ -135,7 +135,33 @@
 
                 case 'create':
                     try {
-                        $categoryId = $projectCategories->createCategory($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        
+                        // Handle category_image (only if file is uploaded)
+                        if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['category_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                $nextCategoryNumber = $projectCategories->getNextCategoryNumber();
+                                $filename = 'category' . $nextCategoryNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['category_image'] = $filename;
+                                }
+                            }
+                        }
+
+                        $categoryId = $projectCategories->createCategory($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Project category created successfully',
@@ -152,7 +178,48 @@
 
                 case 'update':
                     try {
-                        $projectCategories->updateCategory($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        $categoryId = (int)$_POST['category_id'];
+                        
+                        // Get current category data to preserve existing image
+                        $currentCategory = $projectCategories->getCategoryById($categoryId);
+                        
+                        // Handle category_image (only if new file is uploaded)
+                        if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['category_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old category image file if it exists
+                                if (!empty($currentCategory['CategoryImage'])) {
+                                    $oldFile = $uploadDir . $currentCategory['CategoryImage'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextCategoryNumber = $projectCategories->getNextCategoryNumber();
+                                $filename = 'category' . $nextCategoryNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['category_image'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing image if no new file uploaded
+                            $postData['category_image'] = $currentCategory['CategoryImage'] ?? '';
+                        }
+
+                        $projectCategories->updateCategory($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Project category updated successfully',
@@ -170,6 +237,21 @@
                 case 'delete':
                     try {
                         $id = $_POST['category_id'] ?? 0;
+                        
+                        // Get category data to delete associated image
+                        $category = $projectCategories->getCategoryById($id);
+                        if ($category) {
+                            $uploadDir = '../../assets/img/';
+                            
+                            // Delete category image file if it exists
+                            if (!empty($category['CategoryImage'])) {
+                                $imageFile = $uploadDir . $category['CategoryImage'];
+                                if (file_exists($imageFile)) {
+                                    unlink($imageFile);
+                                }
+                            }
+                        }
+                        
                         $projectCategories->deleteCategory($id);
                         $response = [
                             'status' => 1,

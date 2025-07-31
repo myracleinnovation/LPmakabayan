@@ -95,7 +95,33 @@
             switch ($_POST['action']) {
                 case 'create':
                     try {
-                        $industryId = $companyIndustries->createIndustry($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        
+                        // Handle industry_image (only if file is uploaded)
+                        if (isset($_FILES['industry_image']) && $_FILES['industry_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['industry_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                $nextIndustryNumber = $companyIndustries->getNextIndustryNumber();
+                                $filename = 'industry' . $nextIndustryNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['industry_image'] = $filename;
+                                }
+                            }
+                        }
+
+                        $industryId = $companyIndustries->createIndustry($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Industry created successfully',
@@ -112,7 +138,48 @@
 
                 case 'update':
                     try {
-                        $companyIndustries->updateIndustry($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        $industryId = (int)$_POST['industry_id'];
+                        
+                        // Get current industry data to preserve existing image
+                        $currentIndustry = $companyIndustries->getIndustryById($industryId);
+                        
+                        // Handle industry_image (only if new file is uploaded)
+                        if (isset($_FILES['industry_image']) && $_FILES['industry_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['industry_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old industry image file if it exists
+                                if (!empty($currentIndustry['IndustryImage'])) {
+                                    $oldFile = $uploadDir . $currentIndustry['IndustryImage'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextIndustryNumber = $companyIndustries->getNextIndustryNumber();
+                                $filename = 'industry' . $nextIndustryNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['industry_image'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing image if no new file uploaded
+                            $postData['industry_image'] = $currentIndustry['IndustryImage'] ?? '';
+                        }
+
+                        $companyIndustries->updateIndustry($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Industry updated successfully',
@@ -130,6 +197,21 @@
                 case 'delete':
                     try {
                         $id = $_POST['industry_id'] ?? 0;
+                        
+                        // Get industry data to delete associated image
+                        $industry = $companyIndustries->getIndustryById($id);
+                        if ($industry) {
+                            $uploadDir = '../../assets/img/';
+                            
+                            // Delete industry image file if it exists
+                            if (!empty($industry['IndustryImage'])) {
+                                $imageFile = $uploadDir . $industry['IndustryImage'];
+                                if (file_exists($imageFile)) {
+                                    unlink($imageFile);
+                                }
+                            }
+                        }
+                        
                         $companyIndustries->deleteIndustry($id);
                         $response = [
                             'status' => 1,

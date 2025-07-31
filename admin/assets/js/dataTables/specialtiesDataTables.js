@@ -38,7 +38,7 @@ function initializeSpecialtiesDataTable() {
             {
                 data: 'SpecialtyImage',
                 render: function (data) {
-                    return data ? `<img src="${data}" alt="Specialty" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
+                    return data ? `<img src="../assets/img/${data}" alt="Specialty" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">` : '<span class="text-muted">No image</span>';
                 }
             },
             {
@@ -70,12 +70,12 @@ function initializeSpecialtiesDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning btn-sm edit-specialty" 
+                            <button class="btn btn-warning  edit-specialty" 
                                     data-specialty-id="${row.IdSpecialty}" 
                                     title="Edit Specialty">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-danger btn-sm delete-specialty" 
+                            <button class="btn btn-danger  delete-specialty" 
                                     data-specialty-id="${row.IdSpecialty}" 
                                     data-specialty-name="${row.SpecialtyName}" 
                                     title="Delete Specialty">
@@ -139,6 +139,13 @@ function initializeSpecialtiesDataTable() {
 }
 
 function loadSpecialtyData(specialtyId) {
+    // Check if jQuery is available
+    if (typeof $ === 'undefined') {
+        console.warn('jQuery not available, retrying in 100ms...');
+        setTimeout(() => loadSpecialtyData(specialtyId), 100);
+        return;
+    }
+    
     $.ajax({
         url: 'app/apiCompanySpecialties.php',
         type: 'GET',
@@ -149,12 +156,24 @@ function loadSpecialtyData(specialtyId) {
         success: function (response) {
             if (response.status === 1) {
                 const specialty = response.data;
+                
+                // Fill form fields
                 $('#edit_specialty_id').val(specialty.IdSpecialty);
                 $('#edit_specialty_name').val(specialty.SpecialtyName);
                 $('#edit_specialty_description').val(specialty.SpecialtyDescription);
-                $('#edit_specialty_image').val(specialty.SpecialtyImage);
                 $('#edit_display_order').val(specialty.DisplayOrder);
                 $('#edit_status').val(specialty.Status);
+                
+                // Show current image if it exists
+                if (specialty.SpecialtyImage) {
+                    $('#current_specialty_image_preview').html(`
+                        <small class="text-muted">Current Image:</small><br>
+                        <img src="../assets/img/${specialty.SpecialtyImage}" alt="Current Specialty Image" 
+                             style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
+                    `);
+                } else {
+                    $('#current_specialty_image_preview').html('');
+                }
             } else {
                 toastr.error(response.message);
             }
@@ -166,63 +185,66 @@ function loadSpecialtyData(specialtyId) {
 }
 
 $(document).ready(function () {
-    // Initialize DataTable
-    const specialtiesDataTable = initializeSpecialtiesDataTable();
+    // Only initialize if the specialties table exists on this page
+    if ($('#specialtiesTable').length > 0) {
+        // Initialize DataTable
+        const specialtiesDataTable = initializeSpecialtiesDataTable();
 
-    // Handle Add Specialty Form
-    $('#addSpecialtyForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'create');
+        // Handle Add Specialty Form
+        $('#addSpecialtyForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'create');
 
-        $.ajax({
-            url: 'app/apiCompanySpecialties.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#addSpecialtyModal').modal('hide');
-                    $('#addSpecialtyForm')[0].reset();
-                    specialtiesDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error adding specialty');
+            $.ajax({
+                url: 'app/apiCompanySpecialties.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#addSpecialtyModal').modal('hide');
+                        $('#addSpecialtyForm')[0].reset();
+                        specialtiesDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error adding specialty');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Add specialty error:', xhr.responseText);
+                    toastr.error('Error adding specialty');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Add specialty error:', xhr.responseText);
-                toastr.error('Error adding specialty');
-            }
+            });
         });
-    });
 
-    // Handle Edit Specialty Form
-    $('#editSpecialtyForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'update');
+        // Handle Edit Specialty Form
+        $('#editSpecialtyForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'update');
 
-        $.ajax({
-            url: 'app/apiCompanySpecialties.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#editSpecialtyModal').modal('hide');
-                    specialtiesDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error updating specialty');
+            $.ajax({
+                url: 'app/apiCompanySpecialties.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#editSpecialtyModal').modal('hide');
+                        specialtiesDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error updating specialty');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Edit specialty error:', xhr.responseText);
+                    toastr.error('Error updating specialty');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Edit specialty error:', xhr.responseText);
-                toastr.error('Error updating specialty');
-            }
+            });
         });
-    });
+    }
 }); 

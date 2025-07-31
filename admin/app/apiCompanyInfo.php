@@ -17,7 +17,7 @@
     $companyInfo = new CompanyInfo($conn);
 
     $response = [
-        'success' => false,
+        'status' => 0,
         'message' => 'No action taken',
         'data' => null
     ];
@@ -27,13 +27,13 @@
             try {
                 $data = $companyInfo->getCompanyInfo();
                 $response = [
-                    'success' => true,
+                    'status' => 1,
                     'message' => 'Company information retrieved successfully',
                     'data' => $data
                 ];
             } catch (Exception $e) {
                 $response = [
-                    'success' => false,
+                    'status' => 0,
                     'message' => $e->getMessage(),
                     'data' => null
                 ];
@@ -45,20 +45,20 @@
                 
                 if ($data) {
                     $response = [
-                        'success' => true,
+                        'status' => 1,
                         'message' => 'Company information retrieved successfully',
                         'data' => $data
                     ];
                 } else {
                     $response = [
-                        'success' => false,
+                        'status' => 0,
                         'message' => 'Company information not found',
                         'data' => null
                     ];
                 }
             } catch (Exception $e) {
                 $response = [
-                    'success' => false,
+                    'status' => 0,
                     'message' => $e->getMessage(),
                     'data' => null
                 ];
@@ -69,62 +69,90 @@
             switch ($_POST['action']) {
                 case 'update_company':
                     try {
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Get current company info to preserve existing images
+                        $currentCompany = $companyInfo->getCompanyInfo();
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        
+                        // Handle about_image (only if file is uploaded)
+                        if (isset($_FILES['about_image']) && $_FILES['about_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['about_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old about image file if it exists
+                                if (!empty($currentCompany['AboutImage'])) {
+                                    $oldFile = $uploadDir . $currentCompany['AboutImage'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextAboutNumber = $companyInfo->getNextAboutNumber();
+                                $filename = 'about' . $nextAboutNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['about_image'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing about image if no new file uploaded
+                            $postData['about_image'] = $currentCompany['AboutImage'] ?? '';
+                        }
+                        
+                        // Handle logo_image (only if file is uploaded)
+                        if (isset($_FILES['logo_image']) && $_FILES['logo_image']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['logo_image'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old logo image file if it exists
+                                if (!empty($currentCompany['LogoImage'])) {
+                                    $oldFile = $uploadDir . $currentCompany['LogoImage'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextLogoNumber = $companyInfo->getNextLogoNumber();
+                                $filename = 'logo' . $nextLogoNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['logo_image'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing logo image if no new file uploaded
+                            $postData['logo_image'] = $currentCompany['LogoImage'] ?? '';
+                        }
+
                         $company_id = $_POST['company_id'] ?? 1;
                         $company_name = trim($_POST['company_name']);
-                        $tagline = trim($_POST['tagline']);
-                        $description = trim($_POST['description']);
-                        $mission = trim($_POST['mission']);
-                        $vision = trim($_POST['vision']);
-                        $about_image = trim($_POST['about_image']);
-                        $logo_image = trim($_POST['logo_image']);
 
                         if (empty($company_name)) {
                             throw new Exception('Company name is required');
                         }
 
-                        $companyInfo->updateCompanyInfo($_POST);
+                        $companyInfo->updateCompanyInfo($postData);
                         $response = [
-                            'success' => true,
+                            'status' => 1,
                             'message' => 'Company information updated successfully!',
                             'data' => null
                         ];
                     } catch (Exception $e) {
                         $response = [
-                            'success' => false,
-                            'message' => $e->getMessage(),
-                            'data' => null
-                        ];
-                    }
-                    break;
-
-                case 'create':
-                    try {
-                        $companyId = $companyInfo->createCompanyInfo($_POST);
-                        $response = [
-                            'success' => true,
-                            'message' => 'Company information created successfully',
-                            'data' => ['company_id' => $companyId]
-                        ];
-                    } catch (Exception $e) {
-                        $response = [
-                            'success' => false,
-                            'message' => $e->getMessage(),
-                            'data' => null
-                        ];
-                    }
-                    break;
-
-                case 'update':
-                    try {
-                        $companyInfo->updateCompanyInfo($_POST);
-                        $response = [
-                            'success' => true,
-                            'message' => 'Company information updated successfully',
-                            'data' => null
-                        ];
-                    } catch (Exception $e) {
-                        $response = [
-                            'success' => false,
+                            'status' => 0,
                             'message' => $e->getMessage(),
                             'data' => null
                         ];
@@ -133,12 +161,18 @@
 
                 default:
                     $response = [
-                        'success' => false,
-                        'message' => 'Invalid action',
+                        'status' => 0,
+                        'message' => 'Invalid action: ' . $_POST['action'],
                         'data' => null
                     ];
                     break;
             }
+        } else {
+            $response = [
+                'status' => 0,
+                'message' => 'No action specified',
+                'data' => null
+            ];
         }
     }
 

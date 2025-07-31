@@ -43,7 +43,7 @@ function initializeProcessDataTable() {
                 data: 'ProcessImage', 
                 render: function(data, type, row) {
                     if (data) {
-                        return `<img src="${data}" alt="${row.ProcessTitle}" class="process-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">`;
+                        return `<img src="../assets/img/${data}" alt="${row.ProcessTitle}" class="process-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">`;
                     } else {
                         return `<div class="process-image bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; border-radius: 8px;"><i class="bi bi-gear text-muted"></i></div>`;
                     }
@@ -78,12 +78,12 @@ function initializeProcessDataTable() {
                 render: function(data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning btn-sm edit-process" 
+                            <button class="btn btn-warning  edit-process" 
                                     data-process-id="${row.IdProcess}" 
                                     title="Edit Process">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-danger btn-sm delete-process" 
+                            <button class="btn btn-danger  delete-process" 
                                     data-process-id="${row.IdProcess}" 
                                     data-process-title="${row.ProcessTitle}" 
                                     title="Delete Process">
@@ -134,14 +134,29 @@ function initializeProcessDataTable() {
     $('#addProcessForm').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        const data = {
-            process_title: formData.get('process_title'),
-            process_description: formData.get('process_description'),
-            process_image: formData.get('process_image'),
-            display_order: formData.get('display_order') || 0,
-            status: formData.get('status') || 1
-        };
-        handleProcessSubmit('create', data);
+        formData.append('action', 'create');
+
+        $.ajax({
+            url: 'app/apiCompanyProcess.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: response => {
+                if (response.status === 1) {
+                    processDataTable.ajax.reload();
+                    $('#addProcessForm')[0].reset();
+                    toastr.success(response.message);
+                    $('#addProcessModal').modal('hide');
+                } else {
+                    toastr.error(response.message || 'Error creating process');
+                }
+            },
+            error: (xhr, status, error) => {
+                console.error('Ajax error:', status, error);
+                toastr.error('Error creating process');
+            }
+        });
     });
 
     // Edit process
@@ -154,12 +169,25 @@ function initializeProcessDataTable() {
             success: response => {
                 if (response.status === 1) {
                     const process = response.data;
+                    
+                    // Fill form fields
                     $('#edit_process_id').val(process.IdProcess);
                     $('#edit_process_title').val(process.ProcessTitle);
                     $('#edit_process_description').val(process.ProcessDescription);
-                    $('#edit_process_image').val(process.ProcessImage);
                     $('#edit_display_order').val(process.DisplayOrder);
                     $('#edit_status').val(process.Status);
+                    
+                    // Show current image if it exists
+                    if (process.ProcessImage) {
+                        $('#current_process_image_preview').html(`
+                            <small class="text-muted">Current Image:</small><br>
+                            <img src="../assets/img/${process.ProcessImage}" alt="Current Process Image" 
+                                 style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
+                        `);
+                    } else {
+                        $('#current_process_image_preview').html('');
+                    }
+                    
                     $('#editProcessModal').modal('show');
                 } else {
                     toastr.error(response.message || 'Error retrieving process data');
@@ -176,15 +204,28 @@ function initializeProcessDataTable() {
     $('#editProcessForm').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        const data = {
-            process_id: formData.get('process_id'),
-            process_title: formData.get('process_title'),
-            process_description: formData.get('process_description'),
-            process_image: formData.get('process_image'),
-            display_order: formData.get('display_order') || 0,
-            status: formData.get('status') || 1
-        };
-        handleProcessSubmit('update', data);
+        formData.append('action', 'update');
+
+        $.ajax({
+            url: 'app/apiCompanyProcess.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: response => {
+                if (response.status === 1) {
+                    processDataTable.ajax.reload();
+                    toastr.success(response.message);
+                    $('#editProcessModal').modal('hide');
+                } else {
+                    toastr.error(response.message || 'Error updating process');
+                }
+            },
+            error: (xhr, status, error) => {
+                console.error('Ajax error:', status, error);
+                toastr.error('Error updating process');
+            }
+        });
     });
 
     // Delete process
@@ -222,5 +263,8 @@ function initializeProcessDataTable() {
 
 // Start initialization when document is ready
 $(document).ready(function() {
-    initializeProcessDataTable();
+    // Only initialize if the process table exists on this page
+    if ($('#processTable').length > 0) {
+        initializeProcessDataTable();
+    }
 }); 

@@ -44,7 +44,7 @@
         style="background-image: url('assets/img/bg.png'); background-size: cover; background-position: center;">
         <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
         <div class="container position-relative z-1 text-center py-5 px-3 px-md-5">
-            <img src="<?= htmlspecialchars($companyInfo['LogoImage'] ?? '') ?>" alt="Logo" class="mb-3 mt-5 img-fluid"
+            <img src="assets/img/<?= htmlspecialchars($companyInfo['LogoImage'] ?? '') ?>" alt="Logo" class="mb-3 mt-5 img-fluid"
                 style="max-width: 180px; min-width: 90px;">
             <h1 class="fw-bold text-white text-uppercase fs-1"><?= htmlspecialchars($companyInfo['Tagline'] ?? '') ?>
             </h1>
@@ -77,7 +77,7 @@
                     <p class="fs-5"><?= htmlspecialchars($companyInfo['Mission'] ?? '') ?></p>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0 pb-4">
-                    <img src="<?= htmlspecialchars($companyInfo['AboutImage'] ?? '') ?>"
+                    <img src="assets/img/<?= htmlspecialchars($companyInfo['AboutImage'] ?? '') ?>"
                         class="img-fluid object-fit-cover w-100" alt="About Our Company">
                 </div>
             </div>
@@ -94,7 +94,7 @@
                 <?php foreach ($companyFeatures as $feature): ?>
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
                     <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
-                        <img src="<?= htmlspecialchars($feature['FeatureImage'] ?? '') ?>"
+                        <img src="assets/img/<?= htmlspecialchars($feature['FeatureImage'] ?? '') ?>"
                             class="w-100 h-100 object-fit-cover"
                             alt="<?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?>">
                     </div>

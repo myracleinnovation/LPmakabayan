@@ -116,5 +116,38 @@ class CompanyProcess {
             return false;
         }
     }
+
+    public function getNextProcessNumber()
+    {
+        $imgDir = '../../assets/img/';
+        $existingNumbers = [];
+        
+        // Scan existing process files
+        if (is_dir($imgDir)) {
+            $files = scandir($imgDir);
+            foreach ($files as $file) {
+                if (preg_match('/^process(\d+)\.(jpg|jpeg|png|gif|webp)$/i', $file, $matches)) {
+                    $existingNumbers[] = (int)$matches[1];
+                }
+            }
+        }
+        
+        // Find the next available number
+        if (empty($existingNumbers)) {
+            return 1;
+        }
+        
+        sort($existingNumbers);
+        $nextNumber = 1;
+        
+        foreach ($existingNumbers as $number) {
+            if ($number > $nextNumber) {
+                break;
+            }
+            $nextNumber = $number + 1;
+        }
+        
+        return $nextNumber;
+    }
 }
 ?> 

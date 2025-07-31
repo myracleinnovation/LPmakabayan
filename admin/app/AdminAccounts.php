@@ -82,8 +82,8 @@ class AdminAccounts
     {
         $username = trim($postData['username']);
         $password = $postData['password'];
-        $email = trim($postData['email']);
-        $fullName = trim($postData['full_name']);
+        $email = trim($postData['email'] ?? '');
+        $fullName = trim($postData['full_name'] ?? '');
         $role = $postData['role'] ?? 'admin';
         $status = (int)($postData['status'] ?? 1);
 
@@ -115,8 +115,8 @@ class AdminAccounts
     {
         $id = (int)$postData['admin_id'];
         $username = trim($postData['username']);
-        $email = trim($postData['email']);
-        $fullName = trim($postData['full_name']);
+        $email = trim($postData['email'] ?? '');
+        $fullName = trim($postData['full_name'] ?? '');
         $role = $postData['role'] ?? 'admin';
         $status = (int)($postData['status'] ?? 1);
 

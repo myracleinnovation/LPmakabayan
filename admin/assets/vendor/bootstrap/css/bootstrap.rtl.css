@@ -3352,7 +3352,7 @@ textarea.form-control-lg {
   --bs-btn-border-radius: var(--bs-border-radius-lg);
 }
 
-.btn-sm, .btn-group-sm > .btn {
+., .btn-group-sm > .btn {
   --bs-btn-padding-y: 0.25rem;
   --bs-btn-padding-x: 0.5rem;
   --bs-btn-font-size: 0.875rem;
@@ -3779,7 +3779,7 @@ textarea.form-control-lg {
   margin-left: 0;
 }
 
-.btn-sm + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split {
+. + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split {
   padding-left: 0.375rem;
   padding-right: 0.375rem;
 }

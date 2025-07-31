@@ -86,13 +86,37 @@ try {
                     exit;
                 }
                 
+                // Handle file uploads
+                $uploadDir = '../../assets/img/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
+                // Process uploaded files
                 $data = [
                     'process_title' => trim($input['process_title']),
                     'process_description' => trim($input['process_description'] ?? ''),
-                    'process_image' => trim($input['process_image'] ?? ''),
+                    'process_image' => '',
                     'display_order' => (int)($input['display_order'] ?? 0),
                     'status' => (int)($input['status'] ?? 1)
                 ];
+                
+                // Handle process_image (only if file is uploaded)
+                if (isset($_FILES['process_image']) && $_FILES['process_image']['error'] === UPLOAD_ERR_OK) {
+                    $file = $_FILES['process_image'];
+                    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    
+                    if (in_array($extension, $allowedExtensions)) {
+                        $nextProcessNumber = $processModel->getNextProcessNumber();
+                        $filename = 'process' . $nextProcessNumber . '.' . $extension;
+                        $filepath = $uploadDir . $filename;
+                        
+                        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                            $data['process_image'] = $filename;
+                        }
+                    }
+                }
                 
                 $result = $processModel->createProcess($data);
                 if ($result) {
@@ -119,14 +143,52 @@ try {
                     exit;
                 }
                 
+                // Handle file uploads
+                $uploadDir = '../../assets/img/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
+                // Process uploaded files
                 $data = [
                     'process_id' => (int)$input['process_id'],
                     'process_title' => trim($input['process_title']),
                     'process_description' => trim($input['process_description'] ?? ''),
-                    'process_image' => trim($input['process_image'] ?? ''),
+                    'process_image' => '',
                     'display_order' => (int)($input['display_order'] ?? 0),
                     'status' => (int)($input['status'] ?? 1)
                 ];
+                
+                // Get current process data to preserve existing image
+                $currentProcess = $processModel->getProcessById($data['process_id']);
+                
+                // Handle process_image (only if new file is uploaded)
+                if (isset($_FILES['process_image']) && $_FILES['process_image']['error'] === UPLOAD_ERR_OK) {
+                    $file = $_FILES['process_image'];
+                    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    
+                    if (in_array($extension, $allowedExtensions)) {
+                        // Delete old process image file if it exists
+                        if (!empty($currentProcess['ProcessImage'])) {
+                            $oldFile = $uploadDir . $currentProcess['ProcessImage'];
+                            if (file_exists($oldFile)) {
+                                unlink($oldFile);
+                            }
+                        }
+                        
+                        $nextProcessNumber = $processModel->getNextProcessNumber();
+                        $filename = 'process' . $nextProcessNumber . '.' . $extension;
+                        $filepath = $uploadDir . $filename;
+                        
+                        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                            $data['process_image'] = $filename;
+                        }
+                    }
+                } else {
+                    // Keep existing image if no new file uploaded
+                    $data['process_image'] = $currentProcess['ProcessImage'] ?? '';
+                }
                 
                 $result = $processModel->updateProcess($data);
                 if ($result) {
@@ -149,6 +211,20 @@ try {
                         'message' => 'Process ID is required'
                     ]);
                     exit;
+                }
+                
+                // Get process data to delete associated image
+                $process = $processModel->getProcessById($input['process_id']);
+                if ($process) {
+                    $uploadDir = '../../assets/img/';
+                    
+                    // Delete process image file if it exists
+                    if (!empty($process['ProcessImage'])) {
+                        $imageFile = $uploadDir . $process['ProcessImage'];
+                        if (file_exists($imageFile)) {
+                            unlink($imageFile);
+                        }
+                    }
                 }
                 
                 $result = $processModel->deleteProcess($input['process_id']);

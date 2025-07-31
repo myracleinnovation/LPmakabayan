@@ -90,10 +90,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Specialty Image URL</label>
-                            <input type="text" class="form-control" name="specialty_image"
-                                placeholder="Enter the URL of the specialty image">
-                            <small class="text-muted">Example: assets/img/specialty1.png</small>
+                            <label class="form-label">Specialty Image</label>
+                            <input type="file" class="form-control" name="specialty_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                         </div>
 
                         <div class="mb-3">
@@ -144,8 +143,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Specialty Image URL</label>
-                            <input type="text" class="form-control" name="specialty_image" id="edit_specialty_image">
+                            <label class="form-label">Specialty Image</label>
+                            <input type="file" class="form-control" name="specialty_image" id="edit_specialty_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
+                            <div id="current_specialty_image_preview" class="mt-2"></div>
                         </div>
 
                         <div class="mb-3">
@@ -185,9 +186,6 @@
             </div>
         </div>
     </div>
-
-    <!-- DataTables JavaScript for Specialties -->
-    <script src="assets/js/dataTables/specialtiesDataTables.js"></script>
 
     <?php include 'components/footer.php'; ?>
 </body>

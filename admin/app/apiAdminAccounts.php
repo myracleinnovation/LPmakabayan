@@ -129,10 +129,21 @@
                 case 'update_password':
                     try {
                         $adminId = $_POST['admin_id'] ?? 0;
+                        $currentPassword = $_POST['current_password'] ?? '';
                         $newPassword = $_POST['new_password'] ?? '';
+                        
+                        if (empty($currentPassword)) {
+                            throw new Exception('Current password is required');
+                        }
                         
                         if (empty($newPassword)) {
                             throw new Exception('New password is required');
+                        }
+                        
+                        // Validate current password
+                        $admin = $adminAccounts->getAdminById($adminId);
+                        if (!$admin || !password_verify($currentPassword, $admin['Password'])) {
+                            throw new Exception('Current password is incorrect');
                         }
                         
                         $adminAccounts->updatePassword($adminId, $newPassword);
@@ -181,4 +192,4 @@
 
     header('Content-Type: application/json');
     echo json_encode($response);
-?> 
+?>

@@ -750,10 +750,10 @@
                     <td class="text-center">${itemQty}</td>
                     <td class="text-end">${itemAmount}</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-outline-success save-desc-btn d-none me-1" title="Save Description">
+                        <button type="button" class="btn  btn-outline-success save-desc-btn d-none me-1" title="Save Description">
                             <i class="bi bi-check"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary cancel-desc-btn d-none me-1" title="Cancel Edit">
+                        <button type="button" class="btn  btn-outline-secondary cancel-desc-btn d-none me-1" title="Cancel Edit">
                             <i class="bi bi-x"></i>
                         </button>
                         <button type="button" class="btn bi bi-pencil text-dark edit-item-btn me-1" title="Edit Item"></button>

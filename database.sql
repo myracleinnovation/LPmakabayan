@@ -136,10 +136,6 @@ CREATE TABLE IF NOT EXISTS Company_Projects (
     ProjectCategoryId INT,
     ProjectImage1 VARCHAR(255),
     ProjectImage2 VARCHAR(255),
-    ProjectImage3 VARCHAR(255),
-    ProjectImage4 VARCHAR(255),
-    ProjectImage5 VARCHAR(255),
-    ProjectImage6 VARCHAR(255),
     DisplayOrder INT DEFAULT 0,
     Status TINYINT DEFAULT 1 COMMENT '1-active, 0-inactive',
     CreatedTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -222,49 +218,49 @@ INSERT INTO Company_Info (CompanyName, Tagline, Description, Mission, Vision, Ab
 'Superior and quality construction services grounded in modern principles, sustainable solutions, and client satisfaction.',
 'To deliver the highest quality of service through the dedication and expertise of our skilled workforce. We uphold strong ethical standards, foster a passion for excellence, remain committed to our craft, and continuously strive for growth and innovation in the industry.',
 'To be the leading construction company known for excellence, innovation, and sustainable practices, setting industry standards for quality and customer satisfaction.',
-'assets/img/about.png', 'assets/img/logo2.png', 'assets/img/logo.png');
+'about.png', 'logo2.png', 'logo.png');
 
 -- Seed: Company Features
 INSERT INTO Company_Features (FeatureTitle, FeatureDescription, FeatureImage, DisplayOrder) VALUES
-('Modern Construction Techniques', 'Advanced construction methods and technologies using the latest industry standards and innovative approaches to ensure quality and efficiency in every project.', 'assets/img/pentagon1.png', 1),
-('Sustainable Practices', 'Environmentally conscious construction approaches that minimize environmental impact while maximizing efficiency and long-term value for our clients.', 'assets/img/pentagon2.png', 2),
-('Comprehensive Services', 'Complete construction solutions from initial design and planning to final execution and project completion, ensuring seamless project delivery.', 'assets/img/pentagon3.png', 3),
-('Ethical Standards and Client Commitment', 'Strong ethical standards and dedication to client satisfaction, building lasting relationships through transparency, integrity, and exceptional service.', 'assets/img/pentagon4.png', 4);
+('Modern Construction Techniques', 'Advanced construction methods and technologies using the latest industry standards and innovative approaches to ensure quality and efficiency in every project.', 'pentagon1.png', 1),
+('Sustainable Practices', 'Environmentally conscious construction approaches that minimize environmental impact while maximizing efficiency and long-term value for our clients.', 'pentagon2.png', 2),
+('Comprehensive Services', 'Complete construction solutions from initial design and planning to final execution and project completion, ensuring seamless project delivery.', 'pentagon3.png', 3),
+('Ethical Standards and Client Commitment', 'Strong ethical standards and dedication to client satisfaction, building lasting relationships through transparency, integrity, and exceptional service.', 'pentagon4.png', 4);
 
 -- Seed: Specialties
 INSERT INTO Company_Specialties (SpecialtyName, SpecialtyDescription, SpecialtyImage, DisplayOrder) VALUES
-('Architectural and Civil Works', 'Complete architectural design and civil construction services including structural engineering, foundation work, and building construction with attention to detail and quality.', 'assets/img/specialties1.png', 1),
-('Mechanical Works', 'HVAC, plumbing, and mechanical system installations ensuring optimal performance and energy efficiency for all mechanical systems.', 'assets/img/project2.png', 2),
-('Electrical Works', 'Complete electrical system design and installation including power distribution, lighting systems, and safety measures in compliance with electrical codes.', 'assets/img/project1.png', 3),
-('Plumbing Works', 'Comprehensive plumbing and water system solutions including water supply, drainage, and sewage systems designed for reliability and efficiency.', 'assets/img/specialties6.png', 4),
-('Auxiliary Works', 'Supporting construction and finishing works including interior finishing, exterior cladding, and specialized construction elements.', 'assets/img/specialties5.png', 5),
-('Swimming Pools', 'Specialized swimming pool construction and design including custom pool features, water treatment systems, and pool area landscaping.', 'assets/img/specialties3.png', 6);
+('Architectural and Civil Works', 'Complete architectural design and civil construction services including structural engineering, foundation work, and building construction with attention to detail and quality.', 'specialties1.png', 1),
+('Mechanical Works', 'HVAC, plumbing, and mechanical system installations ensuring optimal performance and energy efficiency for all mechanical systems.', 'project2.png', 2),
+('Electrical Works', 'Complete electrical system design and installation including power distribution, lighting systems, and safety measures in compliance with electrical codes.', 'project1.png', 3),
+('Plumbing Works', 'Comprehensive plumbing and water system solutions including water supply, drainage, and sewage systems designed for reliability and efficiency.', 'specialties6.png', 4),
+('Auxiliary Works', 'Supporting construction and finishing works including interior finishing, exterior cladding, and specialized construction elements.', 'specialties5.png', 5),
+('Swimming Pools', 'Specialized swimming pool construction and design including custom pool features, water treatment systems, and pool area landscaping.', 'specialties3.png', 6);
 
 -- Seed: Industries
 INSERT INTO Company_Industries (IndustryName, IndustryDescription, IndustryImage, DisplayOrder) VALUES
-('Residential', 'Custom homes and residential developments including single-family homes, townhouses, and residential complexes designed for modern living.', 'assets/img/industries1.png', 1),
-('Hotel and Resorts', 'Hospitality and tourism construction projects including hotels, resorts, and recreational facilities with focus on guest comfort and operational efficiency.', 'assets/img/industries2.png', 2),
-('Foods and Beverages', 'Restaurant and food service facility construction including commercial kitchens, dining areas, and food processing facilities.', 'assets/img/industries3.png', 3),
-('Health and Wellness', 'Medical facilities and wellness centers including hospitals, clinics, and specialized healthcare facilities with modern medical infrastructure.', 'assets/img/industries4.png', 4),
-('Logistics Services', 'Warehouses and logistics facilities including storage facilities, distribution centers, and industrial buildings optimized for operational efficiency.', 'assets/img/industries5.png', 5),
-('Office Space and Leasing', 'Commercial office buildings and leasing spaces including corporate offices, retail spaces, and mixed-use developments.', 'assets/img/industries6.png', 6);
+('Residential', 'Custom homes and residential developments including single-family homes, townhouses, and residential complexes designed for modern living.', 'industries1.png', 1),
+('Hotel and Resorts', 'Hospitality and tourism construction projects including hotels, resorts, and recreational facilities with focus on guest comfort and operational efficiency.', 'industries2.png', 2),
+('Foods and Beverages', 'Restaurant and food service facility construction including commercial kitchens, dining areas, and food processing facilities.', 'industries3.png', 3),
+('Health and Wellness', 'Medical facilities and wellness centers including hospitals, clinics, and specialized healthcare facilities with modern medical infrastructure.', 'industries4.png', 4),
+('Logistics Services', 'Warehouses and logistics facilities including storage facilities, distribution centers, and industrial buildings optimized for operational efficiency.', 'industries5.png', 5),
+('Office Space and Leasing', 'Commercial office buildings and leasing spaces including corporate offices, retail spaces, and mixed-use developments.', 'industries6.png', 6);
 
 -- Seed: Project Categories
 INSERT INTO Project_Categories (CategoryName, CategoryDescription, CategoryImage, DisplayOrder) VALUES
-('Residential Projects', 'Custom homes and residential developments including single-family homes, townhouses, and residential complexes.', 'assets/img/project1.png', 1),
-('Commercial Buildings', 'Office buildings and commercial structures including retail spaces, corporate offices, and mixed-use developments.', 'assets/img/project8.png', 2),
-('Systems Installation', 'Mechanical, electrical, and plumbing systems including HVAC, electrical, and plumbing installations for various project types.', 'assets/img/specialties5.png', 3);
+('Residential Projects', 'Custom homes and residential developments including single-family homes, townhouses, and residential complexes.', 'project1.png', 1),
+('Commercial Buildings', 'Office buildings and commercial structures including retail spaces, corporate offices, and mixed-use developments.', 'project8.png', 2),
+('Systems Installation', 'Mechanical, electrical, and plumbing systems including HVAC, electrical, and plumbing installations for various project types.', 'specialties5.png', 3);
 
 -- Seed: Projects
 INSERT INTO Company_Projects (ProjectTitle, ProjectDescription, ProjectOwner, ProjectLocation, ProjectArea, ProjectValue, TurnoverDate, ProjectCategoryId, ProjectImage1, ProjectImage2, DisplayOrder) VALUES
-('Two-Storey Residential With Roof Deck', 'A modern two-storey residential home featuring a functional roof deck and smart space utilization. Designed for comfort and flexibility, this project highlights our strength in residential design and structural execution in a sloped terrain environment. The project includes modern amenities, energy-efficient features, and sustainable design elements.', 'Jun Galase', 'Batangas', 250.00, 8500000.00, '2019-04-01', 1, 'assets/img/project4.png', 'assets/img/project5.png', 1),
-('Commercial & Office Building', 'A modern commercial and office building designed for efficiency and functionality. This project showcases our expertise in commercial construction with emphasis on structural integrity, modern amenities, and sustainable design principles. The building features flexible office spaces, modern facilities, and energy-efficient systems.', 'Albert Sulog', 'Cavite', 1200.00, 25000000.00, '2016-04-01', 2, 'assets/img/project6.png', 'assets/img/project7.png', 2);
+('Two-Storey Residential With Roof Deck', 'A modern two-storey residential home featuring a functional roof deck and smart space utilization. Designed for comfort and flexibility, this project highlights our strength in residential design and structural execution in a sloped terrain environment. The project includes modern amenities, energy-efficient features, and sustainable design elements.', 'Jun Galase', 'Batangas', 250.00, 8500000.00, '2019-04-01', 1, 'project4.png', 'project5.png', 1),
+('Commercial & Office Building', 'A modern commercial and office building designed for efficiency and functionality. This project showcases our expertise in commercial construction with emphasis on structural integrity, modern amenities, and sustainable design principles. The building features flexible office spaces, modern facilities, and energy-efficient systems.', 'Albert Sulog', 'Cavite', 1200.00, 25000000.00, '2016-04-01', 2, 'project6.png', 'project7.png', 2);
 
 -- Seed: Process Steps
 INSERT INTO Company_Process (ProcessTitle, ProcessDescription, ProcessImage, DisplayOrder) VALUES
-('Project Plan', 'Our construction process starts with a detailed project plan.', 'assets/img/pentagon5.png', 1),
-('Site Preparation', 'Process of getting a piece of land ready for construction.', 'assets/img/pentagon6.png', 2),
-('Execution', 'Construction activities that take place on a project site.', 'assets/img/pentagon7.png', 3);
+('Project Plan', 'Our construction process starts with a detailed project plan.', 'pentagon5.png', 1),
+('Site Preparation', 'Process of getting a piece of land ready for construction.', 'pentagon6.png', 2),
+('Execution', 'Construction activities that take place on a project site.', 'pentagon7.png', 3);
 
 -- Seed: Contact Information
 INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder) VALUES

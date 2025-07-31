@@ -132,4 +132,44 @@ class ProjectCategories
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getProjectCategories()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM Project_Categories WHERE Status = 1 ORDER BY DisplayOrder ASC, CategoryName ASC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getNextCategoryNumber()
+    {
+        $imgDir = '../../assets/img/';
+        $existingNumbers = [];
+        
+        // Scan existing category files
+        if (is_dir($imgDir)) {
+            $files = scandir($imgDir);
+            foreach ($files as $file) {
+                if (preg_match('/^category(\d+)\.(jpg|jpeg|png|gif|webp)$/i', $file, $matches)) {
+                    $existingNumbers[] = (int)$matches[1];
+                }
+            }
+        }
+        
+        // Find the next available number
+        if (empty($existingNumbers)) {
+            return 1;
+        }
+        
+        sort($existingNumbers);
+        $nextNumber = 1;
+        
+        foreach ($existingNumbers as $number) {
+            if ($number > $nextNumber) {
+                break;
+            }
+            $nextNumber = $number + 1;
+        }
+        
+        return $nextNumber;
+    }
 } 

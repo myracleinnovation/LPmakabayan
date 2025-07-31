@@ -96,12 +96,12 @@ function initializeProjectsDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning btn-sm edit-project" 
+                            <button class="btn btn-warning edit-project" 
                                     data-project-id="${row.IdProject}" 
                                     title="Edit Project">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-danger btn-sm delete-project" 
+                            <button class="btn btn-danger delete-project" 
                                     data-project-id="${row.IdProject}" 
                                     data-project-title="${row.ProjectTitle}" 
                                     title="Delete Project">
@@ -190,6 +190,13 @@ function loadCategories() {
 }
 
 function loadProjectData(projectId) {
+    // Check if jQuery is available
+    if (typeof $ === 'undefined') {
+        console.warn('jQuery not available, retrying in 100ms...');
+        setTimeout(() => loadProjectData(projectId), 100);
+        return;
+    }
+    
     $.ajax({
         url: 'app/apiCompanyProjects.php',
         type: 'GET',
@@ -200,6 +207,8 @@ function loadProjectData(projectId) {
         success: function (response) {
             if (response.status === 1) {
                 const project = response.data;
+                
+                // Fill form fields
                 $('#edit_project_id').val(project.IdProject);
                 $('#edit_project_title').val(project.ProjectTitle);
                 $('#edit_project_owner').val(project.ProjectOwner);
@@ -208,15 +217,30 @@ function loadProjectData(projectId) {
                 $('#edit_project_value').val(project.ProjectValue);
                 $('#edit_turnover_date').val(project.TurnoverDate);
                 $('#edit_project_category_id').val(project.ProjectCategoryId);
-                $('#edit_project_description').val(project.ProjectDescription);
                 $('#edit_display_order').val(project.DisplayOrder);
+                $('#edit_project_description').val(project.ProjectDescription);
                 $('#edit_status').val(project.Status);
-                $('#edit_project_image1').val(project.ProjectImage1);
-                $('#edit_project_image2').val(project.ProjectImage2);
-                $('#edit_project_image3').val(project.ProjectImage3);
-                $('#edit_project_image4').val(project.ProjectImage4);
-                $('#edit_project_image5').val(project.ProjectImage5);
-                $('#edit_project_image6').val(project.ProjectImage6);
+                
+                // Show current images if they exist
+                if (project.ProjectImage1) {
+                    $('#current_image1_preview').html(`
+                        <small class="text-muted">Current Image 1:</small><br>
+                        <img src="../assets/img/${project.ProjectImage1}" alt="Current Image 1" 
+                             style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
+                    `);
+                } else {
+                    $('#current_image1_preview').html('');
+                }
+                
+                if (project.ProjectImage2) {
+                    $('#current_image2_preview').html(`
+                        <small class="text-muted">Current Image 2:</small><br>
+                        <img src="../assets/img/${project.ProjectImage2}" alt="Current Image 2" 
+                             style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
+                    `);
+                } else {
+                    $('#current_image2_preview').html('');
+                }
             } else {
                 toastr.error(response.message);
             }
@@ -228,66 +252,69 @@ function loadProjectData(projectId) {
 }
 
 $(document).ready(function () {
-    // Initialize DataTable
-    const projectsDataTable = initializeProjectsDataTable();
-    
-    // Load categories for dropdowns
-    loadCategories();
+    // Only initialize if the projects table exists on this page
+    if ($('#projectsTable').length > 0) {
+        // Initialize DataTable
+        const projectsDataTable = initializeProjectsDataTable();
+        
+        // Load categories for dropdowns
+        loadCategories();
 
-    // Handle Add Project Form
-    $('#addProjectForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'create');
+        // Handle Add Project Form
+        $('#addProjectForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'create');
 
-        $.ajax({
-            url: 'app/apiCompanyProjects.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#addProjectModal').modal('hide');
-                    $('#addProjectForm')[0].reset();
-                    projectsDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error adding project');
+            $.ajax({
+                url: 'app/apiCompanyProjects.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#addProjectModal').modal('hide');
+                        $('#addProjectForm')[0].reset();
+                        projectsDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error adding project');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Add project error:', xhr.responseText);
+                    toastr.error('Error adding project');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Add project error:', xhr.responseText);
-                toastr.error('Error adding project');
-            }
+            });
         });
-    });
 
-    // Handle Edit Project Form
-    $('#editProjectForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('action', 'update');
+        // Handle Edit Project Form
+        $('#editProjectForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'update');
 
-        $.ajax({
-            url: 'app/apiCompanyProjects.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.status === 1) {
-                    toastr.success(response.message);
-                    $('#editProjectModal').modal('hide');
-                    projectsDataTable.ajax.reload();
-                } else {
-                    toastr.error(response.message || 'Error updating project');
+            $.ajax({
+                url: 'app/apiCompanyProjects.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === 1) {
+                        toastr.success(response.message);
+                        $('#editProjectModal').modal('hide');
+                        projectsDataTable.ajax.reload();
+                    } else {
+                        toastr.error(response.message || 'Error updating project');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Edit project error:', xhr.responseText);
+                    toastr.error('Error updating project');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Edit project error:', xhr.responseText);
-                toastr.error('Error updating project');
-            }
+            });
         });
-    });
+    }
 });

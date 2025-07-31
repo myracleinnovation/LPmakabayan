@@ -1082,10 +1082,10 @@ class AdminCRUD {
                 <td>${item.Id || item.IdAdmin || item.IdCompany || item.IdFeature || item.IdSpecialty || item.IdIndustry || item.IdProject || item.IdCategory || item.IdProcess || item.IdContact || item.IdSetting || 'N/A'}</td>
                 <td>${item.Name || item.Title || item.Username || item.CompanyName || item.FeatureTitle || item.SpecialtyName || item.IndustryName || item.ProjectTitle || item.CategoryName || item.ProcessTitle || item.ContactValue || item.SettingKey || 'N/A'}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary btn-edit" data-id="${item.Id || item.IdAdmin || item.IdCompany || item.IdFeature || item.IdSpecialty || item.IdIndustry || item.IdProject || item.IdCategory || item.IdProcess || item.IdContact || item.IdSetting}">
+                    <button class="btn  btn-primary btn-edit" data-id="${item.Id || item.IdAdmin || item.IdCompany || item.IdFeature || item.IdSpecialty || item.IdIndustry || item.IdProject || item.IdCategory || item.IdProcess || item.IdContact || item.IdSetting}">
                         <i class="bi bi-pencil"></i> Edit
                     </button>
-                    <button class="btn btn-sm btn-danger btn-delete" data-id="${item.Id || item.IdAdmin || item.IdCompany || item.IdFeature || item.IdSpecialty || item.IdIndustry || item.IdProject || item.IdCategory || item.IdProcess || item.IdContact || item.IdSetting}">
+                    <button class="btn  btn-danger btn-delete" data-id="${item.Id || item.IdAdmin || item.IdCompany || item.IdFeature || item.IdSpecialty || item.IdIndustry || item.IdProject || item.IdCategory || item.IdProcess || item.IdContact || item.IdSetting}">
                         <i class="bi bi-trash"></i> Delete
                     </button>
                 </td>

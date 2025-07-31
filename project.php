@@ -30,7 +30,7 @@ $projects = fetchProjects($pdo);
                 <?php foreach ($projectCategories as $category): ?>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
-                        <img src="<?= htmlspecialchars($category['CategoryImage']); ?>" class="w-100 object-fit-cover"
+                        <img src="assets/img/<?= htmlspecialchars($category['CategoryImage']); ?>" class="w-100 object-fit-cover"
                             alt="<?= htmlspecialchars($category['CategoryName']); ?>">
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
@@ -97,14 +97,14 @@ $projects = fetchProjects($pdo);
                     <div class="row g-3">
                         <?php if (!empty($project['ProjectImage1'])): ?>
                         <div class="col-12">
-                            <img src="<?= htmlspecialchars($project['ProjectImage1']); ?>"
+                            <img src="assets/img/<?= htmlspecialchars($project['ProjectImage1']); ?>"
                                 class="w-100 h-100 object-fit-cover" style="height: 200px;"
                                 alt="<?= htmlspecialchars($project['ProjectTitle']); ?> - Image 1">
                         </div>
                         <?php endif; ?>
                         <?php if (!empty($project['ProjectImage2'])): ?>
                         <div class="col-12">
-                            <img src="<?= htmlspecialchars($project['ProjectImage2']); ?>"
+                            <img src="assets/img/<?= htmlspecialchars($project['ProjectImage2']); ?>"
                                 class="w-100 h-100 object-fit-cover" style="height: 200px;"
                                 alt="<?= htmlspecialchars($project['ProjectTitle']); ?> - Image 2">
                         </div>

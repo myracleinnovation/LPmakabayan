@@ -96,10 +96,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Feature Image URL</label>
-                            <input type="text" class="form-control" name="feature_image"
-                                placeholder="Enter the URL of the feature image">
-                            <small class="text-muted">Example: assets/img/pentagon1.png</small>
+                            <label class="form-label">Feature Image</label>
+                            <input type="file" class="form-control" name="feature_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                         </div>
 
                         <div class="mb-3">
@@ -150,8 +149,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Feature Image URL</label>
-                            <input type="text" class="form-control" name="feature_image" id="edit_feature_image">
+                            <label class="form-label">Feature Image</label>
+                            <input type="file" class="form-control" name="feature_image" id="edit_feature_image" accept="image/*">
+                            <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
+                            <div id="current_feature_image_preview" class="mt-2"></div>
                         </div>
 
                         <div class="mb-3">

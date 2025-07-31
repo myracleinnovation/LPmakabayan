@@ -110,7 +110,50 @@
             switch ($_POST['action']) {
                 case 'create':
                     try {
-                        $projectId = $companyProjects->createProject($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        
+                        // Handle project_image1 (only if file is uploaded)
+                        if (isset($_FILES['project_image1']) && $_FILES['project_image1']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['project_image1'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                $nextProjectNumber = $companyProjects->getNextProjectNumber();
+                                $filename = 'project' . $nextProjectNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['project_image1'] = $filename;
+                                }
+                            }
+                        }
+                        
+                        // Handle project_image2 (only if file is uploaded)
+                        if (isset($_FILES['project_image2']) && $_FILES['project_image2']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['project_image2'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                $nextProjectNumber2 = $companyProjects->getNextProjectNumber();
+                                $filename = 'project' . $nextProjectNumber2 . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['project_image2'] = $filename;
+                                }
+                            }
+                        }
+
+                        $projectId = $companyProjects->createProject($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Project created successfully',
@@ -127,7 +170,76 @@
 
                 case 'update':
                     try {
-                        $companyProjects->updateProject($_POST);
+                        // Handle file uploads
+                        $uploadDir = '../../assets/img/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+
+                        // Process uploaded files
+                        $postData = $_POST;
+                        $projectId = (int)$_POST['project_id'];
+                        
+                        // Get current project data to preserve existing images
+                        $currentProject = $companyProjects->getProjectById($projectId);
+                        
+                        // Handle project_image1 (only if new file is uploaded)
+                        if (isset($_FILES['project_image1']) && $_FILES['project_image1']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['project_image1'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old image1 file if it exists
+                                if (!empty($currentProject['ProjectImage1'])) {
+                                    $oldFile = $uploadDir . $currentProject['ProjectImage1'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextProjectNumber = $companyProjects->getNextProjectNumber();
+                                $filename = 'project' . $nextProjectNumber . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['project_image1'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing image1 if no new file uploaded
+                            $postData['project_image1'] = $currentProject['ProjectImage1'] ?? '';
+                        }
+                        
+                        // Handle project_image2 (only if new file is uploaded)
+                        if (isset($_FILES['project_image2']) && $_FILES['project_image2']['error'] === UPLOAD_ERR_OK) {
+                            $file = $_FILES['project_image2'];
+                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            
+                            if (in_array($extension, $allowedExtensions)) {
+                                // Delete old image2 file if it exists
+                                if (!empty($currentProject['ProjectImage2'])) {
+                                    $oldFile = $uploadDir . $currentProject['ProjectImage2'];
+                                    if (file_exists($oldFile)) {
+                                        unlink($oldFile);
+                                    }
+                                }
+                                
+                                $nextProjectNumber2 = $companyProjects->getNextProjectNumber();
+                                $filename = 'project' . $nextProjectNumber2 . '.' . $extension;
+                                $filepath = $uploadDir . $filename;
+                                
+                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                                    $postData['project_image2'] = $filename;
+                                }
+                            }
+                        } else {
+                            // Keep existing image2 if no new file uploaded
+                            $postData['project_image2'] = $currentProject['ProjectImage2'] ?? '';
+                        }
+
+                        $companyProjects->updateProject($postData);
                         $response = [
                             'status' => 1,
                             'message' => 'Project updated successfully',
@@ -145,6 +257,29 @@
                 case 'delete':
                     try {
                         $id = $_POST['project_id'] ?? 0;
+                        
+                        // Get project data to delete associated images
+                        $project = $companyProjects->getProjectById($id);
+                        if ($project) {
+                            $uploadDir = '../../assets/img/';
+                            
+                            // Delete image1 file if it exists
+                            if (!empty($project['ProjectImage1'])) {
+                                $image1File = $uploadDir . $project['ProjectImage1'];
+                                if (file_exists($image1File)) {
+                                    unlink($image1File);
+                                }
+                            }
+                            
+                            // Delete image2 file if it exists
+                            if (!empty($project['ProjectImage2'])) {
+                                $image2File = $uploadDir . $project['ProjectImage2'];
+                                if (file_exists($image2File)) {
+                                    unlink($image2File);
+                                }
+                            }
+                        }
+                        
                         $companyProjects->deleteProject($id);
                         $response = [
                             'status' => 1,

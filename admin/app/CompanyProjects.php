@@ -80,10 +80,6 @@ class CompanyProjects
         $projectCategoryId = (int)($postData['project_category_id'] ?? 0);
         $projectImage1 = trim($postData['project_image1'] ?? '');
         $projectImage2 = trim($postData['project_image2'] ?? '');
-        $projectImage3 = trim($postData['project_image3'] ?? '');
-        $projectImage4 = trim($postData['project_image4'] ?? '');
-        $projectImage5 = trim($postData['project_image5'] ?? '');
-        $projectImage6 = trim($postData['project_image6'] ?? '');
         $displayOrder = (int)($postData['display_order'] ?? 0);
         $status = (int)($postData['status'] ?? 1);
 
@@ -91,8 +87,8 @@ class CompanyProjects
             throw new Exception('Project title is required');
         }
 
-        $stmt = $this->conn->prepare("INSERT INTO Company_Projects (ProjectTitle, ProjectDescription, ProjectOwner, ProjectLocation, ProjectArea, ProjectValue, TurnoverDate, ProjectCategoryId, ProjectImage1, ProjectImage2, ProjectImage3, ProjectImage4, ProjectImage5, ProjectImage6, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $result = $stmt->execute([$projectTitle, $projectDescription, $projectOwner, $projectLocation, $projectArea, $projectValue, $turnoverDate, $projectCategoryId, $projectImage1, $projectImage2, $projectImage3, $projectImage4, $projectImage5, $projectImage6, $displayOrder, $status]);
+        $stmt = $this->conn->prepare("INSERT INTO Company_Projects (ProjectTitle, ProjectDescription, ProjectOwner, ProjectLocation, ProjectArea, ProjectValue, TurnoverDate, ProjectCategoryId, ProjectImage1, ProjectImage2, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $result = $stmt->execute([$projectTitle, $projectDescription, $projectOwner, $projectLocation, $projectArea, $projectValue, $turnoverDate, $projectCategoryId, $projectImage1, $projectImage2, $displayOrder, $status]);
 
         if (!$result) {
             throw new Exception('Failed to create project');
@@ -114,10 +110,6 @@ class CompanyProjects
         $projectCategoryId = (int)($postData['project_category_id'] ?? 0);
         $projectImage1 = trim($postData['project_image1'] ?? '');
         $projectImage2 = trim($postData['project_image2'] ?? '');
-        $projectImage3 = trim($postData['project_image3'] ?? '');
-        $projectImage4 = trim($postData['project_image4'] ?? '');
-        $projectImage5 = trim($postData['project_image5'] ?? '');
-        $projectImage6 = trim($postData['project_image6'] ?? '');
         $displayOrder = (int)($postData['display_order'] ?? 0);
         $status = (int)($postData['status'] ?? 1);
 
@@ -125,9 +117,9 @@ class CompanyProjects
             throw new Exception('Project title is required');
         }
 
-        $sql = "UPDATE Company_Projects SET ProjectTitle = ?, ProjectDescription = ?, ProjectOwner = ?, ProjectLocation = ?, ProjectArea = ?, ProjectValue = ?, TurnoverDate = ?, ProjectCategoryId = ?, ProjectImage1 = ?, ProjectImage2 = ?, ProjectImage3 = ?, ProjectImage4 = ?, ProjectImage5 = ?, ProjectImage6 = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdProject = ?";
+        $sql = "UPDATE Company_Projects SET ProjectTitle = ?, ProjectDescription = ?, ProjectOwner = ?, ProjectLocation = ?, ProjectArea = ?, ProjectValue = ?, TurnoverDate = ?, ProjectCategoryId = ?, ProjectImage1 = ?, ProjectImage2 = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdProject = ?";
         $stmt = $this->conn->prepare($sql);
-        $result = $stmt->execute([$projectTitle, $projectDescription, $projectOwner, $projectLocation, $projectArea, $projectValue, $turnoverDate, $projectCategoryId, $projectImage1, $projectImage2, $projectImage3, $projectImage4, $projectImage5, $projectImage6, $displayOrder, $status, $id]);
+        $result = $stmt->execute([$projectTitle, $projectDescription, $projectOwner, $projectLocation, $projectArea, $projectValue, $turnoverDate, $projectCategoryId, $projectImage1, $projectImage2, $displayOrder, $status, $id]);
 
         if (!$result) {
             throw new Exception('Failed to update project');
@@ -157,8 +149,49 @@ class CompanyProjects
 
     public function getProjectCategories()
     {
-        $stmt = $this->conn->prepare("SELECT IdCategory, CategoryName FROM Project_Categories WHERE Status = 1 ORDER BY DisplayOrder ASC, CategoryName ASC");
+        $stmt = $this->conn->prepare("SELECT * FROM Project_Categories WHERE Status = 1 ORDER BY DisplayOrder ASC, CategoryName ASC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getNextProjectId()
+    {
+        $stmt = $this->conn->prepare("SELECT MAX(IdProject) as max_id FROM Company_Projects");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($result['max_id'] ?? 0) + 1;
+    }
+
+    public function getNextProjectNumber()
+    {
+        $imgDir = '../../assets/img/';
+        $existingNumbers = [];
+        
+        // Scan existing project files
+        if (is_dir($imgDir)) {
+            $files = scandir($imgDir);
+            foreach ($files as $file) {
+                if (preg_match('/^project(\d+)\.(jpg|jpeg|png|gif|webp)$/i', $file, $matches)) {
+                    $existingNumbers[] = (int)$matches[1];
+                }
+            }
+        }
+        
+        // Find the next available number
+        if (empty($existingNumbers)) {
+            return 1;
+        }
+        
+        sort($existingNumbers);
+        $nextNumber = 1;
+        
+        foreach ($existingNumbers as $number) {
+            if ($number > $nextNumber) {
+                break;
+            }
+            $nextNumber = $number + 1;
+        }
+        
+        return $nextNumber;
     }
 } 

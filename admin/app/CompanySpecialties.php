@@ -132,4 +132,37 @@ class CompanySpecialties
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getNextSpecialtyNumber()
+    {
+        $imgDir = '../../assets/img/';
+        $existingNumbers = [];
+        
+        // Scan existing specialty files
+        if (is_dir($imgDir)) {
+            $files = scandir($imgDir);
+            foreach ($files as $file) {
+                if (preg_match('/^specialty(\d+)\.(jpg|jpeg|png|gif|webp)$/i', $file, $matches)) {
+                    $existingNumbers[] = (int)$matches[1];
+                }
+            }
+        }
+        
+        // Find the next available number
+        if (empty($existingNumbers)) {
+            return 1;
+        }
+        
+        sort($existingNumbers);
+        $nextNumber = 1;
+        
+        foreach ($existingNumbers as $number) {
+            if ($number > $nextNumber) {
+                break;
+            }
+            $nextNumber = $number + 1;
+        }
+        
+        return $nextNumber;
+    }
 } 

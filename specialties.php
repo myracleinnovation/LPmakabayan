@@ -37,7 +37,7 @@
                 <?php foreach ($specialties as $specialty): ?>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
-                        <img src="<?= htmlspecialchars($specialty['SpecialtyImage']); ?>" class="w-100 object-fit-cover"
+                        <img src="assets/img/<?= htmlspecialchars($specialty['SpecialtyImage']); ?>" class="w-100 object-fit-cover"
                             alt="<?= htmlspecialchars($specialty['SpecialtyName']); ?>">
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
@@ -60,7 +60,7 @@
                 <?php foreach ($processSteps as $process): ?>
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
                     <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
-                        <img src="<?= htmlspecialchars($process['ProcessImage']); ?>"
+                        <img src="assets/img/<?= htmlspecialchars($process['ProcessImage']); ?>"
                             class="w-100 h-100 object-fit-cover"
                             alt="<?= htmlspecialchars($process['ProcessTitle']); ?>">
                     </div>
@@ -82,7 +82,7 @@
                 <?php foreach ($industries as $industry): ?>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
-                        <img src="<?= htmlspecialchars($industry['IndustryImage']); ?>" class="w-100 object-fit-cover"
+                        <img src="assets/img/<?= htmlspecialchars($industry['IndustryImage']); ?>" class="w-100 object-fit-cover"
                             alt="<?= htmlspecialchars($industry['IndustryName']); ?>">
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
