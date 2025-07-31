@@ -8,6 +8,11 @@ function initializeIndustriesDataTable() {
         return;
     }
     
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#industriesTable')) {
+        return;
+    }
+    
     const industriesDataTable = $('#industriesTable').DataTable({
         columnDefs: [{ orderable: false, targets: [-1] }],
         order: [[0, 'asc']],

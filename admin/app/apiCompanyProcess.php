@@ -1,183 +1,189 @@
 <?php
-    ini_set('display_errors', 1);
-    ini_set('log_errors', 1);
-    error_reporting(E_ALL);
-    require_once('../../app/Db.php');
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+header('Access-Control-Allow-Headers: Content-Type');
 
-    spl_autoload_register(function ($class) {
-        $classFile = $class . '.php';
-        if (file_exists($classFile)) {
-            require_once($classFile);
-        } else {
-            throw new Exception("Required class file not found: " . $class);
-        }
-    });
+require_once 'CompanyProcess.php';
 
-    $conn = Db::connect();
-    $companyProcess = new CompanyProcess($conn);
+$processModel = new CompanyProcess();
 
-    $response = [
-        'status' => 0,
-        'message' => 'No action taken',
-        'data' => null
-    ];
-
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (isset($_GET['get_processes']) || isset($_GET['get_process'])) {
-            try {
-                $search = $_GET['search'] ?? '';
-                $start = $_GET['start'] ?? 0;
-                $length = $_GET['length'] ?? 25;
-                $order = isset($_GET['order']) ? json_decode($_GET['order'], true) : [];
-                
-                $data = $companyProcess->getAllProcesses($search, $start, $length, $order);
-                
-                $response = [
-                    'success' => true,
+try {
+    $method = $_SERVER['REQUEST_METHOD'];
+    
+    if ($method === 'GET') {
+        // Get all processes
+        if (isset($_GET['get_processes'])) {
+            $processes = $processModel->getAllProcesses();
+            if ($processes !== false) {
+                echo json_encode([
+                    'status' => 1,
                     'message' => 'Processes retrieved successfully',
-                    'data' => $data
-                ];
-            } catch (Exception $e) {
-                $response = [
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                    'data' => []
-                ];
-            }
-        } elseif (isset($_GET['get_active_processes'])) {
-            try {
-                $data = $companyProcess->getActiveProcesses();
-                $response = [
-                    'success' => true,
-                    'message' => 'Active processes retrieved successfully',
-                    'data' => $data
-                ];
-            } catch (Exception $e) {
-                $response = [
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                    'data' => []
-                ];
-            }
-        } elseif (isset($_GET['get_process'])) {
-            try {
-                $id = $_GET['id'] ?? 0;
-                $data = $companyProcess->getProcessById($id);
-                
-                if ($data) {
-                    $response = [
-                        'success' => true,
-                        'message' => 'Process retrieved successfully',
-                        'data' => $data
-                    ];
-                } else {
-                    $response = [
-                        'success' => false,
-                        'message' => 'Process not found',
-                        'data' => null
-                    ];
-                }
-            } catch (Exception $e) {
-                $response = [
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                    'data' => null
-                ];
+                    'data' => $processes
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 0,
+                    'message' => 'Error retrieving processes'
+                ]);
             }
         }
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['action'])) {
-            switch ($_POST['action']) {
-                case 'create':
-                    try {
-                        $processId = $companyProcess->createProcess($_POST);
-                        $response = [
-                            'success' => true,
-                            'message' => 'Process created successfully',
-                            'data' => ['process_id' => $processId]
-                        ];
-                    } catch (Exception $e) {
-                        $response = [
-                            'success' => false,
-                            'message' => $e->getMessage(),
-                            'data' => null
-                        ];
-                    }
-                    break;
-
-                case 'update':
-                    try {
-                        $companyProcess->updateProcess($_POST);
-                        $response = [
-                            'success' => true,
-                            'message' => 'Process updated successfully',
-                            'data' => null
-                        ];
-                    } catch (Exception $e) {
-                        $response = [
-                            'success' => false,
-                            'message' => $e->getMessage(),
-                            'data' => null
-                        ];
-                    }
-                    break;
-
-                case 'get':
-                    try {
-                        $id = $_POST['process_id'] ?? 0;
-                        $data = $companyProcess->getProcessById($id);
-                        
-                        if ($data) {
-                            $response = [
-                                'success' => true,
-                                'message' => 'Process retrieved successfully',
-                                'data' => $data
-                            ];
-                        } else {
-                            $response = [
-                                'success' => false,
-                                'message' => 'Process not found',
-                                'data' => null
-                            ];
-                        }
-                    } catch (Exception $e) {
-                        $response = [
-                            'success' => false,
-                            'message' => $e->getMessage(),
-                            'data' => null
-                        ];
-                    }
-                    break;
-
-                case 'delete':
-                    try {
-                        $id = $_POST['process_id'] ?? 0;
-                        $companyProcess->deleteProcess($id);
-                        $response = [
-                            'success' => true,
-                            'message' => 'Process deleted successfully',
-                            'data' => null
-                        ];
-                    } catch (Exception $e) {
-                        $response = [
-                            'success' => false,
-                            'message' => $e->getMessage(),
-                            'data' => null
-                        ];
-                    }
-                    break;
-
-                default:
-                    $response = [
-                        'success' => false,
-                        'message' => 'Invalid action',
-                        'data' => null
-                    ];
-                    break;
+        // Get single process
+        elseif (isset($_GET['get_process']) && isset($_GET['id'])) {
+            $process = $processModel->getProcessById($_GET['id']);
+            if ($process) {
+                echo json_encode([
+                    'status' => 1,
+                    'message' => 'Process retrieved successfully',
+                    'data' => $process
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 0,
+                    'message' => 'Process not found'
+                ]);
             }
+        }
+        // Get active processes
+        elseif (isset($_GET['get_active_processes'])) {
+            $processes = $processModel->getActiveProcesses();
+            if ($processes !== false) {
+                echo json_encode([
+                    'status' => 1,
+                    'message' => 'Active processes retrieved successfully',
+                    'data' => $processes
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 0,
+                    'message' => 'Error retrieving active processes'
+                ]);
+            }
+        }
+        else {
+            echo json_encode([
+                'status' => 0,
+                'message' => 'Invalid request'
+            ]);
         }
     }
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
+    elseif ($method === 'POST') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input) {
+            $input = $_POST;
+        }
+        
+        $action = $input['action'] ?? '';
+        
+        switch ($action) {
+            case 'create':
+                // Validate required fields
+                if (empty($input['process_title'])) {
+                    echo json_encode([
+                        'status' => 0,
+                        'message' => 'Process title is required'
+                    ]);
+                    exit;
+                }
+                
+                $data = [
+                    'process_title' => trim($input['process_title']),
+                    'process_description' => trim($input['process_description'] ?? ''),
+                    'process_image' => trim($input['process_image'] ?? ''),
+                    'display_order' => (int)($input['display_order'] ?? 0),
+                    'status' => (int)($input['status'] ?? 1)
+                ];
+                
+                $result = $processModel->createProcess($data);
+                if ($result) {
+                    echo json_encode([
+                        'status' => 1,
+                        'message' => 'Process created successfully',
+                        'data' => ['id' => $result]
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 0,
+                        'message' => 'Error creating process'
+                    ]);
+                }
+                break;
+                
+            case 'update':
+                // Validate required fields
+                if (empty($input['process_id']) || empty($input['process_title'])) {
+                    echo json_encode([
+                        'status' => 0,
+                        'message' => 'Process ID and title are required'
+                    ]);
+                    exit;
+                }
+                
+                $data = [
+                    'process_id' => (int)$input['process_id'],
+                    'process_title' => trim($input['process_title']),
+                    'process_description' => trim($input['process_description'] ?? ''),
+                    'process_image' => trim($input['process_image'] ?? ''),
+                    'display_order' => (int)($input['display_order'] ?? 0),
+                    'status' => (int)($input['status'] ?? 1)
+                ];
+                
+                $result = $processModel->updateProcess($data);
+                if ($result) {
+                    echo json_encode([
+                        'status' => 1,
+                        'message' => 'Process updated successfully'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 0,
+                        'message' => 'Error updating process'
+                    ]);
+                }
+                break;
+                
+            case 'delete':
+                if (empty($input['process_id'])) {
+                    echo json_encode([
+                        'status' => 0,
+                        'message' => 'Process ID is required'
+                    ]);
+                    exit;
+                }
+                
+                $result = $processModel->deleteProcess($input['process_id']);
+                if ($result) {
+                    echo json_encode([
+                        'status' => 1,
+                        'message' => 'Process deleted successfully'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 0,
+                        'message' => 'Error deleting process'
+                    ]);
+                }
+                break;
+                
+            default:
+                echo json_encode([
+                    'status' => 0,
+                    'message' => 'Invalid action'
+                ]);
+                break;
+        }
+    }
+    else {
+        echo json_encode([
+            'status' => 0,
+            'message' => 'Method not allowed'
+        ]);
+    }
+} catch (Exception $e) {
+    error_log("API Error: " . $e->getMessage());
+    echo json_encode([
+        'status' => 0,
+        'message' => 'Server error occurred'
+    ]);
+}
 ?> 

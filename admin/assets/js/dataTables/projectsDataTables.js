@@ -8,6 +8,11 @@ function initializeProjectsDataTable() {
         return;
     }
     
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#projectsTable')) {
+        return;
+    }
+    
     const projectsDataTable = $('#projectsTable').DataTable({
         columnDefs: [{
             orderable: false,

@@ -1,5 +1,13 @@
 // Initialize DataTable for Admin Accounts
-const adminsDataTable = new DataTable('#adminsTable', {
+let adminsDataTable;
+
+// Only initialize if the admins table exists on this page
+if ($('#adminsTable').length > 0) {
+    // Check if DataTable already exists
+    if ($.fn.DataTable.isDataTable('#adminsTable')) {
+        adminsDataTable = $('#adminsTable').DataTable();
+    } else {
+        adminsDataTable = $('#adminsTable').DataTable({
     columnDefs: [{ orderable: false, targets: [-1] }],
     order: [[0, 'asc']],
     dom: "<'row'<'col-12 mb-3'tr>>" +
@@ -21,21 +29,33 @@ const adminsDataTable = new DataTable('#adminsTable', {
         { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
         { data: 'CreatedTimestamp', render: data => `<div class="text-start">${moment(data).format('MMM DD, YYYY')}</div>` },
         { data: null, render: (_, __, row) => `
-            <div class="d-flex gap-1">
-                <i class="bi bi-pen edit_admin" style="cursor: pointer;" data-admin-id="${row.IdAdmin}" title="Edit Admin"></i>
-                ${row.IdAdmin != currentAdminId ? `<i class="bi bi-trash delete_admin" style="cursor: pointer;" data-admin-id="${row.IdAdmin}" title="Delete Admin"></i>` : ''}
+            <div class="btn-group" role="group">
+                <button class="btn btn-warning btn-sm edit-admin" 
+                        data-admin-id="${row.IdAdmin}" 
+                        title="Edit Admin">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                ${row.IdAdmin != currentAdminId ? `<button class="btn btn-danger btn-sm delete-admin" 
+                        data-admin-id="${row.IdAdmin}" 
+                        title="Delete Admin">
+                    <i class="bi bi-trash"></i>
+                </button>` : ''}
             </div>
         ` }
     ]
-});
+    });
+    }
+}
 
-// Search functionality
-$('#adminCustomSearch').on('keyup', function () {
-    adminsDataTable.search(this.value).draw();
-});
+// Only run these functions if the admins table exists
+if ($('#adminsTable').length > 0) {
+    // Search functionality
+    $('#adminCustomSearch').on('keyup', function () {
+        adminsDataTable.search(this.value).draw();
+    });
 
-// Handle admin form submission (create/update)
-const handleAdminSubmit = (action, data) => {
+    // Handle admin form submission (create/update)
+    const handleAdminSubmit = (action, data) => {
     if (!data.username) {
         toastr.error('Username is required');
         return;
@@ -101,7 +121,7 @@ $('#resetAdminForm').on('click', () => {
 });
 
 // Edit admin
-$(document).on('click', '.edit_admin', function () {
+$(document).on('click', '.edit-admin', function () {
     const adminId = $(this).data('admin-id');
     $.ajax({
         url: 'app/apiAdminAccounts.php',
@@ -124,7 +144,7 @@ $(document).on('click', '.edit_admin', function () {
 });
 
 // Delete admin
-$(document).on('click', '.delete_admin', function () {
+$(document).on('click', '.delete-admin', function () {
     const adminId = $(this).data('admin-id');
     
     if (confirm('Are you sure you want to delete this admin account?')) {
@@ -143,4 +163,5 @@ $(document).on('click', '.delete_admin', function () {
             error: () => toastr.error('Error deleting admin')
         });
     }
-}); 
+});
+}

@@ -8,6 +8,11 @@ function initializeSpecialtiesDataTable() {
         return;
     }
     
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#specialtiesTable')) {
+        return;
+    }
+    
     const specialtiesDataTable = $('#specialtiesTable').DataTable({
         columnDefs: [{ orderable: false, targets: [-1] }],
         order: [[0, 'asc']],

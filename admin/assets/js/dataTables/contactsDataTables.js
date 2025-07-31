@@ -7,7 +7,7 @@ if ($('#contactsTable').length > 0) {
     if ($.fn.DataTable.isDataTable('#contactsTable')) {
         contactsDataTable = $('#contactsTable').DataTable();
     } else {
-        contactsDataTable = new DataTable('#contactsTable', {
+        contactsDataTable = $('#contactsTable').DataTable({
     columnDefs: [{ orderable: false, targets: [-1] }],
     order: [[0, 'asc']],
     dom: "<'row'<'col-12 mb-3'tr>>" +
@@ -31,9 +31,17 @@ if ($('#contactsTable').length > 0) {
         { data: 'DisplayOrder', render: data => `<div class="text-center">${data}</div>` },
         { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
         { data: null, render: (_, __, row) => `
-            <div class="d-flex gap-1">
-                <i class="bi bi-pen edit_contact" style="cursor: pointer;" data-contact-id="${row.IdContact}" title="Edit Contact"></i>
-                <i class="bi bi-trash delete_contact" style="cursor: pointer;" data-contact-id="${row.IdContact}" title="Delete Contact"></i>
+            <div class="btn-group" role="group">
+                <button class="btn btn-warning btn-sm edit-contact" 
+                        data-contact-id="${row.IdContact}" 
+                        title="Edit Contact">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-danger btn-sm delete-contact" 
+                        data-contact-id="${row.IdContact}" 
+                        title="Delete Contact">
+                    <i class="bi bi-trash"></i>
+                </button>
             </div>
         ` }
     ]
@@ -122,7 +130,7 @@ $('#resetContactForm').on('click', () => {
 });
 
 // Edit contact
-$(document).on('click', '.edit_contact', function () {
+$(document).on('click', '.edit-contact', function () {
     const contactId = $(this).data('contact-id');
     $.ajax({
         url: 'app/apiCompanyContact.php',
@@ -149,7 +157,7 @@ $(document).on('click', '.edit_contact', function () {
 });
 
 // Delete contact
-$(document).on('click', '.delete_contact', function () {
+$(document).on('click', '.delete-contact', function () {
     const contactId = $(this).data('contact-id');
     
     if (confirm('Are you sure you want to delete this contact?')) {
