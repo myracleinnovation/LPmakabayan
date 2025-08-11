@@ -77,16 +77,10 @@ function initializeFeaturesDataTable() {
                 render: function(data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning  edit-feature" 
+                            <button class="btn btn-outline-primary edit-feature" 
                                     data-feature-id="${row.IdFeature}" 
                                     title="Edit Feature">
                                 <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-danger  delete-feature" 
-                                    data-feature-id="${row.IdFeature}" 
-                                    data-feature-title="${row.FeatureTitle}" 
-                                    title="Delete Feature">
-                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     `;
@@ -218,36 +212,6 @@ function initializeFeaturesDataTable() {
             error: (xhr, status, error) => {
                 console.error('Ajax error:', status, error);
                 toastr.error('Error updating feature');
-            }
-        });
-    });
-
-    $(document).on('click', '.delete-feature', function () {
-        const featureId = $(this).data('feature-id');
-        const featureTitle = $(this).data('feature-title');
-        $('#delete_feature_id').val(featureId);
-        $('#delete_feature_title').text(featureTitle);
-        $('#deleteFeatureModal').modal('show');
-    });
-
-    $(document).on('click', '#deleteFeatureModal .btn-danger', function() {
-        const featureId = $('#delete_feature_id').val();
-        $.ajax({
-            url: 'app/apiCompanyFeatures.php',
-            type: 'POST',
-            data: { action: 'delete', feature_id: featureId },
-            success: response => {
-                if (response.status === 1) {
-                    featuresDataTable.ajax.reload();
-                    toastr.success(response.message);
-                    $('#deleteFeatureModal').modal('hide');
-                } else {
-                    toastr.error(response.message || 'Error deleting feature');
-                }
-            },
-            error: (xhr, status, error) => {
-                console.error('Ajax error:', status, error);
-                toastr.error('Error deleting feature');
             }
         });
     });

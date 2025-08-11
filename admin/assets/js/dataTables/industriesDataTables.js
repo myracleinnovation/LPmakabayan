@@ -70,16 +70,10 @@ function initializeIndustriesDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning  edit-industry" 
+                            <button class="btn btn-outline-primary edit-industry" 
                                     data-industry-id="${row.IdIndustry}" 
                                     title="Edit Industry">
                                 <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-danger  delete-industry" 
-                                    data-industry-id="${row.IdIndustry}" 
-                                    data-industry-name="${row.IndustryName}" 
-                                    title="Delete Industry">
-                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     `;
@@ -97,42 +91,6 @@ function initializeIndustriesDataTable() {
         const industryId = $(this).data('industry-id');
         loadIndustryData(industryId);
         $('#editIndustryModal').modal('show');
-    });
-
-    // Handle Delete Button Click
-    $(document).on('click', '.delete-industry', function () {
-        const industryId = $(this).data('industry-id');
-        const industryName = $(this).data('industry-name');
-        $('#delete_industry_id').val(industryId);
-        $('#delete_industry_name').text(industryName);
-        $('#deleteIndustryModal').modal('show');
-    });
-
-    // Handle Delete Confirmation
-    $('#deleteIndustryModal .btn-danger').on('click', function () {
-        const industryId = $('#delete_industry_id').val();
-        
-        $.ajax({
-            url: 'app/apiCompanyIndustries.php',
-            type: 'POST',
-            data: {
-                action: 'delete',
-                industry_id: industryId
-            },
-            success: function (response) {
-                if (response.status === 1) {
-                    industriesDataTable.ajax.reload();
-                    toastr.success(response.message);
-                    $('#deleteIndustryModal').modal('hide');
-                } else {
-                    toastr.error(response.message || 'Error deleting industry');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Delete industry error:', xhr.responseText);
-                toastr.error('Error deleting industry');
-            }
-        });
     });
 
     return industriesDataTable;

@@ -65,16 +65,10 @@ function initializeProjectCategoriesDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning  edit-category" 
+                            <button class="btn btn-outline-primary edit-category" 
                                     data-category-id="${row.IdCategory}" 
                                     title="Edit Category">
                                 <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-danger  delete-category" 
-                                    data-category-id="${row.IdCategory}" 
-                                    data-category-name="${row.CategoryName}" 
-                                    title="Delete Category">
-                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     `;
@@ -92,42 +86,6 @@ function initializeProjectCategoriesDataTable() {
         const categoryId = $(this).data('category-id');
         loadCategoryData(categoryId);
         $('#editCategoryModal').modal('show');
-    });
-
-    // Handle Delete Button Click
-    $(document).on('click', '.delete-category', function () {
-        const categoryId = $(this).data('category-id');
-        const categoryName = $(this).data('category-name');
-        $('#delete_category_id').val(categoryId);
-        $('#delete_category_name').text(categoryName);
-        $('#deleteCategoryModal').modal('show');
-    });
-
-    // Handle Delete Confirmation
-    $('#deleteCategoryModal .btn-danger').on('click', function () {
-        const categoryId = $('#delete_category_id').val();
-        
-        $.ajax({
-            url: 'app/apiProjectCategories.php',
-            type: 'POST',
-            data: {
-                action: 'delete',
-                category_id: categoryId
-            },
-            success: function (response) {
-                if (response.status === 1) {
-                    projectCategoriesDataTable.ajax.reload();
-                    toastr.success(response.message);
-                    $('#deleteCategoryModal').modal('hide');
-                } else {
-                    toastr.error(response.message || 'Error deleting category');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Delete category error:', xhr.responseText);
-                toastr.error('Error deleting category');
-            }
-        });
     });
 
     return projectCategoriesDataTable;

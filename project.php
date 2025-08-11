@@ -4,12 +4,12 @@ require_once 'app/Db.php';
 $pdo = Db::connect();
 
 function fetchProjectCategories($pdo) {
-    $stmt = $pdo->query("SELECT CategoryName, CategoryImage FROM Project_Categories WHERE Status = 1");
+    $stmt = $pdo->query("SELECT CategoryName, CategoryDescription, CategoryImage FROM Project_Categories WHERE Status = 1 ORDER BY DisplayOrder");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function fetchProjects($pdo) {
-    $stmt = $pdo->query("SELECT * FROM Company_Projects WHERE Status = 1 ORDER BY TurnoverDate DESC");
+    $stmt = $pdo->query("SELECT * FROM Company_Projects WHERE Status = 1 ORDER BY DisplayOrder, TurnoverDate DESC");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -37,6 +37,9 @@ $projects = fetchProjects($pdo);
                                 <?= htmlspecialchars($category['CategoryName']); ?>
                             </h3>
                         </div>
+                    </div>
+                    <div class="mt-3">
+                        <p class="text-black fs-6"><?= htmlspecialchars($category['CategoryDescription'] ?? ''); ?></p>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -81,6 +84,14 @@ $projects = fetchProjects($pdo);
                             <strong><?= date('F Y', strtotime($project['TurnoverDate'])); ?></strong></p>
                         <p class="mb-2 fs-5">Location:
                             <strong><?= htmlspecialchars($project['ProjectLocation']); ?></strong></p>
+                        <?php if (!empty($project['ProjectValue'])): ?>
+                        <p class="mb-2 fs-5">Project Value:
+                            <strong>₱<?= number_format($project['ProjectValue'], 2); ?></strong></p>
+                        <?php endif; ?>
+                        <?php if (!empty($project['ProjectArea'])): ?>
+                        <p class="mb-2 fs-5">Project Area:
+                            <strong><?= number_format($project['ProjectArea'], 2); ?> sqm</strong></p>
+                        <?php endif; ?>
                     </div>
                     <p class="mb-3 mb-md-4 fs-5">
                         <?= htmlspecialchars($project['ProjectDescription']); ?>

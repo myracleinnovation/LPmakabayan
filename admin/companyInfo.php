@@ -88,10 +88,10 @@ try {
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_about_image_preview" class="mt-2">
                                             <?php if (!empty($Company_Info['AboutImage'])): ?>
-                                            <small class="text-muted">Current About Image:</small><br>
-                                            <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['AboutImage']); ?>" alt="Current About Image"
-                                                style="max-width: 200px; max-height: 200px; object-fit: cover;"
-                                                class="border rounded">
+                                                <small class="text-muted">Current About Image:</small><br>
+                                                <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['AboutImage']); ?>" alt="Current About Image"
+                                                    style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                                                    class="border rounded">
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -101,10 +101,10 @@ try {
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_logo_image_preview" class="mt-2">
                                             <?php if (!empty($Company_Info['LogoImage'])): ?>
-                                            <small class="text-muted">Current Logo Image:</small><br>
-                                            <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['LogoImage']); ?>" alt="Current Logo Image"
-                                                style="max-width: 200px; max-height: 200px; object-fit: cover;"
-                                                class="border rounded">
+                                                <small class="text-muted">Current Logo Image:</small><br>
+                                                <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['LogoImage']); ?>" alt="Current Logo Image"
+                                                    style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                                                    class="border rounded">
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -112,7 +112,7 @@ try {
 
                                 <div class="text-end">
                                     <button type="submit" class="btn btn-primary" id="updateCompanyBtn">
-                                        <i class="bi bi-save me-2"></i>Update Company Information
+                                      Update
                                     </button>
                                 </div>
                             </form>
@@ -127,11 +127,20 @@ try {
                             <h5 class="card-title"><i class="bi bi-telephone me-2"></i>Contact Information</h5>
                         </div>
                         <div class="card-body">
-                            <div class="text-end mb-3">
+                            <div class="text-end mb-3 mt-3">
                                 <button class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#addContactModal">
-                                    <i class="bi bi-plus me-2"></i>Add Contact
+                                    Add Contact
                                 </button>
+                            </div>
+
+                            <!-- Search Section -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none" id="contactsCustomSearch" placeholder="Search contacts...">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="table-responsive">

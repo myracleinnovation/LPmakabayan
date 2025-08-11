@@ -1,11 +1,11 @@
 <?php
-    session_start();
-    include 'components/sessionCheck.php';
-    include 'components/header.php';
-    require_once '../app/Db.php';
+session_start();
+include 'components/sessionCheck.php';
+include 'components/header.php';
+require_once '../app/Db.php';
 
-    $admin_username = $_SESSION['admin_username'];
-    $admin_id = $_SESSION['admin_id'];
+$admin_username = $_SESSION['admin_username'];
+$admin_id = $_SESSION['admin_id'];
 ?>
 
 <body>
@@ -31,12 +31,21 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">All Industries</h5>
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addIndustryModal">
-                                <i class="bi bi-plus"></i> Add New Industry
+                                Add Industries
                             </button>
                         </div>
 
                         <div class="card-body">
                             <div id="alert-container"></div>
+
+                            <!-- Search Section -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none" id="industriesCustomSearch" placeholder="Search industries...">
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="table-responsive">
                                 <table id="industriesTable" class="table table-hover">
@@ -67,7 +76,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-plus me-2"></i>Add New Industry</h5>
+                    <h5 class="modal-title"><i class="bi bi-plus me-2"></i>Add Industries</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="addIndustryForm">
@@ -105,7 +114,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Add Industry</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
                     </div>
                 </form>
             </div>
@@ -159,30 +168,9 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Industry</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Industry Modal -->
-    <div class="modal fade" id="deleteIndustryModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete the industry "<span id="delete_industry_name"></span>"?</p>
-                    <p class="text-muted">This action cannot be undone.</p>
-                    <input type="hidden" id="delete_industry_id">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Delete Industry</button>
-                </div>
             </div>
         </div>
     </div>

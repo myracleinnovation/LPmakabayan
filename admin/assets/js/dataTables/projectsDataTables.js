@@ -96,16 +96,10 @@ function initializeProjectsDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning edit-project" 
+                            <button class="btn btn-outline-primary edit-project" 
                                     data-project-id="${row.IdProject}" 
                                     title="Edit Project">
                                 <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-danger delete-project" 
-                                    data-project-id="${row.IdProject}" 
-                                    data-project-title="${row.ProjectTitle}" 
-                                    title="Delete Project">
-                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     `;
@@ -123,42 +117,6 @@ function initializeProjectsDataTable() {
         const projectId = $(this).data('project-id');
         loadProjectData(projectId);
         $('#editProjectModal').modal('show');
-    });
-
-    // Handle Delete Button Click
-    $(document).on('click', '.delete-project', function () {
-        const projectId = $(this).data('project-id');
-        const projectTitle = $(this).data('project-title');
-        $('#delete_project_id').val(projectId);
-        $('#delete_project_title').text(projectTitle);
-        $('#deleteProjectModal').modal('show');
-    });
-
-    // Handle Delete Confirmation
-    $('#deleteProjectModal .btn-danger').on('click', function () {
-        const projectId = $('#delete_project_id').val();
-        
-        $.ajax({
-            url: 'app/apiCompanyProjects.php',
-            type: 'POST',
-            data: {
-                action: 'delete',
-                project_id: projectId
-            },
-            success: function (response) {
-                if (response.status === 1) {
-                    projectsDataTable.ajax.reload();
-                    toastr.success(response.message);
-                    $('#deleteProjectModal').modal('hide');
-                } else {
-                    toastr.error(response.message || 'Error deleting project');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Delete project error:', xhr.responseText);
-                toastr.error('Error deleting project');
-            }
-        });
     });
 
     return projectsDataTable;

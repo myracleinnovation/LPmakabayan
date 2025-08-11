@@ -4,7 +4,7 @@
     $pdo = Db::connect();
 
     function fetchSpecialties($pdo) {
-        $stmt = $pdo->query("SELECT SpecialtyName, SpecialtyImage FROM Company_Specialties WHERE Status = 1 ORDER BY DisplayOrder");
+        $stmt = $pdo->query("SELECT SpecialtyName, SpecialtyDescription, SpecialtyImage FROM Company_Specialties WHERE Status = 1 ORDER BY DisplayOrder");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -14,7 +14,7 @@
     }
 
     function fetchIndustries($pdo) {
-        $stmt = $pdo->query("SELECT IndustryName, IndustryImage FROM Company_Industries WHERE Status = 1 ORDER BY DisplayOrder");
+        $stmt = $pdo->query("SELECT IndustryName, IndustryDescription, IndustryImage FROM Company_Industries WHERE Status = 1 ORDER BY DisplayOrder");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -43,6 +43,9 @@
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
                                 <?= htmlspecialchars($specialty['SpecialtyName']); ?></h3>
                         </div>
+                    </div>
+                    <div class="mt-3">
+                        <p class="text-black fs-6"><?= htmlspecialchars($specialty['SpecialtyDescription'] ?? ''); ?></p>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -88,6 +91,9 @@
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
                                 <?= htmlspecialchars($industry['IndustryName']); ?></h3>
                         </div>
+                    </div>
+                    <div class="mt-3">
+                        <p class="text-black fs-6"><?= htmlspecialchars($industry['IndustryDescription'] ?? ''); ?></p>
                     </div>
                 </div>
                 <?php endforeach; ?>

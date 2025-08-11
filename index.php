@@ -1,39 +1,62 @@
-<?php 
-    session_start();
-    
-    // Check if admin is logged in, redirect to admin dashboard
-    if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-        $loginTime = $_SESSION['login_time'] ?? 0;
-        $currentTime = time();
-        
-        // Check if session has expired (30 minutes = 1800 seconds)
-        if ($currentTime - $loginTime > 1800) {
-            // Session expired, clear it
-            session_unset();
-            session_destroy();
-        } else {
-            // Still logged in, redirect to admin dashboard
-            header('Location: admin/index.php');
-            exit();
-        }
-    }
-    
-    include 'components/header.php';
-    require_once 'app/Db.php';
-    $pdo = Db::connect();
+<?php
+session_start();
 
-    function fetchCompanyInfo($pdo) {
-        $stmt = $pdo->query("SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1");
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+// Check if admin is logged in, redirect to admin dashboard
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    $loginTime = $_SESSION['login_time'] ?? 0;
+    $currentTime = time();
 
-    function fetchCompanyFeatures($pdo) {
-        $stmt = $pdo->query("SELECT * FROM Company_Features WHERE Status = 1 ORDER BY DisplayOrder");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Check if session has expired (30 minutes = 1800 seconds)
+    if ($currentTime - $loginTime > 1800) {
+        // Session expired, clear it
+        session_unset();
+        session_destroy();
+    } else {
+        // Still logged in, redirect to admin dashboard
+        header('Location: admin/index.php');
+        exit();
     }
+}
 
-    $companyInfo = fetchCompanyInfo($pdo);
-    $companyFeatures = fetchCompanyFeatures($pdo);
+include 'components/header.php';
+require_once 'app/Db.php';
+$pdo = Db::connect();
+
+function fetchCompanyInfo($pdo)
+{
+    $stmt = $pdo->query("SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1");
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function fetchCompanyFeatures($pdo)
+{
+    $stmt = $pdo->query("SELECT * FROM Company_Features WHERE Status = 1 ORDER BY DisplayOrder");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function fetchCompanyIndustries($pdo)
+{
+    $stmt = $pdo->query("SELECT * FROM Company_Industries WHERE Status = 1 ORDER BY DisplayOrder");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function fetchCompanySpecialties($pdo)
+{
+    $stmt = $pdo->query("SELECT * FROM Company_Specialties WHERE Status = 1 ORDER BY DisplayOrder");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function fetchProjectCategories($pdo)
+{
+    $stmt = $pdo->query("SELECT * FROM Project_Categories WHERE Status = 1 ORDER BY DisplayOrder");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+$companyInfo = fetchCompanyInfo($pdo);
+$companyFeatures = fetchCompanyFeatures($pdo);
+$companyIndustries = fetchCompanyIndustries($pdo);
+$companySpecialties = fetchCompanySpecialties($pdo);
+$projectCategories = fetchProjectCategories($pdo);
 ?>
 
 <body class="bg-warning">
@@ -74,7 +97,8 @@
                     <p class="fs-5"><b><?= htmlspecialchars($companyInfo['CompanyName'] ?? '') ?></b> is committed to
                         delivering top-tier architectural, civil, mechanical, electrical, and plumbing works backed by a
                         highly dedicated and skilled team.</p>
-                    <p class="fs-5"><?= htmlspecialchars($companyInfo['Mission'] ?? '') ?></p>
+                    <p class="fs-5"><strong>Mission:</strong> <?= htmlspecialchars($companyInfo['Mission'] ?? '') ?></p>
+                    <p class="fs-5"><strong>Vision:</strong> <?= htmlspecialchars($companyInfo['Vision'] ?? '') ?></p>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0 pb-4">
                     <img src="assets/img/<?= htmlspecialchars($companyInfo['AboutImage'] ?? '') ?>"
@@ -92,14 +116,15 @@
             </div>
             <div class="row justify-content-center text-center">
                 <?php foreach ($companyFeatures as $feature): ?>
-                <div class="col-12 col-sm-6 col-md-3 mb-4">
-                    <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
-                        <img src="assets/img/<?= htmlspecialchars($feature['FeatureImage'] ?? '') ?>"
-                            class="w-100 h-100 object-fit-cover"
-                            alt="<?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?>">
+                    <div class="col-12 col-sm-6 col-md-3 mb-4">
+                        <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
+                            <img src="assets/img/<?= htmlspecialchars($feature['FeatureImage'] ?? '') ?>"
+                                class="w-100 h-100 object-fit-cover"
+                                alt="<?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?>">
+                        </div>
+                        <div class="fs-4"><?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?></div>
+                        <div class="fs-6 text-muted"><?= htmlspecialchars($feature['FeatureDescription'] ?? '') ?></div>
                     </div>
-                    <div class="fs-4"><?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?></div>
-                </div>
                 <?php endforeach; ?>
             </div>
         </div>

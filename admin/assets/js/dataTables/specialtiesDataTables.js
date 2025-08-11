@@ -70,16 +70,10 @@ function initializeSpecialtiesDataTable() {
                 render: function (data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning  edit-specialty" 
+                            <button class="btn btn-outline-primary edit-specialty" 
                                     data-specialty-id="${row.IdSpecialty}" 
                                     title="Edit Specialty">
                                 <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-danger  delete-specialty" 
-                                    data-specialty-id="${row.IdSpecialty}" 
-                                    data-specialty-name="${row.SpecialtyName}" 
-                                    title="Delete Specialty">
-                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     `;
@@ -97,42 +91,6 @@ function initializeSpecialtiesDataTable() {
         const specialtyId = $(this).data('specialty-id');
         loadSpecialtyData(specialtyId);
         $('#editSpecialtyModal').modal('show');
-    });
-
-    // Handle Delete Button Click
-    $(document).on('click', '.delete-specialty', function () {
-        const specialtyId = $(this).data('specialty-id');
-        const specialtyName = $(this).data('specialty-name');
-        $('#delete_specialty_id').val(specialtyId);
-        $('#delete_specialty_name').text(specialtyName);
-        $('#deleteSpecialtyModal').modal('show');
-    });
-
-    // Handle Delete Confirmation
-    $('#deleteSpecialtyModal .btn-danger').on('click', function () {
-        const specialtyId = $('#delete_specialty_id').val();
-        
-        $.ajax({
-            url: 'app/apiCompanySpecialties.php',
-            type: 'POST',
-            data: {
-                action: 'delete',
-                specialty_id: specialtyId
-            },
-            success: function (response) {
-                if (response.status === 1) {
-                    specialtiesDataTable.ajax.reload();
-                    toastr.success(response.message);
-                    $('#deleteSpecialtyModal').modal('hide');
-                } else {
-                    toastr.error(response.message || 'Error deleting specialty');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Delete specialty error:', xhr.responseText);
-                toastr.error('Error deleting specialty');
-            }
-        });
     });
 
     return specialtiesDataTable;

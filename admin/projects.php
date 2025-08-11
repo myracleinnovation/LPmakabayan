@@ -1,4 +1,4 @@
-php<?php
+<?php
     session_start();
     include 'components/sessionCheck.php';
     include 'components/header.php';
@@ -6,7 +6,7 @@ php<?php
 
     $admin_username = $_SESSION['admin_username'];
     $admin_id = $_SESSION['admin_id'];
-?>
+    ?>
 
 <body>
     <?php include 'components/topNav.php'; ?>
@@ -30,12 +30,21 @@ php<?php
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">All Projects</h5>
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectModal">
-                                <i class="bi bi-plus"></i> Add New Project
+                                Add Projects
                             </button>
                         </div>
 
                         <div class="card-body">
                             <div id="alert-container"></div>
+
+                            <!-- Search Section -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none" id="projectsCustomSearch" placeholder="Search projects...">
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="table-responsive">
                                 <table id="projectsTable" class="table table-hover">
@@ -247,26 +256,6 @@ php<?php
                         <button type="submit" class="btn btn-primary">Update Project</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteProjectModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete the project "<span id="delete_project_title"></span>"?</p>
-                    <p class="text-muted">This action cannot be undone.</p>
-                    <input type="hidden" id="delete_project_id">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Delete Project</button>
-                </div>
             </div>
         </div>
     </div>

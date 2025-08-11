@@ -78,16 +78,10 @@ function initializeProcessDataTable() {
                 render: function(data, type, row) {
                     return `
                         <div class="btn-group" role="group">
-                            <button class="btn btn-warning  edit-process" 
+                            <button class="btn btn-outline-primary edit-process" 
                                     data-process-id="${row.IdProcess}" 
                                     title="Edit Process">
                                 <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-danger  delete-process" 
-                                    data-process-id="${row.IdProcess}" 
-                                    data-process-title="${row.ProcessTitle}" 
-                                    title="Delete Process">
-                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     `;
@@ -224,38 +218,6 @@ function initializeProcessDataTable() {
             error: (xhr, status, error) => {
                 console.error('Ajax error:', status, error);
                 toastr.error('Error updating process');
-            }
-        });
-    });
-
-    // Delete process
-    $(document).on('click', '.delete-process', function () {
-        const processId = $(this).data('process-id');
-        const processTitle = $(this).data('process-title');
-        $('#delete_process_id').val(processId);
-        $('#delete_process_title').text(processTitle);
-        $('#deleteProcessModal').modal('show');
-    });
-
-    // Delete process button in modal
-    $(document).on('click', '#deleteProcessModal .btn-danger', function() {
-        const processId = $('#delete_process_id').val();
-        $.ajax({
-            url: 'app/apiCompanyProcess.php',
-            type: 'POST',
-            data: { action: 'delete', process_id: processId },
-            success: response => {
-                if (response.status === 1) {
-                    processDataTable.ajax.reload();
-                    toastr.success(response.message);
-                    $('#deleteProcessModal').modal('hide');
-                } else {
-                    toastr.error(response.message || 'Error deleting process');
-                }
-            },
-            error: (xhr, status, error) => {
-                console.error('Ajax error:', status, error);
-                toastr.error('Error deleting process');
             }
         });
     });

@@ -31,19 +31,13 @@ $(document).ready(function() {
                     { data: 'DisplayOrder', render: data => `<div class="text-center">${data}</div>` },
                     { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
                     { data: null, render: (_, __, row) => {
-                        const editBtn = `<button class="btn btn-warning  edit_contact" 
+                        const editBtn = `<button class="btn btn-outline-primary edit_contact" 
                                 data-contact-id="${row.IdContact}" 
                                 title="Edit Contact">
                             <i class="bi bi-pencil"></i>
                         </button>`;
                         
-                        const deleteBtn = `<button class="btn btn-danger  delete_contact" 
-                                data-contact-id="${row.IdContact}" 
-                                title="Delete Contact">
-                            <i class="bi bi-trash"></i>
-                        </button>`;
-                        
-                        return `<div class="btn-group" role="group">${editBtn}${deleteBtn}</div>`;
+                        return `<div class="btn-group" role="group">${editBtn}</div>`;
                     }}
                 ]
             });
@@ -187,30 +181,6 @@ $(document).ready(function() {
                 },
                 error: () => toastr.error('Error retrieving contact data')
             });
-        });
-
-        // Delete contact via API
-        $(document).on('click', '.delete_contact', function () {
-            const contactId = $(this).data('contact-id');
-            
-            if (confirm('Are you sure you want to delete this contact?')) {
-                $.ajax({
-                    url: 'app/apiCompanyContact.php',
-                    type: 'POST',
-                    data: { action: 'delete', contact_id: contactId },
-                    success: response => {
-                        if (response.status === 1) {
-                            if (contactsDataTable) {
-                                contactsDataTable.ajax.reload();
-                            }
-                            toastr.success(response.message);
-                        } else {
-                            toastr.error(response.message || 'Error deleting contact');
-                        }
-                    },
-                    error: () => toastr.error('Error deleting contact')
-                });
-            }
         });
     }
 }); 

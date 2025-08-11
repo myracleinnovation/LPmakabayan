@@ -44,20 +44,13 @@ $(document).ready(function() {
                         return `<div class="text-start">${moment(data).format('MMM DD, YYYY')}</div>`;
                     }},
                     { data: null, render: function(data, type, row) {
-                        const editBtn = `<button class="btn btn-warning  edit-admin" 
+                        const editBtn = `<button class="btn btn-outline-primary edit-admin" 
                                     data-admin-id="${row.IdAdmin}" 
                                     title="Edit Admin">
                                 <i class="bi bi-pencil"></i>
                             </button>`;
                         
-                        const deleteBtn = row.IdAdmin != currentAdminId ? 
-                            `<button class="btn btn-danger  delete-admin" 
-                                    data-admin-id="${row.IdAdmin}" 
-                                    title="Delete Admin">
-                                <i class="bi bi-trash"></i>
-                            </button>` : '';
-                        
-                        return `<div class="btn-group" role="group">${editBtn}${deleteBtn}</div>`;
+                        return `<div class="btn-group" role="group">${editBtn}</div>`;
                     }}
                 ],
                 initComplete: function() {
@@ -156,15 +149,6 @@ $(document).ready(function() {
                 },
                 error: () => toastr.error('Error retrieving admin data')
             });
-        });
-
-        $(document).on('click', '.delete-admin', function () {
-            const adminId = $(this).data('admin-id');
-            const username = $(this).closest('tr').find('td:first').text();
-            
-            $('#delete_admin_id').val(adminId);
-            $('#delete_admin_username').text(username);
-            $('#deleteAdminModal').modal('show');
         });
     }
 });
