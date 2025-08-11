@@ -122,8 +122,8 @@ $projectCategories = fetchProjectCategories($pdo);
                                 class="w-100 h-100 object-fit-cover"
                                 alt="<?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?>">
                         </div>
-                        <div class="fs-4"><?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?></div>
-                        <div class="fs-6 text-muted"><?= htmlspecialchars($feature['FeatureDescription'] ?? '') ?></div>
+                        <div class="fs-4 fw-bold"><?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?></div>
+                        <div class="fs-6 text-white"><?= htmlspecialchars($feature['FeatureDescription'] ?? '') ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
