@@ -44,20 +44,20 @@ class CompanySpecialties
     public function getTotalSpecialties($search = '')
     {
         $sql = "SELECT COUNT(*) as total FROM Company_Specialties";
-        
+
         if (!empty($search)) {
             $sql .= " WHERE SpecialtyName LIKE :search OR SpecialtyDescription LIKE :search";
         }
 
         $stmt = $this->conn->prepare($sql);
-        
+
         if (!empty($search)) {
             $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
         }
-        
+
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         return (int)$result['total'];
     }
 
@@ -79,6 +79,10 @@ class CompanySpecialties
         if (empty($specialtyName)) {
             throw new Exception('Specialty name is required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $specialtyDescription = empty($specialtyDescription) ? null : $specialtyDescription;
+        $specialtyImage = empty($specialtyImage) ? null : $specialtyImage;
 
         $stmt = $this->conn->prepare("INSERT INTO Company_Specialties (SpecialtyName, SpecialtyDescription, SpecialtyImage, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$specialtyName, $specialtyDescription, $specialtyImage, $displayOrder, $status]);
@@ -102,6 +106,10 @@ class CompanySpecialties
         if (empty($specialtyName)) {
             throw new Exception('Specialty name is required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $specialtyDescription = empty($specialtyDescription) ? null : $specialtyDescription;
+        $specialtyImage = empty($specialtyImage) ? null : $specialtyImage;
 
         $sql = "UPDATE Company_Specialties SET SpecialtyName = ?, SpecialtyDescription = ?, SpecialtyImage = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdSpecialty = ?";
         $stmt = $this->conn->prepare($sql);
@@ -137,7 +145,7 @@ class CompanySpecialties
     {
         $imgDir = '../../assets/img/';
         $existingNumbers = [];
-        
+
         // Scan existing specialty files
         if (is_dir($imgDir)) {
             $files = scandir($imgDir);
@@ -147,22 +155,22 @@ class CompanySpecialties
                 }
             }
         }
-        
+
         // Find the next available number
         if (empty($existingNumbers)) {
             return 1;
         }
-        
+
         sort($existingNumbers);
         $nextNumber = 1;
-        
+
         foreach ($existingNumbers as $number) {
             if ($number > $nextNumber) {
                 break;
             }
             $nextNumber = $number + 1;
         }
-        
+
         return $nextNumber;
     }
-} 
+}

@@ -18,6 +18,7 @@ try {
 
     $stmt = $pdo->query('SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1');
     $Company_Info = $stmt->fetch();
+    
 } catch (Exception $e) {
     $error_message = 'Database error: ' . $e->getMessage();
 }
@@ -55,35 +56,47 @@ try {
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">Company Name *</label>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label mb-0">Company Name</label>
+                                        </div>
                                         <input type="text" class="form-control" name="company_name"
-                                            value="<?php echo htmlspecialchars($Company_Info['CompanyName'] ?? ''); ?>" required>
+                                            value="<?php echo htmlspecialchars($Company_Info['CompanyName'] ?? ''); ?>">
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">Tagline</label>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label mb-0">Tagline</label>
+                                        </div>
                                         <input type="text" class="form-control" name="tagline"
                                             value="<?php echo htmlspecialchars($Company_Info['Tagline'] ?? ''); ?>">
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Company Description</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label mb-0">Company Description</label>
+                                    </div>
                                     <textarea class="form-control" name="description" rows="3"><?php echo htmlspecialchars($Company_Info['Description'] ?? ''); ?></textarea>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Mission</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label mb-0">Mission</label>
+                                    </div>
                                     <textarea class="form-control" name="mission" rows="4"><?php echo htmlspecialchars($Company_Info['Mission'] ?? ''); ?></textarea>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Vision</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label mb-0">Vision</label>
+                                    </div>
                                     <textarea class="form-control" name="vision" rows="4"><?php echo htmlspecialchars($Company_Info['Vision'] ?? ''); ?></textarea>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">About Image</label>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label mb-0">About Image</label>
+                                        </div>
                                         <input type="file" class="form-control" name="about_image" accept="image/*">
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_about_image_preview" class="mt-2">
@@ -96,7 +109,9 @@ try {
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">Logo Image</label>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label mb-0">Logo Image</label>
+                                        </div>
                                         <input type="file" class="form-control" name="logo_image" accept="image/*">
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_logo_image_preview" class="mt-2">

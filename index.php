@@ -67,17 +67,24 @@ $projectCategories = fetchProjectCategories($pdo);
         style="background-image: url('assets/img/bg.png'); background-size: cover; background-position: center;">
         <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
         <div class="container position-relative z-1 text-center py-5 px-3 px-md-5">
-            <img src="assets/img/<?= htmlspecialchars($companyInfo['LogoImage'] ?? '') ?>" alt="Logo" class="mb-3 mt-5 img-fluid"
+            <?php if (!empty($companyInfo['LogoImage'])): ?>
+            <img src="assets/img/<?= htmlspecialchars($companyInfo['LogoImage']) ?>" alt="Logo" class="mb-3 mt-5 img-fluid"
                 style="max-width: 180px; min-width: 90px;">
-            <h1 class="fw-bold text-white text-uppercase fs-1"><?= htmlspecialchars($companyInfo['Tagline'] ?? '') ?>
-            </h1>
+            <?php endif; ?>
+            <?php if (!empty($companyInfo['Tagline'])): ?>
+            <h1 class="fw-bold text-white text-uppercase fs-1"><?= htmlspecialchars($companyInfo['Tagline']) ?></h1>
+            <?php endif; ?>
+            <?php if (!empty($companyInfo['Description'])): ?>
             <p class="lead text-white w-100 w-md-75 pb-2 pb-md-5 mx-auto mt-3 fs-3">
-                <?= htmlspecialchars($companyInfo['Description'] ?? '') ?>
+                <?= htmlspecialchars($companyInfo['Description']) ?>
             </p>
+            <?php endif; ?>
 
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-2 mt-5 pt-5">
+                <?php if (!empty($companyInfo['CompanyName'])): ?>
                 <a href="#company" class="btn btn-warning-hover active px-4 py-2 border border-0 border-white">Our
                     Company</a>
+                <?php endif; ?>
                 <a href="specialties.php" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
                     Specialties</a>
                 <a href="project.php" class="btn btn-warning-hover px-4 py-2 border border-0 border-white">Our
@@ -94,21 +101,30 @@ $projectCategories = fetchProjectCategories($pdo);
             <div class="row align-items-center mb-5 flex-column flex-md-row">
                 <div class="col-12 col-md-6 mb-4 mb-md-0">
                     <h2 class="fw-bold mb-3 text-uppercase fs-5">Our Company</h2>
-                    <p class="fs-5"><b><?= htmlspecialchars($companyInfo['CompanyName'] ?? '') ?></b> is committed to
+                    <?php if (!empty($companyInfo['CompanyName'])): ?>
+                    <p class="fs-5"><b><?= htmlspecialchars($companyInfo['CompanyName']) ?></b> is committed to
                         delivering top-tier architectural, civil, mechanical, electrical, and plumbing works backed by a
                         highly dedicated and skilled team.</p>
-                    <p class="fs-5"><strong>Mission:</strong> <?= htmlspecialchars($companyInfo['Mission'] ?? '') ?></p>
-                    <p class="fs-5"><strong>Vision:</strong> <?= htmlspecialchars($companyInfo['Vision'] ?? '') ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($companyInfo['Mission'])): ?>
+                    <p class="fs-5"><strong>Mission:</strong> <?= htmlspecialchars($companyInfo['Mission']) ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($companyInfo['Vision'])): ?>
+                    <p class="fs-5"><strong>Vision:</strong> <?= htmlspecialchars($companyInfo['Vision']) ?></p>
+                    <?php endif; ?>
                 </div>
+                <?php if (!empty($companyInfo['AboutImage'])): ?>
                 <div class="col-12 col-md-6 mb-4 mb-md-0 pb-4">
-                    <img src="assets/img/<?= htmlspecialchars($companyInfo['AboutImage'] ?? '') ?>"
+                    <img src="assets/img/<?= htmlspecialchars($companyInfo['AboutImage']) ?>"
                         class="img-fluid object-fit-cover w-100" alt="About Our Company">
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
 
     <!-- MORE THAN JUST CONSTRUCTION SECTION -->
+    <?php if (!empty($companyFeatures)): ?>
     <section class="bg-black text-white py-5 min-vh-100">
         <div class="container">
             <div class="text-center mb-4 mt-5 pt-5 mb-5 pb-5">
@@ -118,21 +134,29 @@ $projectCategories = fetchProjectCategories($pdo);
                 <?php foreach ($companyFeatures as $feature): ?>
                     <div class="col-12 col-sm-6 col-md-3 mb-4">
                         <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
-                            <img src="assets/img/<?= htmlspecialchars($feature['FeatureImage'] ?? '') ?>"
+                            <?php if (!empty($feature['FeatureImage'])): ?>
+                            <img src="assets/img/<?= htmlspecialchars($feature['FeatureImage']) ?>"
                                 class="w-100 h-100 object-fit-cover"
                                 alt="<?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?>">
+                            <?php endif; ?>
                         </div>
-                        <div class="fs-4 fw-bold"><?= htmlspecialchars($feature['FeatureTitle'] ?? '') ?></div>
-                        <div class="fs-6 text-white"><?= htmlspecialchars($feature['FeatureDescription'] ?? '') ?></div>
+                        <?php if (!empty($feature['FeatureTitle'])): ?>
+                        <div class="fs-4 fw-bold"><?= htmlspecialchars($feature['FeatureTitle']) ?></div>
+                        <?php endif; ?>
+                        <?php if (!empty($feature['FeatureDescription'])): ?>
+                        <div class="fs-6 text-white"><?= htmlspecialchars($feature['FeatureDescription']) ?></div>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- SPECIALTIES & BUILDS SECTION -->
     <section id="specialties">
         <div class="row g-0">
+            <?php if (!empty($companySpecialties)): ?>
             <div class="col-12 col-md-6 p-0 mb-4 mb-md-0">
                 <a href="specialties.php">
                     <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
@@ -144,6 +168,8 @@ $projectCategories = fetchProjectCategories($pdo);
                     </div>
                 </a>
             </div>
+            <?php endif; ?>
+            <?php if (!empty($projectCategories)): ?>
             <div class="col-12 col-md-6 p-0">
                 <a href="project.php">
                     <div class="position-relative w-100 h-100 specialty-item" style="min-height:300px;">
@@ -155,6 +181,7 @@ $projectCategories = fetchProjectCategories($pdo);
                     </div>
                 </a>
             </div>
+            <?php endif; ?>
         </div>
     </section>
 

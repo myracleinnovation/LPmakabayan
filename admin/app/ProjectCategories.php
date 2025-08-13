@@ -80,6 +80,10 @@ class ProjectCategories
             throw new Exception('Category name is required');
         }
 
+        // Convert empty strings to NULL for optional fields
+        $categoryDescription = empty($categoryDescription) ? null : $categoryDescription;
+        $categoryImage = empty($categoryImage) ? null : $categoryImage;
+
         $stmt = $this->conn->prepare("INSERT INTO Project_Categories (CategoryName, CategoryDescription, CategoryImage, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$categoryName, $categoryDescription, $categoryImage, $displayOrder, $status]);
 
@@ -102,6 +106,10 @@ class ProjectCategories
         if (empty($categoryName)) {
             throw new Exception('Category name is required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $categoryDescription = empty($categoryDescription) ? null : $categoryDescription;
+        $categoryImage = empty($categoryImage) ? null : $categoryImage;
 
         $sql = "UPDATE Project_Categories SET CategoryName = ?, CategoryDescription = ?, CategoryImage = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdCategory = ?";
         $stmt = $this->conn->prepare($sql);

@@ -87,6 +87,17 @@ class CompanyProjects
             throw new Exception('Project title is required');
         }
 
+        // Convert empty strings to NULL for optional fields
+        $projectDescription = empty($projectDescription) ? null : $projectDescription;
+        $projectOwner = empty($projectOwner) ? null : $projectOwner;
+        $projectLocation = empty($projectLocation) ? null : $projectLocation;
+        $projectArea = ($projectArea <= 0) ? null : $projectArea;
+        $projectValue = ($projectValue <= 0) ? null : $projectValue;
+        $turnoverDate = empty($turnoverDate) ? null : $turnoverDate;
+        $projectCategoryId = ($projectCategoryId <= 0) ? null : $projectCategoryId;
+        $projectImage1 = empty($projectImage1) ? null : $projectImage1;
+        $projectImage2 = empty($projectImage2) ? null : $projectImage2;
+
         $stmt = $this->conn->prepare("INSERT INTO Company_Projects (ProjectTitle, ProjectDescription, ProjectOwner, ProjectLocation, ProjectArea, ProjectValue, TurnoverDate, ProjectCategoryId, ProjectImage1, ProjectImage2, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$projectTitle, $projectDescription, $projectOwner, $projectLocation, $projectArea, $projectValue, $turnoverDate, $projectCategoryId, $projectImage1, $projectImage2, $displayOrder, $status]);
 
@@ -116,6 +127,17 @@ class CompanyProjects
         if (empty($projectTitle)) {
             throw new Exception('Project title is required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $projectDescription = empty($projectDescription) ? null : $projectDescription;
+        $projectOwner = empty($projectOwner) ? null : $projectOwner;
+        $projectLocation = empty($projectLocation) ? null : $projectLocation;
+        $projectArea = ($projectArea <= 0) ? null : $projectArea;
+        $projectValue = ($projectValue <= 0) ? null : $projectValue;
+        $turnoverDate = empty($turnoverDate) ? null : $turnoverDate;
+        $projectCategoryId = ($projectCategoryId <= 0) ? null : $projectCategoryId;
+        $projectImage1 = empty($projectImage1) ? null : $projectImage1;
+        $projectImage2 = empty($projectImage2) ? null : $projectImage2;
 
         $sql = "UPDATE Company_Projects SET ProjectTitle = ?, ProjectDescription = ?, ProjectOwner = ?, ProjectLocation = ?, ProjectArea = ?, ProjectValue = ?, TurnoverDate = ?, ProjectCategoryId = ?, ProjectImage1 = ?, ProjectImage2 = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdProject = ?";
         $stmt = $this->conn->prepare($sql);

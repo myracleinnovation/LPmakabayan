@@ -43,13 +43,17 @@ class CompanyProcess {
      */
     public function createProcess($data) {
         try {
+            // Convert empty strings to NULL for optional fields
+            $processDescription = empty(trim($data['process_description'])) ? null : trim($data['process_description']);
+            $processImage = empty(trim($data['process_image'])) ? null : trim($data['process_image']);
+            
             $sql = "INSERT INTO Company_Process (ProcessTitle, ProcessDescription, ProcessImage, DisplayOrder, Status) 
                     VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 $data['process_title'],
-                $data['process_description'],
-                $data['process_image'],
+                $processDescription,
+                $processImage,
                 $data['display_order'],
                 $data['status']
             ]);
@@ -65,6 +69,10 @@ class CompanyProcess {
      */
     public function updateProcess($data) {
         try {
+            // Convert empty strings to NULL for optional fields
+            $processDescription = empty(trim($data['process_description'])) ? null : trim($data['process_description']);
+            $processImage = empty(trim($data['process_image'])) ? null : trim($data['process_image']);
+            
             $sql = "UPDATE Company_Process SET 
                     ProcessTitle = ?, 
                     ProcessDescription = ?, 
@@ -76,8 +84,8 @@ class CompanyProcess {
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([
                 $data['process_title'],
-                $data['process_description'],
-                $data['process_image'],
+                $processDescription,
+                $processImage,
                 $data['display_order'],
                 $data['status'],
                 $data['process_id']

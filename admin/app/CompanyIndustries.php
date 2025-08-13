@@ -80,6 +80,10 @@ class CompanyIndustries
             throw new Exception('Industry name is required');
         }
 
+        // Convert empty strings to NULL for optional fields
+        $industryDescription = empty($industryDescription) ? null : $industryDescription;
+        $industryImage = empty($industryImage) ? null : $industryImage;
+
         $stmt = $this->conn->prepare("INSERT INTO Company_Industries (IndustryName, IndustryDescription, IndustryImage, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$industryName, $industryDescription, $industryImage, $displayOrder, $status]);
 
@@ -102,6 +106,10 @@ class CompanyIndustries
         if (empty($industryName)) {
             throw new Exception('Industry name is required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $industryDescription = empty($industryDescription) ? null : $industryDescription;
+        $industryImage = empty($industryImage) ? null : $industryImage;
 
         $sql = "UPDATE Company_Industries SET IndustryName = ?, IndustryDescription = ?, IndustryImage = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdIndustry = ?";
         $stmt = $this->conn->prepare($sql);

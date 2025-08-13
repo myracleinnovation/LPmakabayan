@@ -30,17 +30,21 @@ $projects = fetchProjects($pdo);
                 <?php foreach ($projectCategories as $category): ?>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
+                        <?php if (!empty($category['CategoryImage'])): ?>
                         <img src="assets/img/<?= htmlspecialchars($category['CategoryImage']); ?>" class="w-100 object-fit-cover"
                             alt="<?= htmlspecialchars($category['CategoryName']); ?>">
+                        <?php endif; ?>
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
                                 <?= htmlspecialchars($category['CategoryName']); ?>
                             </h3>
                         </div>
                     </div>
+                    <?php if (!empty($category['CategoryDescription'])): ?>
                     <div class="mt-3">
-                        <p class="text-black fs-6"><?= htmlspecialchars($category['CategoryDescription'] ?? ''); ?></p>
+                        <p class="text-black fs-6"><?= htmlspecialchars($category['CategoryDescription']); ?></p>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -75,15 +79,23 @@ $projects = fetchProjects($pdo);
         <div class="container h-100 d-flex align-items-center justify-content-center flex-column">
             <div class="row align-items-center">
                 <div class="col-12 col-lg-6 mb-4 mb-lg-0 <?= ($index % 2 == 1) ? 'order-lg-2' : ''; ?>">
+                    <?php if (!empty($project['ProjectTitle'])): ?>
                     <h2 class="fw-bolder <?= $titleClass; ?> mb-3 mb-md-4 fs-1 fs-md-1 text-uppercase">
                         <?= htmlspecialchars($project['ProjectTitle']); ?></h2>
+                    <?php endif; ?>
                     <div class="mb-3 mb-md-4">
+                        <?php if (!empty($project['ProjectOwner'])): ?>
                         <p class="mb-2 fs-5">Owner:
                             <strong><?= htmlspecialchars($project['ProjectOwner']); ?></strong></p>
+                        <?php endif; ?>
+                        <?php if (!empty($project['TurnoverDate'])): ?>
                         <p class="mb-2 fs-5">Turnover:
                             <strong><?= date('F Y', strtotime($project['TurnoverDate'])); ?></strong></p>
+                        <?php endif; ?>
+                        <?php if (!empty($project['ProjectLocation'])): ?>
                         <p class="mb-2 fs-5">Location:
                             <strong><?= htmlspecialchars($project['ProjectLocation']); ?></strong></p>
+                        <?php endif; ?>
                         <?php if (!empty($project['ProjectValue'])): ?>
                         <p class="mb-2 fs-5">Project Value:
                             <strong>₱<?= number_format($project['ProjectValue'], 2); ?></strong></p>
@@ -93,9 +105,11 @@ $projects = fetchProjects($pdo);
                             <strong><?= number_format($project['ProjectArea'], 2); ?> sqm</strong></p>
                         <?php endif; ?>
                     </div>
+                    <?php if (!empty($project['ProjectDescription'])): ?>
                     <p class="mb-3 mb-md-4 fs-5">
                         <?= htmlspecialchars($project['ProjectDescription']); ?>
                     </p>
+                    <?php endif; ?>
                     <div class="d-flex gap-2 <?= $justifyClass; ?>">
                         <div class="<?= $dotClass; ?>" style="width: 12px; height: 12px;"></div>
                         <div class="<?= $dotClass; ?>" style="width: 12px; height: 12px;"></div>

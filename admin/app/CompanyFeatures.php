@@ -60,6 +60,10 @@ class CompanyFeatures
             throw new Exception('Feature title is required');
         }
 
+        // Convert empty strings to NULL for optional fields
+        $featureDescription = empty($featureDescription) ? null : $featureDescription;
+        $featureImage = empty($featureImage) ? null : $featureImage;
+
         $stmt = $this->conn->prepare("INSERT INTO Company_Features (FeatureTitle, FeatureDescription, FeatureImage, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$featureTitle, $featureDescription, $featureImage, $displayOrder, $status]);
 
@@ -82,6 +86,10 @@ class CompanyFeatures
         if (empty($featureTitle)) {
             throw new Exception('Feature title is required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $featureDescription = empty($featureDescription) ? null : $featureDescription;
+        $featureImage = empty($featureImage) ? null : $featureImage;
 
         $sql = "UPDATE Company_Features SET FeatureTitle = ?, FeatureDescription = ?, FeatureImage = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdFeature = ?";
         $stmt = $this->conn->prepare($sql);

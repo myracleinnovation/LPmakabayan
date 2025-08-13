@@ -61,6 +61,10 @@ class CompanyContact
             throw new Exception('Contact type and value are required');
         }
 
+        // Convert empty strings to NULL for optional fields
+        $contactLabel = empty($contactLabel) ? null : $contactLabel;
+        $contactIcon = empty($contactIcon) ? null : $contactIcon;
+
         $stmt = $this->conn->prepare("INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$contactType, $contactValue, $contactLabel, $contactIcon, $displayOrder, $status]);
 
@@ -84,6 +88,10 @@ class CompanyContact
         if (empty($contactType) || empty($contactValue)) {
             throw new Exception('Contact type and value are required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $contactLabel = empty($contactLabel) ? null : $contactLabel;
+        $contactIcon = empty($contactIcon) ? null : $contactIcon;
 
         $sql = "UPDATE Company_Contact SET ContactType = ?, ContactValue = ?, ContactLabel = ?, ContactIcon = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdContact = ?";
         $stmt = $this->conn->prepare($sql);

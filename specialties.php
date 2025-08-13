@@ -37,16 +37,20 @@
                 <?php foreach ($specialties as $specialty): ?>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
+                        <?php if (!empty($specialty['SpecialtyImage'])): ?>
                         <img src="assets/img/<?= htmlspecialchars($specialty['SpecialtyImage']); ?>" class="w-100 object-fit-cover"
                             alt="<?= htmlspecialchars($specialty['SpecialtyName']); ?>">
+                        <?php endif; ?>
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
                                 <?= htmlspecialchars($specialty['SpecialtyName']); ?></h3>
                         </div>
                     </div>
+                    <?php if (!empty($specialty['SpecialtyDescription'])): ?>
                     <div class="mt-3">
-                        <p class="text-black fs-6"><?= htmlspecialchars($specialty['SpecialtyDescription'] ?? ''); ?></p>
+                        <p class="text-black fs-6"><?= htmlspecialchars($specialty['SpecialtyDescription']); ?></p>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -63,12 +67,16 @@
                 <?php foreach ($processSteps as $process): ?>
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
                     <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
+                        <?php if (!empty($process['ProcessImage'])): ?>
                         <img src="assets/img/<?= htmlspecialchars($process['ProcessImage']); ?>"
                             class="w-100 h-100 object-fit-cover"
                             alt="<?= htmlspecialchars($process['ProcessTitle']); ?>">
+                        <?php endif; ?>
                     </div>
                     <h1 class="fs-3 text-uppercase fw-bold"><?= htmlspecialchars($process['ProcessTitle']); ?></h1>
+                    <?php if (!empty($process['ProcessDescription'])): ?>
                     <h2 class="fs-5 fw-normal"><?= htmlspecialchars($process['ProcessDescription']); ?></h2>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -85,16 +93,20 @@
                 <?php foreach ($industries as $industry): ?>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
+                        <?php if (!empty($industry['IndustryImage'])): ?>
                         <img src="assets/img/<?= htmlspecialchars($industry['IndustryImage']); ?>" class="w-100 object-fit-cover"
                             alt="<?= htmlspecialchars($industry['IndustryName']); ?>">
+                        <?php endif; ?>
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
                                 <?= htmlspecialchars($industry['IndustryName']); ?></h3>
                         </div>
                     </div>
+                    <?php if (!empty($industry['IndustryDescription'])): ?>
                     <div class="mt-3">
-                        <p class="text-black fs-6"><?= htmlspecialchars($industry['IndustryDescription'] ?? ''); ?></p>
+                        <p class="text-black fs-6"><?= htmlspecialchars($industry['IndustryDescription']); ?></p>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             </div>

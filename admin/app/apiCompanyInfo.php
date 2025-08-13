@@ -145,6 +145,7 @@
                         }
 
                         $companyInfo->updateCompanyInfo($postData);
+                        
                         $response = [
                             'status' => 1,
                             'message' => 'Company information updated successfully!',

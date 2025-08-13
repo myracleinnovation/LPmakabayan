@@ -40,6 +40,15 @@ class CompanyInfo
             throw new Exception('Company name is required');
         }
 
+        // Convert empty strings to NULL for optional fields
+        $tagline = empty($tagline) ? null : $tagline;
+        $description = empty($description) ? null : $description;
+        $mission = empty($mission) ? null : $mission;
+        $vision = empty($vision) ? null : $vision;
+        $aboutImage = empty($aboutImage) ? null : $aboutImage;
+        $logoImage = empty($logoImage) ? null : $logoImage;
+        $faviconImage = empty($faviconImage) ? null : $faviconImage;
+
         $sql = "UPDATE Company_Info SET CompanyName = ?, Tagline = ?, Description = ?, Mission = ?, Vision = ?, AboutImage = ?, LogoImage = ?, FaviconImage = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdCompany = ?";
         $stmt = $this->conn->prepare($sql);
         $result = $stmt->execute([$companyName, $tagline, $description, $mission, $vision, $aboutImage, $logoImage, $faviconImage, $status, $id]);
@@ -66,6 +75,15 @@ class CompanyInfo
         if (empty($companyName)) {
             throw new Exception('Company name is required');
         }
+
+        // Convert empty strings to NULL for optional fields
+        $tagline = empty($tagline) ? null : $tagline;
+        $description = empty($description) ? null : $description;
+        $mission = empty($mission) ? null : $mission;
+        $vision = empty($vision) ? null : $vision;
+        $aboutImage = empty($aboutImage) ? null : $aboutImage;
+        $logoImage = empty($logoImage) ? null : $logoImage;
+        $faviconImage = empty($faviconImage) ? null : $faviconImage;
 
         $stmt = $this->conn->prepare("INSERT INTO Company_Info (CompanyName, Tagline, Description, Mission, Vision, AboutImage, LogoImage, FaviconImage, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
         $result = $stmt->execute([$companyName, $tagline, $description, $mission, $vision, $aboutImage, $logoImage, $faviconImage, $status]);
