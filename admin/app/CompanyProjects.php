@@ -70,13 +70,13 @@ class CompanyProjects
 
     public function createProject($postData)
     {
-        $projectTitle = trim($postData['project_title']);
-        $projectDescription = trim($postData['project_description']);
-        $projectOwner = trim($postData['project_owner']);
-        $projectLocation = trim($postData['project_location']);
+        $projectTitle = trim($postData['project_title'] ?? '');
+        $projectDescription = trim($postData['project_description'] ?? '');
+        $projectOwner = trim($postData['project_owner'] ?? '');
+        $projectLocation = trim($postData['project_location'] ?? '');
         $projectArea = (float)($postData['project_area'] ?? 0);
         $projectValue = (float)($postData['project_value'] ?? 0);
-        $turnoverDate = $postData['turnover_date'];
+        $turnoverDate = $postData['turnover_date'] ?? '';
         $projectCategoryId = (int)($postData['project_category_id'] ?? 0);
         $projectImage1 = trim($postData['project_image1'] ?? '');
         $projectImage2 = trim($postData['project_image2'] ?? '');
@@ -111,13 +111,13 @@ class CompanyProjects
     public function updateProject($postData)
     {
         $id = (int)$postData['project_id'];
-        $projectTitle = trim($postData['project_title']);
-        $projectDescription = trim($postData['project_description']);
-        $projectOwner = trim($postData['project_owner']);
-        $projectLocation = trim($postData['project_location']);
+        $projectTitle = trim($postData['project_title'] ?? '');
+        $projectDescription = trim($postData['project_description'] ?? '');
+        $projectOwner = trim($postData['project_owner'] ?? '');
+        $projectLocation = trim($postData['project_location'] ?? '');
         $projectArea = (float)($postData['project_area'] ?? 0);
         $projectValue = (float)($postData['project_value'] ?? 0);
-        $turnoverDate = $postData['turnover_date'];
+        $turnoverDate = $postData['turnover_date'] ?? '';
         $projectCategoryId = (int)($postData['project_category_id'] ?? 0);
         $projectImage1 = trim($postData['project_image1'] ?? '');
         $projectImage2 = trim($postData['project_image2'] ?? '');
