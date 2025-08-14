@@ -70,6 +70,9 @@ class CompanyProjects
 
     public function createProject($postData)
     {
+        // Debug: Log the received data
+        error_log("CompanyProjects::createProject - Received postData: " . print_r($postData, true));
+        
         $projectTitle = trim($postData['project_title'] ?? '');
         $projectDescription = trim($postData['project_description'] ?? '');
         $projectOwner = trim($postData['project_owner'] ?? '');
@@ -82,6 +85,12 @@ class CompanyProjects
         $projectImage2 = trim($postData['project_image2'] ?? '');
         $displayOrder = (int)($postData['display_order'] ?? 0);
         $status = (int)($postData['status'] ?? 1);
+
+        // Debug: Log the processed values
+        error_log("CompanyProjects::createProject - projectTitle: '$projectTitle'");
+        error_log("CompanyProjects::createProject - projectDescription: '$projectDescription'");
+        error_log("CompanyProjects::createProject - projectOwner: '$projectOwner'");
+        error_log("CompanyProjects::createProject - projectLocation: '$projectLocation'");
 
         if (empty($projectTitle)) {
             throw new Exception('Project title is required');
@@ -110,6 +119,9 @@ class CompanyProjects
 
     public function updateProject($postData)
     {
+        // Debug: Log the received data
+        error_log("CompanyProjects::updateProject - Received postData: " . print_r($postData, true));
+        
         $id = (int)$postData['project_id'];
         $projectTitle = trim($postData['project_title'] ?? '');
         $projectDescription = trim($postData['project_description'] ?? '');
@@ -123,6 +135,12 @@ class CompanyProjects
         $projectImage2 = trim($postData['project_image2'] ?? '');
         $displayOrder = (int)($postData['display_order'] ?? 0);
         $status = (int)($postData['status'] ?? 1);
+
+        // Debug: Log the processed values
+        error_log("CompanyProjects::updateProject - projectTitle: '$projectTitle'");
+        error_log("CompanyProjects::updateProject - projectDescription: '$projectDescription'");
+        error_log("CompanyProjects::updateProject - projectOwner: '$projectOwner'");
+        error_log("CompanyProjects::updateProject - projectLocation: '$projectLocation'");
 
         if (empty($projectTitle)) {
             throw new Exception('Project title is required');

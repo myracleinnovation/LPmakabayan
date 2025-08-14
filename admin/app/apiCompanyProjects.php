@@ -192,6 +192,12 @@
             switch ($action) {
                 case 'create':
                     try {
+                        // Debug: Log the specific fields we're looking for
+                        error_log("project_title: " . ($_POST['project_title'] ?? 'NOT SET'));
+                        error_log("project_description: " . ($_POST['project_description'] ?? 'NOT SET'));
+                        error_log("project_owner: " . ($_POST['project_owner'] ?? 'NOT SET'));
+                        error_log("project_location: " . ($_POST['project_location'] ?? 'NOT SET'));
+                        
                         // Handle file uploads
                         $uploadDir = '../../assets/img/';
                         if (!is_dir($uploadDir)) {
@@ -232,6 +238,12 @@
 
                 case 'update':
                     try {
+                        // Debug: Log the specific fields we're looking for
+                        error_log("project_title: " . ($_POST['project_title'] ?? 'NOT SET'));
+                        error_log("project_description: " . ($_POST['project_description'] ?? 'NOT SET'));
+                        error_log("project_owner: " . ($_POST['project_owner'] ?? 'NOT SET'));
+                        error_log("project_location: " . ($_POST['project_location'] ?? 'NOT SET'));
+                        
                         // Handle file uploads
                         $uploadDir = '../../assets/img/';
                         if (!is_dir($uploadDir)) {
