@@ -169,8 +169,27 @@
             }
         }
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Debug: Log the POST data
+        error_log("POST data: " . print_r($_POST, true));
+        error_log("FILES data: " . print_r($_FILES, true));
+        
         if (isset($_POST['action'])) {
-            switch ($_POST['action']) {
+            $action = $_POST['action'];
+            error_log("Action detected: " . $action);
+            
+        } else {
+            // Fallback: Check if we have project_id for update or other indicators
+            if (isset($_POST['project_id']) && !empty($_POST['project_id'])) {
+                $action = 'update';
+                error_log("Action inferred as update from project_id");
+            } else {
+                $action = 'create';
+                error_log("Action inferred as create (no project_id)");
+            }
+        }
+        
+        if (isset($action)) {
+            switch ($action) {
                 case 'create':
                     try {
                         // Handle file uploads
@@ -305,11 +324,17 @@
                 default:
                     $response = [
                         'status' => 0,
-                        'message' => 'Invalid action',
+                        'message' => 'Invalid action: ' . $action,
                         'data' => null
                     ];
                     break;
             }
+        } else {
+            $response = [
+                'status' => 0,
+                'message' => 'No action specified',
+                'data' => null
+            ];
         }
     }
 
