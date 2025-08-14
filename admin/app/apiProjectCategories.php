@@ -1,4 +1,10 @@
 <?php
+    // Increase upload limits for larger images
+    ini_set('upload_max_filesize', '100M');
+    ini_set('post_max_size', '200M');
+    ini_set('memory_limit', '512M');
+    ini_set('max_execution_time', 600);
+    
     ini_set('display_errors', 1);
     ini_set('log_errors', 1);
     error_reporting(E_ALL);
@@ -21,6 +27,63 @@
         'message' => 'No action taken',
         'data' => null
     ];
+
+    // Function to validate and process image upload
+    function processImageUpload($file, $uploadDir, $projectCategories, $oldImage = null) {
+        // Check for upload errors
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $errorMessages = [
+                UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
+                UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
+                UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+                UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+                UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+                UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+                UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload'
+            ];
+            throw new Exception($errorMessages[$file['error']] ?? 'Unknown upload error');
+        }
+
+        // Check file size (100MB limit)
+        $maxFileSize = 100 * 1024 * 1024; // 100MB in bytes
+        if ($file['size'] > $maxFileSize) {
+            throw new Exception('File size exceeds 100MB limit');
+        }
+
+        // Validate file extension
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        
+        if (!in_array($extension, $allowedExtensions)) {
+            throw new Exception('Invalid file type. Allowed: JPG, PNG, GIF, WebP');
+        }
+
+        // Validate file type using getimagesize
+        $imageInfo = getimagesize($file['tmp_name']);
+        if ($imageInfo === false) {
+            throw new Exception('Invalid image file');
+        }
+
+        // Delete old image if it exists
+        if (!empty($oldImage)) {
+            $oldFile = $uploadDir . $oldImage;
+            if (file_exists($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+
+        // Generate unique filename
+        $nextCategoryNumber = $projectCategories->getNextCategoryNumber();
+        $filename = 'category' . $nextCategoryNumber . '.' . $extension;
+        $filepath = $uploadDir . $filename;
+
+        // Move uploaded file
+        if (!move_uploaded_file($file['tmp_name'], $filepath)) {
+            throw new Exception('Failed to save uploaded file');
+        }
+
+        return $filename;
+    }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($_GET['get_categories'])) {
@@ -147,18 +210,8 @@
                         // Handle category_image (only if file is uploaded)
                         if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['category_image'];
-                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                            
-                            if (in_array($extension, $allowedExtensions)) {
-                                $nextCategoryNumber = $projectCategories->getNextCategoryNumber();
-                                $filename = 'category' . $nextCategoryNumber . '.' . $extension;
-                                $filepath = $uploadDir . $filename;
-                                
-                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
-                                    $postData['category_image'] = $filename;
-                                }
-                            }
+                            $filename = processImageUpload($file, $uploadDir, $projectCategories);
+                            $postData['category_image'] = $filename;
                         }
 
                         $categoryId = $projectCategories->createCategory($postData);
@@ -194,26 +247,8 @@
                         // Handle category_image (only if new file is uploaded)
                         if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['category_image'];
-                            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                            
-                            if (in_array($extension, $allowedExtensions)) {
-                                // Delete old category image file if it exists
-                                if (!empty($currentCategory['CategoryImage'])) {
-                                    $oldFile = $uploadDir . $currentCategory['CategoryImage'];
-                                    if (file_exists($oldFile)) {
-                                        unlink($oldFile);
-                                    }
-                                }
-                                
-                                $nextCategoryNumber = $projectCategories->getNextCategoryNumber();
-                                $filename = 'category' . $nextCategoryNumber . '.' . $extension;
-                                $filepath = $uploadDir . $filename;
-                                
-                                if (move_uploaded_file($file['tmp_name'], $filepath)) {
-                                    $postData['category_image'] = $filename;
-                                }
-                            }
+                            $filename = processImageUpload($file, $uploadDir, $projectCategories, $currentCategory['CategoryImage']);
+                            $postData['category_image'] = $filename;
                         } else {
                             // Keep existing image if no new file uploaded
                             $postData['category_image'] = $currentCategory['CategoryImage'] ?? '';
