@@ -44,10 +44,10 @@
             throw new Exception($errorMessages[$file['error']] ?? 'Unknown upload error');
         }
 
-        // Check file size (100MB limit)
-        $maxFileSize = 100 * 1024 * 1024; // 100MB in bytes
+        // Check file size (50MB limit)
+        $maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
         if ($file['size'] > $maxFileSize) {
-            throw new Exception('File size exceeds 100MB limit');
+            throw new Exception('File size exceeds 50MB limit');
         }
 
         // Validate file extension
@@ -196,18 +196,6 @@
                             $postData['project_image2'] = $filename;
                         }
 
-                        // Add display settings to postData
-                        $postData['ShowTitle'] = isset($_POST['show_project_title']) ? 1 : 0;
-                        $postData['ShowOwner'] = isset($_POST['show_project_owner']) ? 1 : 0;
-                        $postData['ShowLocation'] = isset($_POST['show_project_location']) ? 1 : 0;
-                        $postData['ShowArea'] = isset($_POST['show_project_area']) ? 1 : 0;
-                        $postData['ShowValue'] = isset($_POST['show_project_value']) ? 1 : 0;
-                        $postData['ShowTurnoverDate'] = isset($_POST['show_turnover_date']) ? 1 : 0;
-                        $postData['ShowCategory'] = isset($_POST['show_project_category']) ? 1 : 0;
-                        $postData['ShowDescription'] = isset($_POST['show_project_description']) ? 1 : 0;
-                        $postData['ShowImage1'] = isset($_POST['show_project_image1']) ? 1 : 0;
-                        $postData['ShowImage2'] = isset($_POST['show_project_image2']) ? 1 : 0;
-
                         $projectId = $companyProjects->createProject($postData);
                         $response = [
                             'status' => 1,
@@ -257,18 +245,6 @@
                             // Keep existing image2 if no new file uploaded
                             $postData['project_image2'] = $currentProject['ProjectImage2'] ?? '';
                         }
-
-                        // Add display settings to postData
-                        $postData['ShowTitle'] = isset($_POST['show_project_title']) ? 1 : 0;
-                        $postData['ShowOwner'] = isset($_POST['show_project_owner']) ? 1 : 0;
-                        $postData['ShowLocation'] = isset($_POST['show_project_location']) ? 1 : 0;
-                        $postData['ShowArea'] = isset($_POST['show_project_area']) ? 1 : 0;
-                        $postData['ShowValue'] = isset($_POST['show_project_value']) ? 1 : 0;
-                        $postData['ShowTurnoverDate'] = isset($_POST['show_turnover_date']) ? 1 : 0;
-                        $postData['ShowCategory'] = isset($_POST['show_project_category']) ? 1 : 0;
-                        $postData['ShowDescription'] = isset($_POST['show_project_description']) ? 1 : 0;
-                        $postData['ShowImage1'] = isset($_POST['show_project_image1']) ? 1 : 0;
-                        $postData['ShowImage2'] = isset($_POST['show_project_image2']) ? 1 : 0;
 
                         $companyProjects->updateProject($postData);
                         $response = [
