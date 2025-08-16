@@ -128,7 +128,7 @@ if (!function_exists('renderFormField')) {
                     aria-label="<?php echo htmlspecialchars($field['ariaLabel'] ?: $field['label']); ?>"
                     minlength="<?php echo $field['minlength']; ?>"
                     maxlength="<?php echo $field['maxlength']; ?>"
-                    pattern="<?php echo $field['pattern']; ?>"
+                    <?php if (!empty($field['pattern'])): ?>pattern="<?php echo $field['pattern']; ?>"<?php endif; ?>
                     autocomplete="<?php echo $field['autocomplete']; ?>"
                     value="<?php echo htmlspecialchars($field['value']); ?>"
                     <?php if ($field['required']): ?>required<?php endif; ?>
@@ -170,7 +170,7 @@ if (!function_exists('renderFormField')) {
                 cols="<?php echo $field['cols']; ?>"
                 minlength="<?php echo $field['minlength']; ?>"
                 maxlength="<?php echo $field['maxlength']; ?>"
-                pattern="<?php echo $field['pattern']; ?>"
+                <?php if (!empty($field['pattern'])): ?>pattern="<?php echo $field['pattern']; ?>"<?php endif; ?>
                 <?php if ($field['required']): ?>required<?php endif; ?>
                 <?php if ($field['readonly']): ?>readonly<?php endif; ?>
                 <?php if ($field['disabled']): ?>disabled<?php endif; ?>
@@ -210,7 +210,7 @@ if (!function_exists('renderFormField')) {
                 aria-label="<?php echo htmlspecialchars($field['ariaLabel'] ?: $field['label']); ?>"
                 minlength="<?php echo $field['minlength']; ?>"
                 maxlength="<?php echo $field['maxlength']; ?>"
-                pattern="<?php echo $field['pattern']; ?>"
+                <?php if (!empty($field['pattern'])): ?>pattern="<?php echo $field['pattern']; ?>"<?php endif; ?>
                 autocomplete="<?php echo $field['autocomplete']; ?>"
                 value="<?php echo htmlspecialchars($field['value']); ?>"
                 <?php if ($field['required']): ?>required<?php endif; ?>
