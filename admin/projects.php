@@ -3,6 +3,7 @@ session_start();
 include 'components/sessionCheck.php';
 include 'components/header.php';
 require_once '../app/Db.php';
+include_once '../components/reusable/form-fields.php';
 
 $admin_username = $_SESSION['admin_username'];
 $admin_id = $_SESSION['admin_id'];
@@ -40,16 +41,16 @@ $admin_id = $_SESSION['admin_id'];
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-12">
                                     <?php
-                                        $searchConfig = [
-                                            'id' => 'projectsCustomSearch',
-                                            'placeholder' => 'Search projects...',
-                                            'dataTarget' => 'projectsTable',
-                                            'minLength' => 2,
-                                            'delay' => 300,
-                                            'showClear' => true
-                                        ];
-
-                                        include '../components/reusable/search.php'; 
+                                    $searchConfig = [
+                                        'id' => 'projectsCustomSearch',
+                                        'placeholder' => 'Search projects...',
+                                        'dataTarget' => 'projectsTable',
+                                        'minLength' => 2,
+                                        'delay' => 300,
+                                        'showClear' => true,
+                                    ];
+                                    
+                                    include '../components/reusable/search.php';
                                     ?>
                                 </div>
                             </div>
@@ -88,129 +89,131 @@ $admin_id = $_SESSION['admin_id'];
                 </div>
                 <form id="addProjectForm">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Project Title *</label>
-                                <?php
-                                    $inputConfig = [
-                                        'id' => 'projectTitle',
-                                        'name' => 'project_title',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
-                                ?>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Project Owner</label>
-                                <?php
-                                    $inputConfig = [
-                                        'id' => 'projectOwner',
-                                        'name' => 'project_owner',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
-                                ?>
-                            </div>
-                        </div>
+                        <?php
+                        $fieldsConfig = [
+                            'fields' => [
+                                [
+                                    'type' => 'text',
+                                    'id' => 'projectTitle',
+                                    'name' => 'project_title',
+                                    'label' => 'Project Title *',
+                                    'placeholder' => 'Enter project title...',
+                                    'required' => true,
+                                ],
+                                [
+                                    'type' => 'text',
+                                    'id' => 'projectOwner',
+                                    'name' => 'project_owner',
+                                    'label' => 'Project Owner',
+                                    'placeholder' => 'Enter project owner...',
+                                ],
+                            ],
+                            'layout' => '2-columns',
+                        ];
+                        include '../components/reusable/form-fields.php';
+                        ?>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Location</label>
-                                <?php
-                                    $inputConfig = [
-                                        'id' => 'projectLocation',
-                                        'name' => 'project_location',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
-                                ?>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Project Area (sqm)</label>
-                                <?php
-                                    $inputConfig = [
-                                        'id' => 'projectArea',
-                                        'name' => 'project_area',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
-                                ?>
-                            </div>
-                        </div>
+                        <?php
+                        $fieldsConfig = [
+                            'fields' => [
+                                [
+                                    'type' => 'text',
+                                    'id' => 'projectLocation',
+                                    'name' => 'project_location',
+                                    'label' => 'Location',
+                                    'placeholder' => 'Enter project location...',
+                                ],
+                                [
+                                    'type' => 'number',
+                                    'id' => 'projectArea',
+                                    'name' => 'project_area',
+                                    'label' => 'Project Area (sqm)',
+                                    'placeholder' => 'Enter area in sqm...',
+                                    'step' => '0.01',
+                                ],
+                            ],
+                            'layout' => '2-columns',
+                        ];
+                        include '../components/reusable/form-fields.php';
+                        ?>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Project Value (PHP)</label>
-                                <?php
-                                    $inputConfig = [
-                                        'id' => 'projectValue',
-                                        'name' => 'project_value',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
-                                ?>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Turnover Date</label>
-                                <?php
-                                    $inputConfig = [
-                                        'id' => 'turnoverDate',
-                                        'name' => 'turnover_date',
-                                        'class' => 'form-control shadow-none',
-                                        'type' => 'date'
-                                    ];
-                                    include '../components/reusable/input.php'; 
-                                ?>
-                            </div>
-                        </div>
+                        <?php
+                        $fieldsConfig = [
+                            'fields' => [
+                                [
+                                    'type' => 'number',
+                                    'id' => 'projectValue',
+                                    'name' => 'project_value',
+                                    'label' => 'Project Value (PHP)',
+                                    'placeholder' => 'Enter project value...',
+                                    'step' => '0.01',
+                                ],
+                                [
+                                    'type' => 'date',
+                                    'id' => 'turnoverDate',
+                                    'name' => 'turnover_date',
+                                    'label' => 'Turnover Date',
+                                    'placeholder' => 'Select turnover date...',
+                                ],
+                            ],
+                            'layout' => '2-columns',
+                        ];
+                        include '../components/reusable/form-fields.php';
+                        ?>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Category</label>
-                                <?php
-                                    $selectConfig = [
-                                        'id' => 'projectCategoryId',
-                                        'name' => 'project_category_id',
-                                        'class' => 'form-select shadow-none'
-                                    ];
-                                    include '../components/reusable/select.php'; 
-                                ?>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label mb-0">Display Order</label>
-                                <?php
-                                    $inputConfig = [
-                                        'id' => 'displayOrder',
-                                        'name' => 'display_order',
-                                        'class' => 'form-control shadow-none',
-                                        'value' => '0'
-                                    ];
-                                    include '../components/reusable/input.php'; 
-                                ?>
-                            </div>
-                        </div>
+                        <?php
+                        $fieldsConfig = [
+                            'fields' => [
+                                [
+                                    'type' => 'select',
+                                    'id' => 'projectCategoryId',
+                                    'name' => 'project_category_id',
+                                    'label' => 'Category',
+                                    'placeholder' => 'Select Category',
+                                    'options' => [],
+                                ],
+                                [
+                                    'type' => 'number',
+                                    'id' => 'displayOrder',
+                                    'name' => 'display_order',
+                                    'label' => 'Display Order',
+                                    'placeholder' => 'Enter display order...',
+                                    'value' => '0',
+                                ],
+                            ],
+                            'layout' => '2-columns',
+                        ];
+                        include '../components/reusable/form-fields.php';
+                        ?>
 
-                        <div class="mb-3">
-                            <label class="form-label mb-0">Project Description</label>
-                            <?php
-                                $textareaConfig = [
+                        <?php
+                        $fieldsConfig = [
+                            'fields' => [
+                                [
+                                    'type' => 'textarea',
                                     'id' => 'projectDescription',
                                     'name' => 'project_description',
-                                    'class' => 'form-control shadow-none'
-                                ];
-                                include '../components/reusable/textarea.php'; 
-                            ?>
-                        </div>
+                                    'label' => 'Project Description',
+                                    'placeholder' => 'Enter project description...',
+                                    'rows' => 4,
+                                ],
+                            ],
+                            'layout' => '1-column',
+                        ];
+                        include '../components/reusable/form-fields.php';
+                        ?>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Image 1</label>
-                                <input type="file" class="form-control shadow-none" name="project_image1" accept="image/*">
+                                <input type="file" class="form-control shadow-none" name="project_image1"
+                                    accept="image/*">
                                 <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Image 2</label>
-                                <input type="file" class="form-control shadow-none" name="project_image2" accept="image/*">
+                                <input type="file" class="form-control shadow-none" name="project_image2"
+                                    accept="image/*">
                                 <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             </div>
                         </div>
@@ -218,17 +221,17 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="mb-3">
                             <label class="form-label">Status</label>
                             <?php
-                                $selectConfig = [
-                                    'id' => 'status',
-                                    'name' => 'status',
-                                    'options' => [
-                                        '1' => 'Active',
-                                        '0' => 'Inactive',
-                                    ],
-                                    'value' => '1',
-                                    'class' => 'form-select shadow-none'
-                                ];
-                                include '../components/reusable/select.php'; 
+                            $selectConfig = [
+                                'id' => 'status',
+                                'name' => 'status',
+                                'options' => [
+                                    '1' => 'Active',
+                                    '0' => 'Inactive',
+                                ],
+                                'value' => '1',
+                                'class' => 'form-select shadow-none',
+                            ];
+                            include '../components/reusable/select.php';
                             ?>
                         </div>
                     </div>
@@ -256,23 +259,23 @@ $admin_id = $_SESSION['admin_id'];
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Project Title *</label>
                                 <?php
-                                    $inputConfig = [
-                                        'id' => 'edit_project_title',
-                                        'name' => 'project_title',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
+                                $inputConfig = [
+                                    'id' => 'edit_project_title',
+                                    'name' => 'project_title',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
                                 ?>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Project Owner</label>
                                 <?php
-                                    $inputConfig = [
-                                        'id' => 'edit_project_owner',
-                                        'name' => 'project_owner',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
+                                $inputConfig = [
+                                    'id' => 'edit_project_owner',
+                                    'name' => 'project_owner',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
                                 ?>
                             </div>
                         </div>
@@ -281,23 +284,23 @@ $admin_id = $_SESSION['admin_id'];
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Location</label>
                                 <?php
-                                    $inputConfig = [
-                                        'id' => 'edit_project_location',
-                                        'name' => 'project_location',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
+                                $inputConfig = [
+                                    'id' => 'edit_project_location',
+                                    'name' => 'project_location',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
                                 ?>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Project Area (sqm)</label>
                                 <?php
-                                    $inputConfig = [
-                                        'id' => 'edit_project_area',
-                                        'name' => 'project_area',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
+                                $inputConfig = [
+                                    'id' => 'edit_project_area',
+                                    'name' => 'project_area',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
                                 ?>
                             </div>
                         </div>
@@ -306,24 +309,24 @@ $admin_id = $_SESSION['admin_id'];
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Project Value (PHP)</label>
                                 <?php
-                                    $inputConfig = [
-                                        'id' => 'edit_project_value',
-                                        'name' => 'project_value',
-                                        'class' => 'form-control shadow-none'
-                                    ];
-                                    include '../components/reusable/input.php'; 
+                                $inputConfig = [
+                                    'id' => 'edit_project_value',
+                                    'name' => 'project_value',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
                                 ?>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Turnover Date</label>
                                 <?php
-                                    $inputConfig = [
-                                        'id' => 'edit_turnover_date',
-                                        'name' => 'turnover_date',
-                                        'class' => 'form-control shadow-none',
-                                        'type' => 'date'
-                                    ];
-                                    include '../components/reusable/input.php'; 
+                                $inputConfig = [
+                                    'id' => 'edit_turnover_date',
+                                    'name' => 'turnover_date',
+                                    'class' => 'form-control shadow-none',
+                                    'type' => 'date',
+                                ];
+                                include '../components/reusable/input.php';
                                 ?>
                             </div>
                         </div>
@@ -331,20 +334,21 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Category</label>
-                                <select class="form-select shadow-none" name="project_category_id" id="edit_project_category_id">
+                                <select class="form-select shadow-none" name="project_category_id"
+                                    id="edit_project_category_id">
                                     <option value="">Select Category</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Display Order</label>
                                 <?php
-                                    $inputConfig = [
-                                        'id' => 'edit_display_order',
-                                        'name' => 'display_order',
-                                        'class' => 'form-control shadow-none',
-                                        'type' => 'number'
-                                    ];
-                                    include '../components/reusable/input.php'; 
+                                $inputConfig = [
+                                    'id' => 'edit_display_order',
+                                    'name' => 'display_order',
+                                    'class' => 'form-control shadow-none',
+                                    'type' => 'number',
+                                ];
+                                include '../components/reusable/input.php';
                                 ?>
                             </div>
                         </div>
@@ -352,12 +356,12 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="mb-3">
                             <label class="form-label mb-0">Project Description</label>
                             <?php
-                                $textareaConfig = [
-                                    'id' => 'edit_project_description',
-                                    'name' => 'project_description',
-                                    'class' => 'form-control shadow-none'
-                                ];
-                                include '../components/reusable/textarea.php'; 
+                            $textareaConfig = [
+                                'id' => 'edit_project_description',
+                                'name' => 'project_description',
+                                'class' => 'form-control shadow-none',
+                            ];
+                            include '../components/reusable/textarea.php';
                             ?>
                         </div>
 
@@ -381,17 +385,17 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="mb-3">
                             <label class="form-label">Status</label>
                             <?php
-                                $selectConfig = [
-                                    'id' => 'edit_status',
-                                    'name' => 'status',
-                                    'options' => [
-                                        '1' => 'Active',
-                                        '0' => 'Inactive',
-                                    ],
-                                    'value' => '1',
-                                    'class' => 'form-select shadow-none'
-                                ];
-                                include '../components/reusable/select.php'; 
+                            $selectConfig = [
+                                'id' => 'edit_status',
+                                'name' => 'status',
+                                'options' => [
+                                    '1' => 'Active',
+                                    '0' => 'Inactive',
+                                ],
+                                'value' => '1',
+                                'class' => 'form-select shadow-none',
+                            ];
+                            include '../components/reusable/select.php';
                             ?>
                         </div>
                     </div>
