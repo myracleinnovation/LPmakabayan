@@ -30,7 +30,8 @@ $admin_id = $_SESSION['admin_id'];
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">All Industries</h5>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addIndustryModal">
+                            <button class="btn btn-primary shadow-none" data-bs-toggle="modal"
+                                data-bs-target="#addIndustryModal">
                                 Add Industries
                             </button>
                         </div>
@@ -40,15 +41,23 @@ $admin_id = $_SESSION['admin_id'];
 
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-12">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control shadow-none"
-                                            id="industriesCustomSearch" placeholder="Search industries...">
-                                    </div>
+                                    <?php
+                                    $searchConfig = [
+                                        'id' => 'industriesCustomSearch',
+                                        'placeholder' => 'Search industries...',
+                                        'dataTarget' => 'industriesTable',
+                                        'minLength' => 2,
+                                        'delay' => 300,
+                                        'showClear' => true,
+                                    ];
+                                    
+                                    include '../components/reusable/search.php';
+                                    ?>
                                 </div>
                             </div>
 
                             <div class="table-responsive">
-                                <table id="industriesTable" class="table table-hover">
+                                <table id="industriesTable" class="table table-hover industries_table">
                                     <thead>
                                         <tr>
                                             <th>Image</th>
@@ -84,32 +93,63 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="row">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Industry Name *</label>
-                                <input type="text" class="form-control" name="industry_name" required>
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'industryName',
+                                    'name' => 'industry_name',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control" name="display_order" value="0">
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'displayOrder',
+                                    'name' => 'display_order',
+                                    'class' => 'form-control shadow-none',
+                                    'type' => 'number',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Description</label>
-                            <textarea class="form-control" name="industry_description" rows="4"
-                                placeholder="Describe the industry and its characteristics..."></textarea>
+                            <?php
+                            $textareaConfig = [
+                                'id' => 'industryDescription',
+                                'name' => 'industry_description',
+                                'class' => 'form-control shadow-none',
+                            ];
+                            include '../components/reusable/textarea.php';
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Image</label>
-                            <input type="file" class="form-control" name="industry_image" accept="image/*">
+                            <input type="file" class="form-control shadow-none" name="industry_image"
+                                accept="image/*">
                             <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select" name="status">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
+                            <?php
+                            $selectConfig = [
+                                'id' => 'status',
+                                'name' => 'status',
+                                'options' => [
+                                    '1' => 'Active',
+                                    '0' => 'Inactive',
+                                ],
+                                'value' => '1',
+                                'class' => 'form-select shadow-none',
+                            ];
+                            include '../components/reusable/select.php';
+                            ?>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -136,24 +176,44 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="row">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Industry Name *</label>
-                                <input type="text" class="form-control" name="industry_name" id="edit_industry_name"
-                                    required>
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'edit_industry_name',
+                                    'name' => 'industry_name',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control" name="display_order"
-                                    id="edit_display_order">
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'edit_display_order',
+                                    'name' => 'display_order',
+                                    'class' => 'form-control shadow-none',
+                                    'type' => 'number',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Description</label>
-                            <textarea class="form-control" name="industry_description" id="edit_industry_description" rows="4"></textarea>
+                            <?php
+                            $textareaConfig = [
+                                'id' => 'edit_industry_description',
+                                'name' => 'industry_description',
+                                'class' => 'form-control shadow-none',
+                            ];
+                            include '../components/reusable/textarea.php';
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Image</label>
-                            <input type="file" class="form-control" name="industry_image"
+                            <input type="file" class="form-control shadow-none" name="industry_image"
                                 id="edit_industry_image" accept="image/*">
                             <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             <div id="current_industry_image_preview" class="mt-2"></div>
@@ -161,10 +221,19 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select" name="status" id="edit_status">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
+                            <?php
+                            $selectConfig = [
+                                'id' => 'edit_status',
+                                'name' => 'status',
+                                'options' => [
+                                    '1' => 'Active',
+                                    '0' => 'Inactive',
+                                ],
+                                'value' => '1',
+                                'class' => 'form-select shadow-none',
+                            ];
+                            include '../components/reusable/select.php';
+                            ?>
                         </div>
                     </div>
                     <div class="modal-footer">

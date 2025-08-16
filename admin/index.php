@@ -1,47 +1,46 @@
 <?php
-    session_start();
-    include 'components/sessionCheck.php';
-    include 'components/header.php';
-    require_once '../app/Db.php';
+session_start();
+include 'components/sessionCheck.php';
+include 'components/header.php';
+require_once '../app/Db.php';
 
-    $admin_username = $_SESSION['admin_username'];
-    $admin_id = $_SESSION['admin_id'];
+$admin_username = $_SESSION['admin_username'];
+$admin_id = $_SESSION['admin_id'];
 
-    // Get statistics
-    try {
-        $pdo = Db::connect();
-        
-        // Count projects
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM Company_Projects WHERE Status = 1");
-        $totalProjects = $stmt->fetch()['total'];
-        
-        // Count specialties
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM Company_Specialties WHERE Status = 1");
-        $totalSpecialties = $stmt->fetch()['total'];
-        
-        // Count industries
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM Company_Industries WHERE Status = 1");
-        $totalIndustries = $stmt->fetch()['total'];
-        
-        // Count features
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM Company_Features WHERE Status = 1");
-        $totalFeatures = $stmt->fetch()['total'];
-        
-        // Count process steps
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM Company_Process WHERE Status = 1");
-        $totalProcess = $stmt->fetch()['total'];
-        
-        // Count project categories
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM Project_Categories WHERE Status = 1");
-        $totalCategories = $stmt->fetch()['total'];
-        
-        // Get recent projects
-        $stmt = $pdo->query("SELECT * FROM Company_Projects WHERE Status = 1 ORDER BY CreatedTimestamp DESC LIMIT 5");
-        $recentProjects = $stmt->fetchAll();
-        
-    } catch (Exception $e) {
-        $error_message = 'Database error: ' . $e->getMessage();
-    }
+// Get statistics
+try {
+    $pdo = Db::connect();
+
+    // Count projects
+    $stmt = $pdo->query('SELECT COUNT(*) as total FROM Company_Projects WHERE Status = 1');
+    $totalProjects = $stmt->fetch()['total'];
+
+    // Count specialties
+    $stmt = $pdo->query('SELECT COUNT(*) as total FROM Company_Specialties WHERE Status = 1');
+    $totalSpecialties = $stmt->fetch()['total'];
+
+    // Count industries
+    $stmt = $pdo->query('SELECT COUNT(*) as total FROM Company_Industries WHERE Status = 1');
+    $totalIndustries = $stmt->fetch()['total'];
+
+    // Count features
+    $stmt = $pdo->query('SELECT COUNT(*) as total FROM Company_Features WHERE Status = 1');
+    $totalFeatures = $stmt->fetch()['total'];
+
+    // Count process steps
+    $stmt = $pdo->query('SELECT COUNT(*) as total FROM Company_Process WHERE Status = 1');
+    $totalProcess = $stmt->fetch()['total'];
+
+    // Count project categories
+    $stmt = $pdo->query('SELECT COUNT(*) as total FROM Project_Categories WHERE Status = 1');
+    $totalCategories = $stmt->fetch()['total'];
+
+    // Get recent projects
+    $stmt = $pdo->query('SELECT * FROM Company_Projects WHERE Status = 1 ORDER BY CreatedTimestamp DESC LIMIT 5');
+    $recentProjects = $stmt->fetchAll();
+} catch (Exception $e) {
+    $error_message = 'Database error: ' . $e->getMessage();
+}
 ?>
 
 <body>
@@ -138,7 +137,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Recent Projects</h5>
-                            <a href="projects.php" class="btn btn-primary">View All Projects</a>
+                            <a href="projects.php" class="btn btn-primary shadow-none">View All Projects</a>
                         </div>
                         <div class="card-body">
                             <?php if (!empty($recentProjects)): ?>
@@ -161,9 +160,9 @@
                                             <td><?php echo htmlspecialchars($project['ProjectOwner']); ?></td>
                                             <td><?php echo htmlspecialchars($project['ProjectLocation']); ?></td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                 if ($project['ProjectCategoryId']) {
-                                                    $stmt = $pdo->prepare("SELECT CategoryName FROM Project_Categories WHERE IdCategory = ?");
+                                                    $stmt = $pdo->prepare('SELECT CategoryName FROM Project_Categories WHERE IdCategory = ?');
                                                     $stmt->execute([$project['ProjectCategoryId']]);
                                                     $category = $stmt->fetch();
                                                     echo htmlspecialchars($category['CategoryName'] ?? 'N/A');
@@ -189,7 +188,15 @@
                             <div class="text-center py-4">
                                 <i class="bi bi-briefcase display-1 text-muted"></i>
                                 <p class="text-muted">No projects found</p>
-                                <a href="projects.php" class="btn btn-primary">Add Your First Project</a>
+                                <?php
+                                $buttonConfig = [
+                                    'id' => 'addProject',
+                                    'label' => 'Add Your First Project',
+                                    'type' => 'primary',
+                                    'class' => 'shadow-none',
+                                ];
+                                include '../components/reusable/buttons.php';
+                                ?>
                             </div>
                             <?php endif; ?>
                         </div>

@@ -36,7 +36,8 @@ $admin_id = $_SESSION['admin_id'];
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">All Features</h5>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFeatureModal">
+                            <button class="btn btn-primary shadow-none" data-bs-toggle="modal"
+                                data-bs-target="#addFeatureModal">
                                 Add Features
                             </button>
                         </div>
@@ -46,10 +47,18 @@ $admin_id = $_SESSION['admin_id'];
 
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-12">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control shadow-none" id="featuresCustomSearch"
-                                            placeholder="Search features...">
-                                    </div>
+                                    <?php
+                                    $searchConfig = [
+                                        'id' => 'featuresCustomSearch',
+                                        'placeholder' => 'Search features...',
+                                        'dataTarget' => 'featuresTable',
+                                        'minLength' => 2,
+                                        'delay' => 300,
+                                        'showClear' => true,
+                                    ];
+                                    
+                                    include '../components/reusable/search.php';
+                                    ?>
                                 </div>
                             </div>
 
@@ -90,32 +99,63 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="row">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Feature Title *</label>
-                                <input type="text" class="form-control" name="feature_title" required>
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'featureTitle',
+                                    'name' => 'feature_title',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control" name="display_order" value="0">
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'displayOrder',
+                                    'name' => 'display_order',
+                                    'class' => 'form-control shadow-none',
+                                    'type' => 'number',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Feature Description</label>
-                            <textarea class="form-control" name="feature_description" rows="4"
-                                placeholder="Describe the feature and its benefits..."></textarea>
+                            <?php
+                            $textareaConfig = [
+                                'id' => 'featureDescription',
+                                'name' => 'feature_description',
+                                'class' => 'form-control shadow-none',
+                            ];
+                            include '../components/reusable/textarea.php';
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Feature Image</label>
-                            <input type="file" class="form-control" name="feature_image" accept="image/*">
+                            <input type="file" class="form-control shadow-none" name="feature_image"
+                                accept="image/*">
                             <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select" name="status">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
+                            <?php
+                            $selectConfig = [
+                                'id' => 'status',
+                                'name' => 'status',
+                                'options' => [
+                                    '1' => 'Active',
+                                    '0' => 'Inactive',
+                                ],
+                                'value' => '1',
+                                'class' => 'form-select shadow-none',
+                            ];
+                            include '../components/reusable/select.php';
+                            ?>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -142,35 +182,64 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="row">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Feature Title *</label>
-                                <input type="text" class="form-control" name="feature_title" id="edit_feature_title"
-                                    required>
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'edit_feature_title',
+                                    'name' => 'feature_title',
+                                    'class' => 'form-control shadow-none',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control" name="display_order"
-                                    id="edit_display_order">
+                                <?php
+                                $inputConfig = [
+                                    'id' => 'edit_display_order',
+                                    'name' => 'display_order',
+                                    'class' => 'form-control shadow-none',
+                                    'type' => 'number',
+                                ];
+                                include '../components/reusable/input.php';
+                                ?>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Feature Description</label>
-                            <textarea class="form-control" name="feature_description" id="edit_feature_description" rows="4"></textarea>
+                            <?php
+                            $textareaConfig = [
+                                'id' => 'edit_feature_description',
+                                'name' => 'feature_description',
+                                'class' => 'form-control shadow-none',
+                            ];
+                            include '../components/reusable/textarea.php';
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Feature Image</label>
-                            <input type="file" class="form-control" name="feature_image" id="edit_feature_image"
-                                accept="image/*">
+                            <input type="file" class="form-control shadow-none" name="feature_image"
+                                id="edit_feature_image" accept="image/*">
                             <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             <div id="current_feature_image_preview" class="mt-2"></div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select" name="status" id="edit_status">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
+                            <?php
+                            $selectConfig = [
+                                'id' => 'edit_status',
+                                'name' => 'status',
+                                'options' => [
+                                    '1' => 'Active',
+                                    '0' => 'Inactive',
+                                ],
+                                'value' => '1',
+                                'class' => 'form-select shadow-none',
+                            ];
+                            include '../components/reusable/select.php';
+                            ?>
                         </div>
                     </div>
                     <div class="modal-footer">

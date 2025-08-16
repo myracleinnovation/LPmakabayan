@@ -58,15 +58,29 @@ try {
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <label class="form-label mb-0">Company Name</label>
                                         </div>
-                                        <input type="text" class="form-control" name="company_name"
-                                            value="<?php echo htmlspecialchars($Company_Info['CompanyName'] ?? ''); ?>">
+                                        <?php
+                                            $inputConfig = [
+                                                'id' => 'companyName',
+                                                'name' => 'company_name',
+                                                'value' => $Company_Info['CompanyName'] ?? '',
+                                                'class' => 'form-control shadow-none'
+                                            ];
+                                            include '../components/reusable/input.php'; 
+                                        ?>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <label class="form-label mb-0">Tagline</label>
                                         </div>
-                                        <input type="text" class="form-control" name="tagline"
-                                            value="<?php echo htmlspecialchars($Company_Info['Tagline'] ?? ''); ?>">
+                                        <?php
+                                            $inputConfig = [
+                                                'id' => 'tagline',
+                                                'name' => 'tagline',
+                                                'value' => $Company_Info['Tagline'] ?? '',
+                                                'class' => 'form-control shadow-none'
+                                            ];
+                                            include '../components/reusable/input.php'; 
+                                        ?>
                                     </div>
                                 </div>
 
@@ -74,21 +88,45 @@ try {
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <label class="form-label mb-0">Company Description</label>
                                     </div>
-                                    <textarea class="form-control" name="description" rows="3"><?php echo htmlspecialchars($Company_Info['Description'] ?? ''); ?></textarea>
+                                    <?php
+                                        $textareaConfig = [
+                                            'id' => 'description',
+                                            'name' => 'description',
+                                            'value' => $Company_Info['Description'] ?? '',
+                                            'class' => 'form-control shadow-none'
+                                        ];
+                                        include '../components/reusable/textarea.php'; 
+                                    ?>
                                 </div>
 
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <label class="form-label mb-0">Mission</label>
                                     </div>
-                                    <textarea class="form-control" name="mission" rows="4"><?php echo htmlspecialchars($Company_Info['Mission'] ?? ''); ?></textarea>
+                                    <?php
+                                        $textareaConfig = [
+                                            'id' => 'mission',
+                                            'name' => 'mission',
+                                            'value' => $Company_Info['Mission'] ?? '',
+                                            'class' => 'form-control shadow-none'
+                                        ];
+                                        include '../components/reusable/textarea.php'; 
+                                    ?>
                                 </div>
 
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <label class="form-label mb-0">Vision</label>
                                     </div>
-                                    <textarea class="form-control" name="vision" rows="4"><?php echo htmlspecialchars($Company_Info['Vision'] ?? ''); ?></textarea>
+                                    <?php
+                                        $textareaConfig = [
+                                            'id' => 'vision',
+                                            'name' => 'vision',
+                                            'value' => $Company_Info['Vision'] ?? '',
+                                            'class' => 'form-control shadow-none'
+                                        ];
+                                        include '../components/reusable/textarea.php'; 
+                                    ?>
                                 </div>
 
                                 <div class="row">
@@ -96,7 +134,7 @@ try {
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <label class="form-label mb-0">About Image</label>
                                         </div>
-                                        <input type="file" class="form-control" name="about_image" accept="image/*">
+                                        <input type="file" class="form-control shadow-none" name="about_image" accept="image/*">
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_about_image_preview" class="mt-2">
                                             <?php if (!empty($Company_Info['AboutImage'])): ?>
@@ -111,7 +149,7 @@ try {
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <label class="form-label mb-0">Logo Image</label>
                                         </div>
-                                        <input type="file" class="form-control" name="logo_image" accept="image/*">
+                                        <input type="file" class="form-control shadow-none" name="logo_image" accept="image/*">
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_logo_image_preview" class="mt-2">
                                             <?php if (!empty($Company_Info['LogoImage'])): ?>
@@ -151,11 +189,17 @@ try {
                             <!-- Search Section -->
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" class="form-control shadow-none"
-                                            id="contactsCustomSearch" placeholder="Search contacts...">
-                                    </div>
+                                    <?php
+                                        $searchConfig = [
+                                            'id' => 'contactsCustomSearch',
+                                            'placeholder' => 'Search contacts...',
+                                            'dataTarget' => 'contactsTable',
+                                            'minLength' => 2,
+                                            'delay' => 300,
+                                            'showClear' => true
+                                        ];
+                                        include '../components/reusable/search.php'; 
+                                    ?>
                                 </div>
                             </div>
 
@@ -197,45 +241,85 @@ try {
 
                         <div class="mb-3">
                             <label class="form-label">Contact Type *</label>
-                            <select class="form-select" id="contactType" name="contact_type" required>
-                                <option value="">Select Type</option>
-                                <option value="phone">Phone</option>
-                                <option value="email">Email</option>
-                                <option value="address">Address</option>
-                                <option value="social_media">Social Media</option>
-                            </select>
+                            <?php
+                                $selectConfig = [
+                                    'id' => 'contactType',
+                                    'name' => 'contact_type',
+                                    'options' => [
+                                        'email' => 'Email',
+                                        'phone' => 'Phone',
+                                        'address' => 'Address',
+                                    ],
+                                    'value' => 'phone',
+                                    'class' => 'form-select shadow-none'
+                                ];
+                                include '../components/reusable/select.php'; 
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Contact Label *</label>
-                            <input type="text" class="form-control" id="contactLabel" name="contact_label"
-                                required>
+                            <?php
+                                $inputConfig = [
+                                    'id' => 'contactLabel',
+                                    'name' => 'contact_label',
+                                    'class' => 'form-control shadow-none'
+                                ];
+                                include '../components/reusable/input.php'; 
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Contact Value *</label>
-                            <input type="text" class="form-control" id="contactValue" name="contact_value"
-                                required>
+                            <?php
+                                $inputConfig = [
+                                    'id' => 'contactValue',
+                                    'name' => 'contact_value',
+                                    'class' => 'form-control shadow-none'
+                                ];
+                                include '../components/reusable/input.php'; 
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Contact Icon</label>
-                            <input type="text" class="form-control" id="contactIcon" name="contact_icon"
-                                placeholder="bi-phone">
+                            <?php
+                                $inputConfig = [
+                                    'id' => 'contactIcon',
+                                    'name' => 'contact_icon',
+                                    'class' => 'form-control shadow-none'
+                                ];
+                                include '../components/reusable/input.php'; 
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Display Order</label>
-                            <input type="number" class="form-control" id="displayOrder" name="display_order"
-                                value="0">
+                            <?php
+                                $inputConfig = [
+                                    'id' => 'displayOrder',
+                                    'name' => 'display_order',
+                                    'class' => 'form-control shadow-none'
+                                ];
+                                include '../components/reusable/input.php'; 
+                            ?>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select" id="status" name="status">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
+                            <?php
+                                $selectConfig = [
+                                    'id' => 'status',
+                                    'name' => 'status',
+                                    'options' => [
+                                        '1' => 'Active',
+                                        '0' => 'Inactive',
+                                    ],
+                                    'value' => '1',
+                                    'class' => 'form-select shadow-none'
+                                ];
+                                include '../components/reusable/select.php'; 
+                            ?>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -279,11 +279,17 @@ mixed-use developments.', 'project8.png', 2),
 installations for various project types.', 'specialties5.png', 3);
 
 -- Seed: Projects
-INSERT INTO Company_Projects ( ProjectTitle, ProjectDescription,ProjectOwner,ProjectLocation,ProjectArea,ProjectValue,TurnoverDate,ProjectCategoryId,ProjectImage1,ProjectImage2,DisplayOrder) VALUES
-( 'Two-Storey Residential With Roof Deck', 'A modern two-storey residential home featuring a functional roof deck and smart space utilization. Designed for comfort and flexibility, this project highlights our strength in residential design and structural execution in a sloped terrain environment. The project includes modern amenities, energy-efficient features, and sustainable design elements.',
+INSERT INTO Company_Projects ( ProjectTitle,
+ProjectDescription,ProjectOwner,ProjectLocation,ProjectArea,ProjectValue,TurnoverDate,ProjectCategoryId,ProjectImage1,ProjectImage2,DisplayOrder)
+VALUES
+( 'Two-Storey Residential With Roof Deck', 'A modern two-storey residential home featuring a functional roof deck and
+smart space utilization. Designed for comfort and flexibility, this project highlights our strength in residential
+design and structural execution in a sloped terrain environment. The project includes modern amenities, energy-efficient
+features, and sustainable design elements.',
 'Jun Galase', 'Batangas', 250.00, 8500000.00, '2019-04-01', 1, 'project4.png', 'project5.png', 1),
 (
-'Commercial & Office Building', 'A modern commercial and office building designed for efficiency and functionality. This project showcases our expertise
+'Commercial & Office Building', 'A modern commercial and office building designed for efficiency and functionality. This
+project showcases our expertise
 in commercial construction with emphasis on structural integrity, modern amenities, and sustainable design principles.
 The building features flexible office spaces, modern facilities, and energy-efficient systems.',
 'Albert Sulog','Cavite', 1200.00, 25000000.00, '2016-04-01', 2, 'project4.png', 'project5.png', 2);

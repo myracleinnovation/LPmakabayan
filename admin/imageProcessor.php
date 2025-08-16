@@ -263,10 +263,17 @@ if (is_dir($imgDir)) {
                             <h5 class="card-title">Image List</h5>
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control shadow-none" id="imageCustomSearch"
-                                            placeholder="Search images...">
-                                    </div>
+                                    <?php
+                                        $searchConfig = [
+                                            'id' => 'imageCustomSearch',
+                                            'placeholder' => 'Search images...',
+                                            'dataTarget' => 'imageListTable',
+                                            'minLength' => 2,
+                                            'delay' => 300,
+                                            'showClear' => true
+                                        ];
+                                        include '../components/reusable/search.php'; 
+                                    ?>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -304,7 +311,7 @@ if (is_dir($imgDir)) {
                         <div class="mb-3">
                             <label class="form-label">Image Name</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="editImageName" required>
+                                <input type="text" class="form-control shadow-none" id="editImageName" required>
                                 <span class="input-group-text">.<span id="editImageExtension"></span></span>
                             </div>
                             <small class="text-muted">Use only letters, numbers, dots, underscores, and hyphens</small>
