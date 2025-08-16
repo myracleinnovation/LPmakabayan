@@ -31,7 +31,9 @@ class CompanyProcess {
             $sql = "SELECT * FROM Company_Process WHERE IdProcess = ?";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            error_log("Process query result for ID $id: " . ($result ? 'found' : 'not found'));
+            return $result;
         } catch (PDOException $e) {
             error_log("Error getting process by ID: " . $e->getMessage());
             return false;

@@ -105,10 +105,42 @@
                     ]);
                 }
             }
+            // Test endpoint to check if table exists and has data
+            elseif (isset($_GET['test_table'])) {
+                try {
+                    $sql = "SELECT COUNT(*) as count FROM Company_Process";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute();
+                    $count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+                    
+                    echo json_encode([
+                        'status' => 1,
+                        'message' => 'Table test successful',
+                        'data' => [
+                            'table_exists' => true,
+                            'record_count' => $count
+                        ]
+                    ]);
+                } catch (PDOException $e) {
+                    echo json_encode([
+                        'status' => 0,
+                        'message' => 'Table test failed: ' . $e->getMessage(),
+                        'data' => [
+                            'table_exists' => false,
+                            'error' => $e->getMessage()
+                        ]
+                    ]);
+                }
+            }
             // Get single process
             elseif (isset($_GET['get_process']) && isset($_GET['id'])) {
-                $process = $companyProcess->getProcessById($_GET['id']);
-                if ($process) {
+                $processId = $_GET['id'];
+                error_log("Getting process with ID: " . $processId);
+                
+                $process = $companyProcess->getProcessById($processId);
+                error_log("Process result: " . ($process ? 'found' : 'not found'));
+                
+                if ($process !== false) {
                     echo json_encode([
                         'status' => 1,
                         'message' => 'Process retrieved successfully',
@@ -117,7 +149,7 @@
                 } else {
                     echo json_encode([
                         'status' => 0,
-                        'message' => 'Process not found'
+                        'message' => 'Process not found or error occurred'
                     ]);
                 }
             }

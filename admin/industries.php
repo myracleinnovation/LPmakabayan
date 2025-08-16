@@ -38,7 +38,14 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="card-body">
                             <div id="alert-container"></div>
 
-
+                            <div class="row mb-3 mt-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none"
+                                            id="industriesCustomSearch" placeholder="Search industries...">
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="table-responsive">
                                 <table id="industriesTable" class="table table-hover">
@@ -69,7 +76,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-plus me-2"></i>Add Industries</h5>
+                    <h5 class="modal-title">Add Industries</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="addIndustryForm">
@@ -119,7 +126,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Industry</h5>
+                    <h5 class="modal-title">Edit Industry</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="editIndustryForm">
@@ -134,19 +141,20 @@ $admin_id = $_SESSION['admin_id'];
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control" name="display_order" id="edit_display_order">
+                                <input type="number" class="form-control" name="display_order"
+                                    id="edit_display_order">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Description</label>
-                            <textarea class="form-control" name="industry_description" id="edit_industry_description"
-                                rows="4"></textarea>
+                            <textarea class="form-control" name="industry_description" id="edit_industry_description" rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Image</label>
-                            <input type="file" class="form-control" name="industry_image" id="edit_industry_image" accept="image/*">
+                            <input type="file" class="form-control" name="industry_image"
+                                id="edit_industry_image" accept="image/*">
                             <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             <div id="current_industry_image_preview" class="mt-2"></div>
                         </div>

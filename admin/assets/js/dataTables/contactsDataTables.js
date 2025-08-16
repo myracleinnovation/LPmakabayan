@@ -1,12 +1,7 @@
 $(document).ready(function() {
-    // Don't run on companyInfo.php page to avoid duplicate handlers
-    if ($('#companyInfoForm').length > 0) {
-        return;
-    }
-    
     // Initialize DataTable for Contacts only if the table exists
     let contactsDataTable;
-
+    
     // Only initialize if the contacts table exists on this page
     if ($('#contactsTable').length > 0) {
         // Check if DataTable already exists
@@ -37,16 +32,11 @@ $(document).ready(function() {
             { data: 'DisplayOrder', render: data => `<div class="text-center">${data}</div>` },
             { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
             { data: null, render: (_, __, row) => `
-                <div class="btn-group" role="group">
-                    <button class="btn btn-warning  edit-contact" 
+                <div class="btn-group gap-2" role="group">
+                    <button class="btn btn-outline-primary  edit-contact" 
                             data-contact-id="${row.IdContact}" 
                             title="Edit Contact">
                         <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-danger  delete-contact" 
-                            data-contact-id="${row.IdContact}" 
-                            title="Delete Contact">
-                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
             ` }
@@ -58,8 +48,10 @@ $(document).ready(function() {
     // Only run these functions if the contacts table exists
     if ($('#contactsTable').length > 0) {
         // Search functionality
-        $('#contactCustomSearch').on('keyup', function () {
-            contactsDataTable.search(this.value).draw();
+        $('#contactsCustomSearch').on('keyup', function () {
+            if (contactsDataTable) {
+                contactsDataTable.search(this.value).draw();
+            }
         });
 
     // Handle contact form submission (create/update)

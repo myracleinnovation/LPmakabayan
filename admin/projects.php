@@ -37,7 +37,14 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="card-body">
                             <div id="alert-container"></div>
 
-
+                            <div class="row mb-3 mt-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="projectsCustomSearch"
+                                            placeholder="Search projects...">
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="table-responsive">
                                 <table id="projectsTable" class="table table-hover">
@@ -68,7 +75,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-plus me-2"></i>Add New Project</h5>
+                    <h5 class="modal-title">Add New Project</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="addProjectForm">
@@ -147,7 +154,7 @@ $admin_id = $_SESSION['admin_id'];
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Add Project</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
                     </div>
                 </form>
             </div>
@@ -158,7 +165,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Project</h5>
+                    <h5 class="modal-title">Edit Project</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="editProjectForm">
@@ -168,11 +175,13 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Project Title *</label>
-                                <input type="text" class="form-control" name="project_title" id="edit_project_title">
+                                <input type="text" class="form-control" name="project_title"
+                                    id="edit_project_title">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Project Owner</label>
-                                <input type="text" class="form-control" name="project_owner" id="edit_project_owner">
+                                <input type="text" class="form-control" name="project_owner"
+                                    id="edit_project_owner">
                             </div>
                         </div>
 
@@ -197,7 +206,8 @@ $admin_id = $_SESSION['admin_id'];
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Turnover Date</label>
-                                <input type="date" class="form-control" name="turnover_date" id="edit_turnover_date">
+                                <input type="date" class="form-control" name="turnover_date"
+                                    id="edit_turnover_date">
                             </div>
                         </div>
 
@@ -210,26 +220,28 @@ $admin_id = $_SESSION['admin_id'];
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Display Order</label>
-                                <input type="number" class="form-control" name="display_order" id="edit_display_order">
+                                <input type="number" class="form-control" name="display_order"
+                                    id="edit_display_order">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label mb-0">Project Description</label>
-                            <textarea class="form-control" name="project_description" id="edit_project_description"
-                                rows="4"></textarea>
+                            <textarea class="form-control" name="project_description" id="edit_project_description" rows="4"></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Image 1</label>
-                                <input type="file" class="form-control" name="project_image1" id="edit_project_image1" accept="image/*">
+                                <input type="file" class="form-control" name="project_image1"
+                                    id="edit_project_image1" accept="image/*">
                                 <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                 <div id="current_image1_preview" class="mt-2"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-0">Image 2</label>
-                                <input type="file" class="form-control" name="project_image2" id="edit_project_image2" accept="image/*">
+                                <input type="file" class="form-control" name="project_image2"
+                                    id="edit_project_image2" accept="image/*">
                                 <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                 <div id="current_image2_preview" class="mt-2"></div>
                             </div>
@@ -245,7 +257,7 @@ $admin_id = $_SESSION['admin_id'];
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Project</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
             </div>

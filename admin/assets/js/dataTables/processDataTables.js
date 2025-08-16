@@ -156,18 +156,22 @@ function initializeProcessDataTable() {
     // Edit process
     $(document).on('click', '.edit-process', function () {
         const processId = $(this).data('process-id');
+        console.log('Editing process ID:', processId);
+        
         $.ajax({
             url: 'app/apiCompanyProcess.php',
             type: 'GET',
             data: { get_process: true, id: processId },
-            success: response => {
-                if (response.status === 1) {
+            dataType: 'json',
+            success: function(response) {
+                console.log('API Response:', response);
+                if (response.status === 1 && response.data) {
                     const process = response.data;
                     
                     // Fill form fields
                     $('#edit_process_id').val(process.IdProcess);
                     $('#edit_process_title').val(process.ProcessTitle);
-                    $('#edit_process_description').val(process.ProcessDescription);
+                    $('#edit_process_description').val(process.ProcessDescription || '');
                     $('#edit_display_order').val(process.DisplayOrder);
                     $('#edit_status').val(process.Status);
                     
@@ -184,11 +188,13 @@ function initializeProcessDataTable() {
                     
                     $('#editProcessModal').modal('show');
                 } else {
+                    console.error('API Error:', response);
                     toastr.error(response.message || 'Error retrieving process data');
                 }
             },
-            error: (xhr, status, error) => {
+            error: function(xhr, status, error) {
                 console.error('Ajax error:', status, error);
+                console.error('Response text:', xhr.responseText);
                 toastr.error('Error retrieving process data');
             }
         });

@@ -32,75 +32,74 @@ $admin_id = $_SESSION['admin_id'];
 
         <section class="section">
             <div class="row">
-                <div class="row">
-                    <!-- Change Password -->
-                    <div class="col-lg-6 mb-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title"><i class="bi bi-key me-2"></i>Change Password</h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="changePasswordForm">
-                                    <div class="mb-3">
-                                        <label class="form-label">Current Password *</label>
-                                        <input type="password" class="form-control" name="current_password" required>
-                                    </div>
+                <!-- Change Password -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Change Password</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="changePasswordForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Current Password *</label>
+                                    <input type="password" class="form-control" name="current_password" required>
+                                </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">New Password *</label>
-                                        <input type="password" class="form-control" name="new_password" required>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">New Password *</label>
+                                    <input type="password" class="form-control" name="new_password" required>
+                                </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Confirm New Password *</label>
-                                        <input type="password" class="form-control" name="confirm_password" required>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirm New Password *</label>
+                                    <input type="password" class="form-control" name="confirm_password" required>
+                                </div>
 
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-save me-2"></i>Change Password
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        Change Password
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Admin Accounts -->
-                    <div class="col-lg-6 mb-4">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title"><i class="bi bi-people me-2"></i>Admin Accounts</h5>
-                                <button class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#addAdminModal">
-                                    Add Admin
-                                </button>
-                            </div>
-                            <div class="card-body">
-                                <!-- Search Section -->
-                                <div class="row mb-3 mt-3">
-                                    <div class="col-md-12">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control shadow-none" id="adminCustomSearch" placeholder="Search admin accounts...">
-                                        </div>
+                <!-- Admin Accounts -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Admin Accounts</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+                                Add Admin
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search Section -->
+                            <div class="row mb-3 mt-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none" id="adminCustomSearch"
+                                            placeholder="Search admin accounts...">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="table-responsive">
-                                    <table id="adminsTable" class="table table-hover admins_table" data-current-admin="<?php echo $admin_id; ?>">
-                                        <thead>
-                                            <tr>
-                                                <th>Username</th>
-                                                <th>Status</th>
-                                                <th>Created</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Data will be loaded via AJAX -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="table-responsive">
+                                <table id="adminsTable" class="table table-hover admins_table"
+                                    data-current-admin="<?php echo $admin_id; ?>">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be loaded via AJAX -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

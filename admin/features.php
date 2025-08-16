@@ -44,7 +44,14 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="card-body">
                             <div id="alert-container"></div>
 
-
+                            <div class="row mb-3 mt-3">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none" id="featuresCustomSearch"
+                                            placeholder="Search features...">
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="table-responsive">
                                 <table id="featuresTable" class="table table-hover features_table">
@@ -75,7 +82,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-plus me-2"></i>Add Features</h5>
+                    <h5 class="modal-title">Add Features</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="addFeatureForm">
@@ -125,7 +132,7 @@ $admin_id = $_SESSION['admin_id'];
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Feature</h5>
+                    <h5 class="modal-title">Edit Feature</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="editFeatureForm">
@@ -140,19 +147,20 @@ $admin_id = $_SESSION['admin_id'];
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control" name="display_order" id="edit_display_order">
+                                <input type="number" class="form-control" name="display_order"
+                                    id="edit_display_order">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Feature Description</label>
-                            <textarea class="form-control" name="feature_description" id="edit_feature_description"
-                                rows="4"></textarea>
+                            <textarea class="form-control" name="feature_description" id="edit_feature_description" rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Feature Image</label>
-                            <input type="file" class="form-control" name="feature_image" id="edit_feature_image" accept="image/*">
+                            <input type="file" class="form-control" name="feature_image" id="edit_feature_image"
+                                accept="image/*">
                             <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                             <div id="current_feature_image_preview" class="mt-2"></div>
                         </div>

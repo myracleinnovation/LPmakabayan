@@ -1,7 +1,6 @@
 <?php
 session_start();
 include 'components/sessionCheck.php';
-include 'components/header.php';
 require_once '../app/Db.php';
 require_once 'app/ImageProcessor.php';
 
@@ -11,6 +10,9 @@ $admin_id = $_SESSION['admin_id'];
 // Handle form submissions
 $message = '';
 $messageType = '';
+
+// Check if this is an AJAX request
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
@@ -34,60 +36,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
 
             case 'process_batch':
-                $sourceDir = '../assets/img/';
-                $backupDir = '../assets/img/backup/';
+                try {
+                    $sourceDir = '../assets/img/';
+                    $backupDir = '../assets/img/backup/';
 
-                if (!is_dir($backupDir)) {
-                    mkdir($backupDir, 0755, true);
-                }
-
-                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                $files = scandir($sourceDir);
-                $processedCount = 0;
-                $errorCount = 0;
-                $totalSizeSaved = 0;
-
-                foreach ($files as $file) {
-                    if ($file === '.' || $file === '..') {
-                        continue;
+                    if (!is_dir($sourceDir)) {
+                        throw new Exception('Source directory does not exist: ' . $sourceDir);
                     }
 
-                    $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                    if (!in_array($extension, $allowedExtensions)) {
-                        continue;
+                    if (!is_dir($backupDir)) {
+                        if (!mkdir($backupDir, 0755, true)) {
+                            throw new Exception('Failed to create backup directory: ' . $backupDir);
+                        }
                     }
 
-                    try {
-                        // Create backup
-                        copy($sourceDir . $file, $backupDir . $file);
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    $files = scandir($sourceDir);
 
-                        $originalSize = filesize($sourceDir . $file);
+                    if ($files === false) {
+                        throw new Exception('Failed to read source directory: ' . $sourceDir);
+                    }
 
-                        $tempFile = [
-                            'name' => $file,
-                            'type' => mime_content_type($sourceDir . $file),
-                            'tmp_name' => $sourceDir . $file,
-                            'error' => UPLOAD_ERR_OK,
-                            'size' => $originalSize,
-                        ];
+                    $processedCount = 0;
+                    $errorCount = 0;
+                    $totalSizeSaved = 0;
 
-                        $imageProcessor = new ImageProcessor(1920, 1080, 85);
-                        $result = $imageProcessor->processImage($tempFile, $sourceDir, pathinfo($file, PATHINFO_FILENAME));
+                    foreach ($files as $file) {
+                        if ($file === '.' || $file === '..') {
+                            continue;
+                        }
 
-                        if ($result['success']) {
-                            $processedCount++;
-                            $totalSizeSaved += $originalSize - $result['processed_size'];
-                        } else {
+                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                        if (!in_array($extension, $allowedExtensions)) {
+                            continue;
+                        }
+
+                        try {
+                            // Create backup
+                            copy($sourceDir . $file, $backupDir . $file);
+
+                            $originalSize = filesize($sourceDir . $file);
+
+                            $tempFile = [
+                                'name' => $file,
+                                'type' => mime_content_type($sourceDir . $file),
+                                'tmp_name' => $sourceDir . $file,
+                                'error' => UPLOAD_ERR_OK,
+                                'size' => $originalSize,
+                            ];
+
+                            $imageProcessor = new ImageProcessor(1920, 1080, 85);
+                            $result = $imageProcessor->processImage($tempFile, $sourceDir, pathinfo($file, PATHINFO_FILENAME));
+
+                            if ($result['success']) {
+                                $processedCount++;
+                                $totalSizeSaved += $originalSize - $result['processed_size'];
+                            } else {
+                                $errorCount++;
+                            }
+                        } catch (Exception $e) {
                             $errorCount++;
                         }
-                    } catch (Exception $e) {
-                        $errorCount++;
                     }
-                }
 
-                $message = "Batch processing completed. Processed: {$processedCount}, Errors: {$errorCount}, Total saved: " . formatBytes($totalSizeSaved);
-                $messageType = $errorCount > 0 ? 'warning' : 'success';
-                break;
+                    $response = [
+                        'status' => $errorCount > 0 ? 'warning' : 'success',
+                        'message' => "Batch processing completed. Processed: {$processedCount}, Errors: {$errorCount}, Total saved: " . formatBytes($totalSizeSaved),
+                    ];
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit();
+                    break;
+                } catch (Exception $e) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Batch processing failed: ' . $e->getMessage(),
+                    ];
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit();
+                }
         }
     }
 }
@@ -137,7 +165,10 @@ if (is_dir($imgDir)) {
 }
 ?>
 
+<?php if (!$isAjax): ?>
+
 <body>
+    <?php include 'components/header.php'; ?>
     <?php include 'components/topNav.php'; ?>
     <?php include 'components/sideNav.php'; ?>
 
@@ -164,110 +195,73 @@ if (is_dir($imgDir)) {
 
         <section class="section">
             <div class="row">
-                <!-- Image Statistics -->
-                <div class="col-lg-3">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body d-flex flex-column">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
                             <h5 class="card-title">Image Statistics</h5>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-images"></i>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-images"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6><?= $totalImages ?></h6>
+                                            <span class="text-muted small pt-2">Total Images</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="ps-3">
-                                    <h6><?= $totalImages ?></h6>
-                                    <span class="text-muted small pt-2">Total Images</span>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-hdd"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6><?= formatBytes($totalSize) ?></h6>
+                                            <span class="text-muted small pt-2">Total Size</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mt-auto">
-                                <p class="mb-1"><strong>Total Size:</strong> <?= formatBytes($totalSize) ?></p>
-                                <p class="mb-1"><strong>Average Size:</strong>
-                                    <?= $totalImages > 0 ? formatBytes($totalSize / $totalImages) : '0 B' ?></p>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-calculator"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6><?= $totalImages > 0 ? formatBytes($totalSize / $totalImages) : '0 B' ?>
+                                            </h6>
+                                            <span class="text-muted small pt-2">Average Size</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Single Image Processing -->
-                <div class="col-lg-3">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header">
-                            <h5 class="card-title">Process Single Image</h5>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <form method="POST" enctype="multipart/form-data" class="d-flex flex-column h-100">
-                                <input type="hidden" name="action" value="process_single">
-                                <div class="mb-3">
-                                    <label class="form-label">Select Image</label>
-                                    <input type="file" class="form-control" name="image" accept="image/*" required>
-                                    <small class="text-muted">Maximum dimensions: 1920x1080, Quality: 85%</small>
-                                </div>
-                                <div class="mt-auto">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="bi bi-upload me-1"></i>Process Image
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Batch Processing -->
-                <div class="col-lg-3">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
                             <h5 class="card-title">Batch Processing</h5>
-                        </div>
-                        <div class="card-body d-flex flex-column">
                             <p class="text-muted">Process all existing images in the assets/img folder. Original files
                                 will be backed up.</p>
-                            <div class="mt-auto">
-                                <form method="POST"
-                                    onsubmit="return confirm('This will process all images. Are you sure?')">
-                                    <input type="hidden" name="action" value="process_batch">
-                                    <button type="submit" class="btn btn-warning w-100">
-                                        <i class="bi bi-gear me-1"></i>Process All Images
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Settings -->
-                <div class="col-lg-3">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header">
-                            <h5 class="card-title">Processing Settings</h5>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <div class="mb-3">
-                                <label class="form-label">Max Width</label>
-                                <input type="number" class="form-control" value="1920" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Max Height</label>
-                                <input type="number" class="form-control" value="1080" readonly>
-                            </div>
-                            <div class="mt-auto">
-                                <label class="form-label">Quality</label>
-                                <input type="number" class="form-control" value="85" readonly>
-                                <small class="text-muted">JPEG/WebP compression quality (1-100)</small>
-                            </div>
+                            <button type="button" class="btn btn-warning" id="batchProcessBtn">
+                                <i class="bi bi-gear me-1"></i>Process All Images
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Image List -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header">
-                            <h5 class="card-title">Image List</h5>
-                        </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
                         <div class="card-body">
-                            <!-- Search Input -->
-                            <div class="row mb-3 mt-3">
+                            <h5 class="card-title">Image List</h5>
+                            <div class="row mb-3">
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <input type="text" class="form-control shadow-none" id="imageCustomSearch"
@@ -276,7 +270,7 @@ if (is_dir($imgDir)) {
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table id="imageListTable" class="table table-hover">
+                                <table id="imageListTable" class="table table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th>Image</th>
@@ -328,4 +322,66 @@ if (is_dir($imgDir)) {
     </div>
 
     <?php include 'components/footer.php'; ?>
+
+    <script>
+        $(document).ready(function() {
+            // Batch processing with AJAX and toastr
+            $('#batchProcessBtn').on('click', function() {
+                if (confirm('This will process all images. Are you sure?')) {
+                    const btn = $(this);
+                    const originalText = btn.html();
+
+                    // Show processing state
+                    btn.prop('disabled', true).html(
+                        '<i class="bi bi-hourglass-split me-1"></i>Processing...');
+
+                    $.ajax({
+                        url: 'imageProcessor.php',
+                        type: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        data: {
+                            action: 'process_batch'
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                toastr.success(response.message);
+                            } else {
+                                toastr.warning(response.message);
+                            }
+
+                            // Reload the image list table if it exists
+                            if (typeof imageDataTable !== 'undefined') {
+                                imageDataTable.ajax.reload();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Batch processing error:', error);
+                            console.error('Status:', status);
+                            console.error('Response:', xhr.responseText);
+
+                            let errorMessage = 'An error occurred during batch processing.';
+                            if (xhr.responseText) {
+                                try {
+                                    const response = JSON.parse(xhr.responseText);
+                                    errorMessage = response.message || errorMessage;
+                                } catch (e) {
+                                    errorMessage = xhr.responseText.substring(0, 100) + '...';
+                                }
+                            }
+
+                            toastr.error(errorMessage);
+                        },
+                        complete: function() {
+                            // Restore button state
+                            btn.prop('disabled', false).html(originalText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
+<?php endif; ?>

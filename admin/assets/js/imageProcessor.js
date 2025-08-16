@@ -162,26 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rows.forEach(row => tbody.appendChild(row));
     }
     
-    // Search functionality for image list
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.className = 'form-control mb-3 mt-3';
-    searchInput.placeholder = 'Search...';
-    
-    const imageListCard = document.querySelector('.card-body');
-    if (imageListCard && imageTable) {
-        imageListCard.insertBefore(searchInput, imageTable.parentNode);
-        
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = imageTable.querySelectorAll('tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
-    }
+
     
     // Drag and drop functionality for single image upload
     const singleImageCard = document.querySelector('.card-body form');
@@ -243,14 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 fileInput.click();
             }
         }
-        
-        // Ctrl/Cmd + F to focus search
-        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-            e.preventDefault();
-            if (searchInput) {
-                searchInput.focus();
-            }
-        }
     });
     
     // Add keyboard shortcut hints
@@ -258,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
     shortcuts.className = 'mt-3 text-muted small';
     shortcuts.innerHTML = `
         <strong>Keyboard shortcuts:</strong> 
-        Ctrl+U (Select File), Ctrl+F (Search)
+        Ctrl+U (Select File)
     `;
     
     // Use the existing singleImageForm variable from the outer scope

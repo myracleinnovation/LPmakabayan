@@ -18,7 +18,6 @@ try {
 
     $stmt = $pdo->query('SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1');
     $Company_Info = $stmt->fetch();
-    
 } catch (Exception $e) {
     $error_message = 'Database error: ' . $e->getMessage();
 }
@@ -48,7 +47,7 @@ try {
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title"><i class="bi bi-building me-2"></i>Company Details</h5>
+                            <h5 class="card-title">Company Details</h5>
                         </div>
                         <div class="card-body">
                             <form id="companyInfoForm">
@@ -101,10 +100,10 @@ try {
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_about_image_preview" class="mt-2">
                                             <?php if (!empty($Company_Info['AboutImage'])): ?>
-                                                <small class="text-muted">Current About Image:</small><br>
-                                                <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['AboutImage']); ?>" alt="Current About Image"
-                                                    style="max-width: 200px; max-height: 200px; object-fit: cover;"
-                                                    class="border rounded">
+                                            <small class="text-muted">Current About Image:</small><br>
+                                            <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['AboutImage']); ?>" alt="Current About Image"
+                                                style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                                                class="border rounded">
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -116,10 +115,10 @@ try {
                                         <small class="text-muted">Accepted formats: JPG, PNG, GIF, WebP</small>
                                         <div id="current_logo_image_preview" class="mt-2">
                                             <?php if (!empty($Company_Info['LogoImage'])): ?>
-                                                <small class="text-muted">Current Logo Image:</small><br>
-                                                <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['LogoImage']); ?>" alt="Current Logo Image"
-                                                    style="max-width: 200px; max-height: 200px; object-fit: cover;"
-                                                    class="border rounded">
+                                            <small class="text-muted">Current Logo Image:</small><br>
+                                            <img src="../assets/img/<?php echo htmlspecialchars($Company_Info['LogoImage']); ?>" alt="Current Logo Image"
+                                                style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                                                class="border rounded">
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -127,7 +126,7 @@ try {
 
                                 <div class="text-end">
                                     <button type="submit" class="btn btn-primary" id="updateCompanyBtn">
-                                      Update
+                                        Update
                                     </button>
                                 </div>
                             </form>
@@ -139,7 +138,7 @@ try {
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title"><i class="bi bi-telephone me-2"></i>Contact Information</h5>
+                            <h5 class="card-title">Contact Information</h5>
                         </div>
                         <div class="card-body">
                             <div class="text-end mb-3 mt-3">
@@ -153,7 +152,9 @@ try {
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <div class="input-group">
-                                        <input type="text" class="form-control shadow-none" id="contactsCustomSearch" placeholder="Search contacts...">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" class="form-control shadow-none"
+                                            id="contactsCustomSearch" placeholder="Search contacts...">
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +188,7 @@ try {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Add Contact Information</h5>
+                    <h5 class="modal-title">Add Contact Information</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="contactForm">
@@ -239,10 +240,9 @@ try {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="saveContactBtn">Add Contact</button>
+                        <button type="button" class="btn btn-primary" id="saveContactBtn">Add</button>
                         <button type="button" class="btn btn-primary" id="updateContactBtn"
-                            style="display: none;">Update Contact</button>
-                        <button type="button" class="btn btn-secondary" id="resetContactForm">Reset</button>
+                            style="display: none;">Update</button>
                     </div>
                 </form>
             </div>
