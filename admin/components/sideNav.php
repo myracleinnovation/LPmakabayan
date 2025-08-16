@@ -10,6 +10,7 @@
   $projectCategories = "collapsed";
   $companyInfo = "collapsed";
   $settings = "collapsed";
+  $imageProcessor = "collapsed";
 
   if($pageName == "index.php"){
       $index = "";
@@ -29,6 +30,8 @@
       $companyInfo = "";
   } elseif($pageName == "settings.php"){
       $settings = "";
+  } elseif($pageName == "imageProcessor.php"){
+      $imageProcessor = "";
   }
 ?>
 
@@ -99,6 +102,13 @@
         <span>Settings</span>
       </a>
     </li><!-- End Settings Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link <?php echo $imageProcessor; ?>" href="imageProcessor.php">
+        <i class="bi bi-images"></i>
+        <span>Image Processor</span>
+      </a>
+    </li><!-- End Image Processor Nav -->
 
   </ul>
 

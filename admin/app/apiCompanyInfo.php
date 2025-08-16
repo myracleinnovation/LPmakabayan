@@ -9,6 +9,7 @@
     ini_set('log_errors', 1);
     error_reporting(E_ALL);
     require_once('../../app/Db.php');
+    require_once('ImageUploadHelper.php');
 
     spl_autoload_register(function ($class) {
         $classFile = $class . '.php';
@@ -21,6 +22,7 @@
 
     $conn = Db::connect();
     $companyInfo = new CompanyInfo($conn);
+    $imageHelper = new ImageUploadHelper();
 
     $response = [
         'status' => 0,
@@ -28,52 +30,7 @@
         'data' => null
     ];
 
-    // Function to validate and process image upload
-    function processImageUpload($file, $uploadDir, $companyInfo, $oldImage = null) {
-        // Check for upload errors
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            $errorMessages = [
-                UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
-                UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
-                UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
-                UPLOAD_ERR_NO_FILE => 'No file was uploaded',
-                UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
-                UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-                UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload'
-            ];
-            throw new Exception($errorMessages[$file['error']] ?? 'Unknown upload error');
-        }
 
-        // Check file size (100MB limit)
-        $maxFileSize = 100 * 1024 * 1024; // 100MB in bytes
-        if ($file['size'] > $maxFileSize) {
-            throw new Exception('File size exceeds 100MB limit');
-        }
-
-        // Validate file extension
-        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        
-        if (!in_array($extension, $allowedExtensions)) {
-            throw new Exception('Invalid file type. Allowed: JPG, PNG, GIF, WebP');
-        }
-
-        // Validate file type using getimagesize
-        $imageInfo = getimagesize($file['tmp_name']);
-        if ($imageInfo === false) {
-            throw new Exception('Invalid image file');
-        }
-
-        // Delete old image if it exists
-        if (!empty($oldImage)) {
-            $oldFile = $uploadDir . $oldImage;
-            if (file_exists($oldFile)) {
-                unlink($oldFile);
-            }
-        }
-
-        return true;
-    }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($_GET['get_Company_Info'])) {
@@ -137,14 +94,16 @@
                         // Handle about_image (only if file is uploaded)
                         if (isset($_FILES['about_image']) && $_FILES['about_image']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['about_image'];
-                            processImageUpload($file, $uploadDir, $companyInfo, $currentCompany['AboutImage']);
-                            
                             $nextAboutNumber = $companyInfo->getNextAboutNumber();
-                            $filename = 'about' . $nextAboutNumber . '.' . $extension;
-                            $filepath = $uploadDir . $filename;
                             
-                            if (move_uploaded_file($file['tmp_name'], $filepath)) {
-                                $postData['about_image'] = $filename;
+                            $result = $imageHelper->processAndUpload($file, 'about', $nextAboutNumber, $currentCompany['AboutImage']);
+                            
+                            if ($result['success']) {
+                                $postData['about_image'] = $result['filename'];
+                                // Add compression info to response message
+                                $compressionInfo = "About image: " . $result['message'];
+                            } else {
+                                throw new Exception('About image: ' . $result['message']);
                             }
                         } else {
                             // Keep existing about image if no new file uploaded
@@ -154,14 +113,16 @@
                         // Handle logo_image (only if file is uploaded)
                         if (isset($_FILES['logo_image']) && $_FILES['logo_image']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['logo_image'];
-                            processImageUpload($file, $uploadDir, $companyInfo, $currentCompany['LogoImage']);
-                            
                             $nextLogoNumber = $companyInfo->getNextLogoNumber();
-                            $filename = 'logo' . $nextLogoNumber . '.' . $extension;
-                            $filepath = $uploadDir . $filename;
                             
-                            if (move_uploaded_file($file['tmp_name'], $filepath)) {
-                                $postData['logo_image'] = $filename;
+                            $result = $imageHelper->processAndUpload($file, 'logo', $nextLogoNumber, $currentCompany['LogoImage']);
+                            
+                            if ($result['success']) {
+                                $postData['logo_image'] = $result['filename'];
+                                // Add compression info to response message
+                                $logoCompressionInfo = "Logo image: " . $result['message'];
+                            } else {
+                                throw new Exception('Logo image: ' . $result['message']);
                             }
                         } else {
                             // Keep existing logo image if no new file uploaded
@@ -177,9 +138,18 @@
 
                         $companyInfo->updateCompanyInfo($postData);
                         
+                        // Build success message with compression info
+                        $successMessage = 'Company information updated successfully!';
+                        if (isset($compressionInfo)) {
+                            $successMessage .= ' ' . $compressionInfo;
+                        }
+                        if (isset($logoCompressionInfo)) {
+                            $successMessage .= ' ' . $logoCompressionInfo;
+                        }
+                        
                         $response = [
                             'status' => 1,
-                            'message' => 'Company information updated successfully!',
+                            'message' => $successMessage,
                             'data' => null
                         ];
                     } catch (Exception $e) {

@@ -9,6 +9,7 @@
     ini_set('log_errors', 1);
     error_reporting(E_ALL);
     require_once('../../app/Db.php');
+    require_once('ImageUploadHelper.php');
 
     spl_autoload_register(function ($class) {
         $classFile = $class . '.php';
@@ -21,6 +22,7 @@
 
     $conn = Db::connect();
     $companyProjects = new CompanyProjects($conn);
+    $imageHelper = new ImageUploadHelper();
 
     $response = [
         'status' => 0,
@@ -28,62 +30,7 @@
         'data' => null
     ];
 
-    // Function to validate and process image upload
-    function processImageUpload($file, $uploadDir, $companyProjects, $oldImage = null) {
-        // Check for upload errors
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            $errorMessages = [
-                UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
-                UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
-                UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
-                UPLOAD_ERR_NO_FILE => 'No file was uploaded',
-                UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
-                UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-                UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload'
-            ];
-            throw new Exception($errorMessages[$file['error']] ?? 'Unknown upload error');
-        }
 
-        // Check file size (50MB limit)
-        $maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
-        if ($file['size'] > $maxFileSize) {
-            throw new Exception('File size exceeds 50MB limit');
-        }
-
-        // Validate file extension
-        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        
-        if (!in_array($extension, $allowedExtensions)) {
-            throw new Exception('Invalid file type. Allowed: JPG, PNG, GIF, WebP');
-        }
-
-        // Validate file type using getimagesize
-        $imageInfo = getimagesize($file['tmp_name']);
-        if ($imageInfo === false) {
-            throw new Exception('Invalid image file');
-        }
-
-        // Delete old image if it exists
-        if (!empty($oldImage)) {
-            $oldFile = $uploadDir . $oldImage;
-            if (file_exists($oldFile)) {
-                unlink($oldFile);
-            }
-        }
-
-        // Generate unique filename
-        $nextProjectNumber = $companyProjects->getNextProjectNumber();
-        $filename = 'project' . $nextProjectNumber . '.' . $extension;
-        $filepath = $uploadDir . $filename;
-
-        // Move uploaded file
-        if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-            throw new Exception('Failed to save uploaded file');
-        }
-
-        return $filename;
-    }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($_GET['get_projects'])) {
@@ -210,21 +157,47 @@
                         // Handle project_image1 (only if file is uploaded)
                         if (isset($_FILES['project_image1']) && $_FILES['project_image1']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['project_image1'];
-                            $filename = processImageUpload($file, $uploadDir, $companyProjects);
-                            $postData['project_image1'] = $filename;
+                            $nextProjectNumber = $companyProjects->getNextProjectNumber();
+                            
+                            $result = $imageHelper->processAndUpload($file, 'project', $nextProjectNumber);
+                            
+                            if ($result['success']) {
+                                $postData['project_image1'] = $result['filename'];
+                                $compressionInfo1 = "Image 1: " . $result['message'];
+                            } else {
+                                throw new Exception('Image 1: ' . $result['message']);
+                            }
                         }
                         
                         // Handle project_image2 (only if file is uploaded)
                         if (isset($_FILES['project_image2']) && $_FILES['project_image2']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['project_image2'];
-                            $filename = processImageUpload($file, $uploadDir, $companyProjects);
-                            $postData['project_image2'] = $filename;
+                            $nextProjectNumber2 = $companyProjects->getNextProjectNumber();
+                            
+                            $result = $imageHelper->processAndUpload($file, 'project', $nextProjectNumber2);
+                            
+                            if ($result['success']) {
+                                $postData['project_image2'] = $result['filename'];
+                                $compressionInfo2 = "Image 2: " . $result['message'];
+                            } else {
+                                throw new Exception('Image 2: ' . $result['message']);
+                            }
                         }
 
                         $projectId = $companyProjects->createProject($postData);
+                        
+                        // Build success message with compression info
+                        $successMessage = 'Project created successfully';
+                        if (isset($compressionInfo1)) {
+                            $successMessage .= '. ' . $compressionInfo1;
+                        }
+                        if (isset($compressionInfo2)) {
+                            $successMessage .= '. ' . $compressionInfo2;
+                        }
+                        
                         $response = [
                             'status' => 1,
-                            'message' => 'Project created successfully',
+                            'message' => $successMessage,
                             'data' => ['project_id' => $projectId]
                         ];
                     } catch (Exception $e) {
@@ -260,8 +233,16 @@
                         // Handle project_image1 (only if new file is uploaded)
                         if (isset($_FILES['project_image1']) && $_FILES['project_image1']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['project_image1'];
-                            $filename = processImageUpload($file, $uploadDir, $companyProjects, $currentProject['ProjectImage1']);
-                            $postData['project_image1'] = $filename;
+                            $nextProjectNumber = $companyProjects->getNextProjectNumber();
+                            
+                            $result = $imageHelper->processAndUpload($file, 'project', $nextProjectNumber, $currentProject['ProjectImage1']);
+                            
+                            if ($result['success']) {
+                                $postData['project_image1'] = $result['filename'];
+                                $compressionInfo1 = "Image 1: " . $result['message'];
+                            } else {
+                                throw new Exception('Image 1: ' . $result['message']);
+                            }
                         } else {
                             // Keep existing image1 if no new file uploaded
                             $postData['project_image1'] = $currentProject['ProjectImage1'] ?? '';
@@ -270,17 +251,35 @@
                         // Handle project_image2 (only if new file is uploaded)
                         if (isset($_FILES['project_image2']) && $_FILES['project_image2']['error'] === UPLOAD_ERR_OK) {
                             $file = $_FILES['project_image2'];
-                            $filename = processImageUpload($file, $uploadDir, $companyProjects, $currentProject['ProjectImage2']);
-                            $postData['project_image2'] = $filename;
+                            $nextProjectNumber2 = $companyProjects->getNextProjectNumber();
+                            
+                            $result = $imageHelper->processAndUpload($file, 'project', $nextProjectNumber2, $currentProject['ProjectImage2']);
+                            
+                            if ($result['success']) {
+                                $postData['project_image2'] = $result['filename'];
+                                $compressionInfo2 = "Image 2: " . $result['message'];
+                            } else {
+                                throw new Exception('Image 2: ' . $result['message']);
+                            }
                         } else {
                             // Keep existing image2 if no new file uploaded
                             $postData['project_image2'] = $currentProject['ProjectImage2'] ?? '';
                         }
 
                         $companyProjects->updateProject($postData);
+                        
+                        // Build success message with compression info
+                        $successMessage = 'Project updated successfully';
+                        if (isset($compressionInfo1)) {
+                            $successMessage .= '. ' . $compressionInfo1;
+                        }
+                        if (isset($compressionInfo2)) {
+                            $successMessage .= '. ' . $compressionInfo2;
+                        }
+                        
                         $response = [
                             'status' => 1,
-                            'message' => 'Project updated successfully',
+                            'message' => $successMessage,
                             'data' => null
                         ];
                     } catch (Exception $e) {

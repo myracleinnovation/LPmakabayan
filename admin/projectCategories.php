@@ -44,14 +44,7 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="card-body">
                             <div id="alert-container"></div>
 
-                            <!-- Search Section -->
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control shadow-none" id="categoriesCustomSearch" placeholder="Search categories...">
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <div class="table-responsive">
                                 <table id="categoriesTable" class="table table-hover categories_table">

@@ -78,7 +78,7 @@ $admin_id = $_SESSION['admin_id'];
                             </div>
                             <div class="card-body">
                                 <!-- Search Section -->
-                                <div class="row mb-3">
+                                <div class="row mb-3 mt-3">
                                     <div class="col-md-12">
                                         <div class="input-group">
                                             <input type="text" class="form-control shadow-none" id="adminCustomSearch" placeholder="Search admin accounts...">
