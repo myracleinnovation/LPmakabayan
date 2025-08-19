@@ -1,4 +1,19 @@
 $(document).ready(function() {
+    // Add CSS to hide sorting arrows but keep sorting functionality
+    $('<style>')
+        .prop('type', 'text/css')
+        .html(`
+            #contactsTable thead th.sorting:before,
+            #contactsTable thead th.sorting:after,
+            #contactsTable thead th.sorting_asc:before,
+            #contactsTable thead th.sorting_asc:after,
+            #contactsTable thead th.sorting_desc:before,
+            #contactsTable thead th.sorting_desc:after {
+                display: none !important;
+            }
+        `)
+        .appendTo('head');
+
     // Initialize DataTable for Contacts only if the table exists
     let contactsDataTable;
     
@@ -9,20 +24,27 @@ $(document).ready(function() {
             contactsDataTable = $('#contactsTable').DataTable();
         } else {
             contactsDataTable = $('#contactsTable').DataTable({
-        columnDefs: [{ orderable: false, targets: [-1] }],
-        order: [[0, 'asc']],
-        dom: "<'row'<'col-12 mb-3'tr>>" +
-             "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
-        processing: true,
-        ajax: {
-            url: 'app/apiCompanyContact.php',
-            type: 'POST',
-            data: { action: 'get_contacts' },
-            dataSrc: json => {
-                if (json.status === 1) return json.data || [];
-                toastr.error(json.message || 'Error loading data');
-                return [];
-            },
+                columnDefs: [
+                    { orderable: true, targets: [0] },  // ContactLabel
+                    { orderable: true, targets: [1] },  // ContactValue  
+                    { orderable: true, targets: [2] },  // ContactType
+                    { orderable: true, targets: [3] },  // DisplayOrder
+                    { orderable: true, targets: [4] },  // Status
+                    { orderable: false, targets: [5] }  // Actions
+                ],
+                order: [[1, 'asc']],
+                dom: "<'row'<'col-12 mb-3'tr>>" +
+                        "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
+                processing: true,
+                ajax: {
+                url: 'app/apiCompanyContact.php',
+                type: 'POST',
+                data: { action: 'get_contacts' },
+                dataSrc: json => {
+                    if (json.status === 1) return json.data || [];
+                    toastr.error(json.message || 'Error loading data');
+                    return [];
+                },
             error: () => toastr.error('Error loading contacts data')
         },
         columns: [

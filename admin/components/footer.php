@@ -24,6 +24,7 @@
 <script src="assets/js/dataTables/dataTables.bootstrap5.js"></script>
 
 <!-- Admin Management DataTables -->
+<script src="assets/js/dataTables/dashboardDataTables.js"></script>
 <script src="assets/js/dataTables/adminsDataTables.js"></script>
 <script src="assets/js/dataTables/specialtiesDataTables.js"></script>
 <script src="assets/js/dataTables/industriesDataTables.js"></script>
@@ -31,14 +32,7 @@
 <script src="assets/js/dataTables/processDataTables.js"></script>
 <script src="assets/js/dataTables/projectCategoriesDataTables.js"></script>
 <script src="assets/js/dataTables/projectsDataTables.js"></script>
-<script src="assets/js/dataTables/contactsDataTables.js"></script>
 <script src="assets/js/dataTables/companyInfoDataTables.js"></script>
-<script src="assets/js/dataTables/imageListDataTables.js"></script>
 
 <!-- Helpers -->
 <script src="assets/js/helpers.js"></script>
-<script src="assets/js/imageProcessor.js"></script>
-
-<!-- Auto Image Processor for all admin pages -->
-<script src="assets/js/autoImageProcessor.js"></script>
-

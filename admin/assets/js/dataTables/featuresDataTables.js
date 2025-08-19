@@ -19,7 +19,6 @@ function initializeFeaturesDataTable() {
         dom: "<'row'<'col-12 mb-3'tr>>" +
              "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
         processing: true,
-        serverSide: false,
         ajax: {
             url: 'app/apiCompanyFeatures.php',
             type: 'GET',

@@ -9,8 +9,6 @@
     ini_set('log_errors', 1);
     error_reporting(E_ALL);
     require_once('../../app/Db.php');
-    require_once('ImageUploadHelper.php');
-
     spl_autoload_register(function ($class) {
         $classFile = $class . '.php';
         if (file_exists($classFile)) {
@@ -22,7 +20,76 @@
 
     $conn = Db::connect();
     $companyIndustries = new CompanyIndustries($conn);
-    $imageHelper = new ImageUploadHelper();
+
+    // Simple image upload function to replace ImageUploadHelper
+    function uploadImage($file, $uploadDir, $prefix, $nextNumber, $oldImage = null) {
+        try {
+            // Check for upload errors
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                $errorMessages = [
+                    UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
+                    UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
+                    UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+                    UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+                    UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+                    UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+                    UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload'
+                ];
+                throw new Exception($errorMessages[$file['error']] ?? 'Unknown upload error');
+            }
+
+            // Check file size (100MB limit)
+            $maxFileSize = 100 * 1024 * 1024; // 100MB in bytes
+            if ($file['size'] > $maxFileSize) {
+                throw new Exception('File size exceeds 100MB limit');
+            }
+
+            // Validate file extension
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            
+            if (!in_array($extension, $allowedExtensions)) {
+                throw new Exception('Invalid file type. Allowed: JPG, PNG, GIF, WebP');
+            }
+
+            // Validate file type using getimagesize
+            $imageInfo = getimagesize($file['tmp_name']);
+            if ($imageInfo === false) {
+                throw new Exception('Invalid image file');
+            }
+
+            // Delete old image if it exists
+            if (!empty($oldImage)) {
+                $oldFile = $uploadDir . $oldImage;
+                if (file_exists($oldFile)) {
+                    unlink($oldFile);
+                }
+            }
+
+            // Generate unique filename
+            $filename = $prefix . $nextNumber . '.' . $extension;
+            $filepath = $uploadDir . $filename;
+
+            // Move uploaded file
+            if (!move_uploaded_file($file['tmp_name'], $filepath)) {
+                throw new Exception('Failed to move uploaded file');
+            }
+
+            return [
+                'success' => true,
+                'filename' => $filename,
+                'message' => 'Image uploaded successfully',
+                'original_size' => $file['size'],
+                'processed_size' => $file['size']
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 
     $response = [
         'status' => 0,
@@ -119,7 +186,7 @@
                             $file = $_FILES['industry_image'];
                             $nextIndustryNumber = $companyIndustries->getNextIndustryNumber();
                             
-                            $result = $imageHelper->processAndUpload($file, 'industry', $nextIndustryNumber);
+                            $result = uploadImage($file, $uploadDir, 'industry', $nextIndustryNumber);
                             
                             if ($result['success']) {
                                 $postData['industry_image'] = $result['filename'];

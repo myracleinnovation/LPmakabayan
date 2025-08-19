@@ -41,6 +41,23 @@ class CompanyFeatures
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getTotalFeatures($search = '')
+    {
+        $sql = "SELECT COUNT(*) as total FROM Company_Features";
+        
+        if (!empty($search)) {
+            $sql .= " WHERE FeatureTitle LIKE :search OR FeatureDescription LIKE :search";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        } else {
+            $stmt = $this->conn->prepare($sql);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$result['total'];
+    }
+
     public function getFeatureById($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM Company_Features WHERE IdFeature = ?");

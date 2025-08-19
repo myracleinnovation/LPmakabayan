@@ -130,8 +130,6 @@ try {
                     </div>
                 </div>
 
-
-
                 <!-- Recent Projects -->
                 <div class="col-12">
                     <div class="card">
@@ -142,7 +140,7 @@ try {
                         <div class="card-body">
                             <?php if (!empty($recentProjects)): ?>
                             <div class="table-responsive">
-                                <table class="table table-hover">
+                                <table id="recentProjectsTable" class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Project Title</th>
@@ -202,8 +200,6 @@ try {
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </section>
     </main>

@@ -3,7 +3,7 @@
         <a href="index.php" class="logo d-flex align-items-center">
             <span class="d-none d-lg-block fs-6">Makabayan Avellanosa Construction</span>
         </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
+        <i class="bi bi-list toggle-sidebar-btn d-lg-none"></i>
     </div>
     <nav class="header-nav ms-auto d-flex justify-content-center align-items-center">
         <ul class="d-flex align-items-center">
@@ -32,6 +32,15 @@
         </ul>
     </nav>
 </header>
+
+<style>
+    /* Hide hamburger button on screens 1024px and above */
+    @media (min-width: 1024px) {
+        .toggle-sidebar-btn {
+            display: none !important;
+        }
+    }
+</style>
 
 <script>
     function clearSession() {

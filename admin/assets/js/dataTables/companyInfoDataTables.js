@@ -1,4 +1,19 @@
 $(document).ready(function() {
+    // Add CSS to hide sorting arrows but keep sorting functionality
+    $('<style>')
+        .prop('type', 'text/css')
+        .html(`
+            #contactsTable thead th.sorting:before,
+            #contactsTable thead th.sorting:after,
+            #contactsTable thead th.sorting_asc:before,
+            #contactsTable thead th.sorting_asc:after,
+            #contactsTable thead th.sorting_desc:before,
+            #contactsTable thead th.sorting_desc:after {
+                display: none !important;
+            }
+        `)
+        .appendTo('head');
+
     // Only initialize if the contacts table exists on this page
     if ($('#contactsTable').length > 0) {
         // Initialize DataTable for Contacts in Company Info page
@@ -7,10 +22,17 @@ $(document).ready(function() {
         // Check if DataTable is already initialized
         if ($('#contactsTable').length && !$.fn.DataTable.isDataTable('#contactsTable')) {
             contactsDataTable = new DataTable('#contactsTable', {
-                columnDefs: [{ orderable: false, targets: [-1] }],
-                order: [[0, 'asc']],
+                columnDefs: [
+                    { orderable: true, targets: [0] },  // ContactLabel
+                    { orderable: true, targets: [1] },  // ContactValue  
+                    { orderable: true, targets: [2] },  // ContactType
+                    { orderable: true, targets: [3] },  // DisplayOrder
+                    { orderable: true, targets: [4] },  // Status
+                    { orderable: false, targets: [5] }  // Actions
+                ],
+                order: [[1, 'asc']],
                 dom: "<'row'<'col-12 mb-3'tr>>" +
-                     "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
+                    "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
                 processing: true,
                 ajax: {
                     url: 'app/apiCompanyContact.php',

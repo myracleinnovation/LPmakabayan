@@ -41,6 +41,23 @@ class CompanyContact
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getTotalContacts($search = '')
+    {
+        $sql = "SELECT COUNT(*) as total FROM Company_Contact";
+        
+        if (!empty($search)) {
+            $sql .= " WHERE ContactValue LIKE :search OR ContactLabel LIKE :search";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        } else {
+            $stmt = $this->conn->prepare($sql);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$result['total'];
+    }
+
     public function getContactById($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM Company_Contact WHERE IdContact = ?");

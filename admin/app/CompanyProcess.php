@@ -1,6 +1,4 @@
 <?php
-require_once '../../app/Db.php';
-
 class CompanyProcess {
     private $db;
     
@@ -20,6 +18,22 @@ class CompanyProcess {
         } catch (PDOException $e) {
             error_log("Error getting all processes: " . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Get total process count
+     */
+    public function getTotalProcess() {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM Company_Process";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int)$result['total'];
+        } catch (PDOException $e) {
+            error_log("Error getting total processes: " . $e->getMessage());
+            return 0;
         }
     }
     

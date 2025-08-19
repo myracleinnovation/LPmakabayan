@@ -6,6 +6,21 @@ require_once '../app/Db.php';
 
 $admin_username = $_SESSION['admin_username'];
 $admin_id = $_SESSION['admin_id'];
+
+// Autoloader for classes
+spl_autoload_register(function ($class) {
+    $classFile = 'app/' . $class . '.php';
+    if (file_exists($classFile)) {
+        require_once($classFile);
+    } else {
+        throw new Exception("Required class file not found: " . $class);
+    }
+});
+
+// Get total specialties count for display order dropdown
+$pdo = Db::connect();
+$companySpecialties = new CompanySpecialties($pdo);
+$totalSpecialties = $companySpecialties->getTotalSpecialties();
 ?>
 
 <body>
@@ -91,8 +106,12 @@ $admin_id = $_SESSION['admin_id'];
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control shadow-none" id="displayOrder"
-                                    name="display_order" value="0">
+                                <select class="form-select shadow-none" id="displayOrder" name="display_order">
+                                    <option value="0">First (0)</option>
+                                    <?php for($i = 1; $i <= $totalSpecialties + 10; $i++): ?>
+                                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                    <?php endfor; ?>
+                                </select>
                             </div>
                         </div>
 
@@ -145,8 +164,12 @@ $admin_id = $_SESSION['admin_id'];
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <input type="number" class="form-control shadow-none" id="edit_display_order"
-                                    name="display_order" value="0">
+                                <select class="form-select shadow-none" id="edit_display_order" name="display_order">
+                                    <option value="0">First (0)</option>
+                                    <?php for($i = 1; $i <= $totalSpecialties + 10; $i++): ?>
+                                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                    <?php endfor; ?>
+                                </select>
                             </div>
                         </div>
 

@@ -43,28 +43,46 @@ $admin_id = $_SESSION['admin_id'];
                                 <div class="mb-3">
                                     <label class="form-label">Current Password <span
                                             class="text-danger">*</span></label>
-                                    <input type="password" class="form-control shadow-none" id="current_password"
-                                        name="current_password" placeholder="Enter current password..."
-                                        autocomplete="current-password" required>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control shadow-none" id="current_password"
+                                            name="current_password" placeholder="Enter current password..."
+                                            autocomplete="current-password" required>
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            id="toggleCurrentPassword" style="border-left: 0;">
+                                            <i class="bi bi-eye" id="currentPasswordIcon"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div class="mb-3">
+                                <div class="mb-4">
                                     <label class="form-label">New Password <span class="text-danger">*</span></label>
-                                    <input type="password" class="form-control shadow-none" id="new_password"
-                                        name="new_password" placeholder="Enter new password..."
-                                        autocomplete="new-password" required>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control shadow-none" id="new_password"
+                                            name="new_password" placeholder="Enter new password..."
+                                            autocomplete="new-password" required>
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword"
+                                            style="border-left: 0;">
+                                            <i class="bi bi-eye" id="newPasswordIcon"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Confirm New Password <span
                                             class="text-danger">*</span></label>
-                                    <input type="password" class="form-control shadow-none" id="confirm_password"
-                                        name="confirm_password" placeholder="Confirm new password..."
-                                        autocomplete="new-password" required>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control shadow-none" id="confirm_password"
+                                            name="confirm_password" placeholder="Confirm new password..."
+                                            autocomplete="new-password" required>
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            id="toggleConfirmPassword" style="border-left: 0;">
+                                            <i class="bi bi-eye" id="confirmPasswordIcon"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary" id="changePasswordBtn" disabled>
                                         Change Password
                                     </button>
                                 </div>
@@ -129,13 +147,21 @@ $admin_id = $_SESSION['admin_id'];
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Username <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control shadow-none" id="username" name="username" required>
+                            <input type="text" class="form-control shadow-none" id="username" name="username"
+                                required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Password <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control shadow-none" id="password" name="password" 
-                                   placeholder="Enter password..." autocomplete="new-password" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control shadow-none" id="password"
+                                    name="password" placeholder="Enter password..." autocomplete="new-password"
+                                    required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleAddPassword"
+                                    style="border-left: 0;">
+                                    <i class="bi bi-eye" id="addPasswordIcon"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -169,7 +195,8 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Username <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control shadow-none" id="edit_username" name="username" required>
+                            <input type="text" class="form-control shadow-none" id="edit_username"
+                                name="username" required>
                         </div>
 
                         <div class="mb-3">
@@ -190,24 +217,132 @@ $admin_id = $_SESSION['admin_id'];
     </div>
 
     <?php include 'components/footer.php'; ?>
-
     <script>
         $(document).ready(function() {
-            // Handle Change Password Form
-            $('#changePasswordForm').on('submit', function(e) {
-                e.preventDefault();
+            // Password visibility toggle functionality
+            function togglePasswordVisibility(inputId, iconId) {
+                const input = $(inputId);
+                const icon = $(iconId);
 
-                const currentPassword = $('input[name="current_password"]').val();
-                const newPassword = $('input[name="new_password"]').val();
-                const confirmPassword = $('input[name="confirm_password"]').val();
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('bi-eye').addClass('bi-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('bi-eye-slash').addClass('bi-eye');
+                }
+            }
 
-                if (newPassword !== confirmPassword) {
-                    toastr.error('New passwords do not match');
-                    return;
+            // Bind password toggle events
+            $('#toggleCurrentPassword').on('click', function() {
+                togglePasswordVisibility('#current_password', '#currentPasswordIcon');
+            });
+
+            $('#toggleNewPassword').on('click', function() {
+                togglePasswordVisibility('#new_password', '#newPasswordIcon');
+            });
+
+            $('#toggleConfirmPassword').on('click', function() {
+                togglePasswordVisibility('#confirm_password', '#confirmPasswordIcon');
+            });
+
+            $('#toggleAddPassword').on('click', function() {
+                togglePasswordVisibility('#password', '#addPasswordIcon');
+            });
+
+            // Real-time password validation
+            function validatePasswordForm() {
+                const currentPassword = $('#current_password').val().trim();
+                const newPassword = $('#new_password').val().trim();
+                const confirmPassword = $('#confirm_password').val().trim();
+                const changePasswordBtn = $('#changePasswordBtn');
+
+                // Check if all fields are filled
+                const allFieldsFilled = currentPassword !== '' && newPassword !== '' && confirmPassword !== '';
+
+                // Check if new password meets minimum length
+                const passwordLengthValid = newPassword.length >= 6;
+
+                // Check if passwords match
+                const passwordsMatch = newPassword === confirmPassword;
+
+                // Check if new password is different from current password
+                const passwordDifferent = newPassword !== currentPassword;
+
+                // Enable button only if all conditions are met
+                if (allFieldsFilled && passwordLengthValid && passwordsMatch && passwordDifferent) {
+                    changePasswordBtn.prop('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
+                } else {
+                    changePasswordBtn.prop('disabled', true).removeClass('btn-primary').addClass('btn-secondary');
+                }
+            }
+
+
+
+            // Bind validation events
+            $('#current_password, #new_password, #confirm_password').on('input', function() {
+                validatePasswordForm();
+            });
+
+            // Show toastr validation messages when user tries to submit with invalid data
+            function showValidationToastr(currentPassword, newPassword, confirmPassword) {
+                if (currentPassword === '') {
+                    toastr.error('Current password is required');
+                    return false;
+                }
+
+                if (newPassword === '') {
+                    toastr.error('New password is required');
+                    return false;
                 }
 
                 if (newPassword.length < 6) {
                     toastr.error('Password must be at least 6 characters long');
+                    return false;
+                }
+
+                if (newPassword === currentPassword) {
+                    toastr.error('New password must be different from current password');
+                    return false;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    toastr.error('New passwords do not match');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Initial validation check
+            validatePasswordForm();
+
+            // Prevent clicking disabled button
+            $('#changePasswordBtn').on('click', function(e) {
+                if ($(this).prop('disabled')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toastr.error('Please complete all required fields correctly before submitting');
+                    return false;
+                }
+            });
+
+            // Handle Change Password Form
+            $('#changePasswordForm').on('submit', function(e) {
+                e.preventDefault();
+
+                // Check if button is disabled - if so, don't submit
+                if ($('#changePasswordBtn').prop('disabled')) {
+                    toastr.error('Please complete all required fields correctly before submitting');
+                    return;
+                }
+
+                const currentPassword = $('input[name="current_password"]').val().trim();
+                const newPassword = $('input[name="new_password"]').val().trim();
+                const confirmPassword = $('input[name="confirm_password"]').val().trim();
+
+                // Show toastr validation messages if validation fails
+                if (!showValidationToastr(currentPassword, newPassword, confirmPassword)) {
                     return;
                 }
 
@@ -225,6 +360,9 @@ $admin_id = $_SESSION['admin_id'];
                         if (response.status === 1) {
                             toastr.success(response.message);
                             $('#changePasswordForm')[0].reset();
+                            // Reset button state
+                            $('#changePasswordBtn').prop('disabled', true).removeClass(
+                                'btn-primary').addClass('btn-secondary');
                         } else {
                             toastr.error(response.message);
                         }
