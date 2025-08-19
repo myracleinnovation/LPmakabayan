@@ -139,6 +139,35 @@
             switch ($action) {
                 case 'create':
                     try {
+                        // Validate numerical fields
+                        $validationErrors = [];
+                        
+                        // Validate Project Area (must be numeric and positive)
+                        if (!empty($_POST['project_area'])) {
+                            if (!is_numeric($_POST['project_area']) || floatval($_POST['project_area']) < 0) {
+                                $validationErrors[] = 'Project Area should be numbers only';
+                            }
+                        }
+                        
+                        // Validate Project Value (must be numeric and positive)
+                        if (!empty($_POST['project_value'])) {
+                            if (!is_numeric($_POST['project_value']) || floatval($_POST['project_value']) < 0) {
+                                $validationErrors[] = 'Project Value should be numbers only';
+                            }
+                        }
+                        
+                        // Validate Display Order (must be integer and non-negative)
+                        if (!empty($_POST['display_order'])) {
+                            if (!is_numeric($_POST['display_order']) || intval($_POST['display_order']) < 0) {
+                                $validationErrors[] = 'Display Order should be numbers only';
+                            }
+                        }
+                        
+                        // If validation errors exist, throw exception
+                        if (!empty($validationErrors)) {
+                            throw new Exception(implode('. ', $validationErrors));
+                        }
+                        
                         // Debug: Log the specific fields we're looking for
                         error_log("project_title: " . ($_POST['project_title'] ?? 'NOT SET'));
                         error_log("project_description: " . ($_POST['project_description'] ?? 'NOT SET'));
@@ -211,6 +240,35 @@
 
                 case 'update':
                     try {
+                        // Validate numerical fields
+                        $validationErrors = [];
+                        
+                        // Validate Project Area (must be numeric and positive)
+                        if (!empty($_POST['project_area'])) {
+                            if (!is_numeric($_POST['project_area']) || floatval($_POST['project_area']) < 0) {
+                                $validationErrors[] = 'Project Area should be numbers only';
+                            }
+                        }
+                        
+                        // Validate Project Value (must be numeric and positive)
+                        if (!empty($_POST['project_value'])) {
+                            if (!is_numeric($_POST['project_value']) || floatval($_POST['project_value']) < 0) {
+                                $validationErrors[] = 'Project Value should be numbers only';
+                            }
+                        }
+                        
+                        // Validate Display Order (must be integer and non-negative)
+                        if (!empty($_POST['display_order'])) {
+                            if (!is_numeric($_POST['display_order']) || intval($_POST['display_order']) < 0) {
+                                $validationErrors[] = 'Display Order should be numbers only';
+                            }
+                        }
+                        
+                        // If validation errors exist, throw exception
+                        if (!empty($validationErrors)) {
+                            throw new Exception(implode('. ', $validationErrors));
+                        }
+                        
                         // Debug: Log the specific fields we're looking for
                         error_log("project_title: " . ($_POST['project_title'] ?? 'NOT SET'));
                         error_log("project_description: " . ($_POST['project_description'] ?? 'NOT SET'));

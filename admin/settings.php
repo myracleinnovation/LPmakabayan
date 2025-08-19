@@ -41,46 +41,26 @@ $admin_id = $_SESSION['admin_id'];
                         <div class="card-body">
                             <form id="changePasswordForm">
                                 <div class="mb-3">
-                                    <label class="form-label">Current Password *</label>
-                                    <?php
-                                    $passwordConfig = [
-                                        'id' => 'current_password',
-                                        'name' => 'current_password',
-                                        'placeholder' => 'Enter current password...',
-                                        'autocomplete' => 'current-password',
-                                        'required' => true
-                                    ];
-                                    include '../components/reusable/password.php';
-                                    ?>
+                                    <label class="form-label">Current Password <span
+                                            class="text-danger">*</span></label>
+                                    <input type="password" class="form-control shadow-none" id="current_password"
+                                        name="current_password" placeholder="Enter current password..."
+                                        autocomplete="current-password" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">New Password *</label>
-                                    <?php
-                                    $passwordConfig = [
-                                        'id' => 'new_password',
-                                        'name' => 'new_password',
-                                        'placeholder' => 'Enter new password...',
-                                        'autocomplete' => 'new-password',
-                                        'strengthMeter' => true,
-                                        'required' => true
-                                    ];
-                                    include '../components/reusable/password.php';
-                                    ?>
+                                    <label class="form-label">New Password <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control shadow-none" id="new_password"
+                                        name="new_password" placeholder="Enter new password..."
+                                        autocomplete="new-password" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Confirm New Password *</label>
-                                    <?php
-                                    $passwordConfig = [
-                                        'id' => 'confirm_password',
-                                        'name' => 'confirm_password',
-                                        'placeholder' => 'Confirm new password...',
-                                        'autocomplete' => 'new-password',
-                                        'required' => true
-                                    ];
-                                    include '../components/reusable/password.php';
-                                    ?>
+                                    <label class="form-label">Confirm New Password <span
+                                            class="text-danger">*</span></label>
+                                    <input type="password" class="form-control shadow-none" id="confirm_password"
+                                        name="confirm_password" placeholder="Confirm new password..."
+                                        autocomplete="new-password" required>
                                 </div>
 
                                 <div class="text-end">
@@ -107,17 +87,10 @@ $admin_id = $_SESSION['admin_id'];
                             <!-- Search Section -->
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-12">
-                                    <?php
-                                    $searchConfig = [
-                                        'id' => 'adminCustomSearch',
-                                        'placeholder' => 'Search admin accounts...',
-                                        'dataTarget' => 'adminsTable',
-                                        'minLength' => 2,
-                                        'delay' => 300,
-                                        'showClear' => true,
-                                    ];
-                                    include '../components/reusable/search.php';
-                                    ?>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none" id="adminCustomSearch"
+                                            placeholder="Search admin accounts..." aria-label="Search admin accounts">
+                                    </div>
                                 </div>
                             </div>
 
@@ -155,48 +128,22 @@ $admin_id = $_SESSION['admin_id'];
                 <form id="addAdminForm">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Username *</label>
-                            <?php
-                            $inputConfig = [
-                                'id' => 'username',
-                                'name' => 'username',
-                                'class' => 'form-control shadow-none',
-                                'type' => 'text',
-                            ];
-                            include '../components/reusable/input.php';
-                            ?>
+                            <label class="form-label">Username <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control shadow-none" id="username" name="username" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Password *</label>
-                            <?php
-                            $passwordConfig = [
-                                'id' => 'password',
-                                'name' => 'password',
-                                'placeholder' => 'Enter password...',
-                                'autocomplete' => 'new-password',
-                                'strengthMeter' => true,
-                                'required' => true
-                            ];
-                            include '../components/reusable/password.php';
-                            ?>
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control shadow-none" id="password" name="password" 
+                                   placeholder="Enter password..." autocomplete="new-password" required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -221,33 +168,16 @@ $admin_id = $_SESSION['admin_id'];
                         <input type="hidden" name="admin_id" id="edit_admin_id">
 
                         <div class="mb-3">
-                            <label class="form-label">Username *</label>
-                            <?php
-                            $inputConfig = [
-                                'id' => 'edit_username',
-                                'name' => 'username',
-                                'class' => 'form-control shadow-none',
-                                'type' => 'text',
-                            ];
-                            include '../components/reusable/input.php';
-                            ?>
+                            <label class="form-label">Username <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control shadow-none" id="edit_username" name="username" required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'edit_status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="edit_status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">

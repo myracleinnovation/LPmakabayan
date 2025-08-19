@@ -41,18 +41,11 @@ $admin_id = $_SESSION['admin_id'];
 
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-12">
-                                    <?php
-                                    $searchConfig = [
-                                        'id' => 'industriesCustomSearch',
-                                        'placeholder' => 'Search industries...',
-                                        'dataTarget' => 'industriesTable',
-                                        'minLength' => 2,
-                                        'delay' => 300,
-                                        'showClear' => true,
-                                    ];
-                                    
-                                    include '../components/reusable/search.php';
-                                    ?>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none"
+                                            id="industriesCustomSearch" placeholder="Search industries..."
+                                            aria-label="Search industries">
+                                    </div>
                                 </div>
                             </div>
 
@@ -92,40 +85,20 @@ $admin_id = $_SESSION['admin_id'];
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label">Industry Name *</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'industryName',
-                                    'name' => 'industry_name',
-                                    'class' => 'form-control shadow-none',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <label class="form-label">Industry Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-none" id="industryName"
+                                    name="industry_name" required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'displayOrder',
-                                    'name' => 'display_order',
-                                    'class' => 'form-control shadow-none',
-                                    'type' => 'number',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <input type="number" class="form-control shadow-none" id="displayOrder"
+                                    name="display_order" value="0">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Description</label>
-                            <?php
-                            $textareaConfig = [
-                                'id' => 'industryDescription',
-                                'name' => 'industry_description',
-                                'class' => 'form-control shadow-none',
-                            ];
-                            include '../components/reusable/textarea.php';
-                            ?>
+                            <textarea class="form-control shadow-none" id="industryDescription" name="industry_description" rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -137,19 +110,10 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -175,40 +139,21 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label">Industry Name *</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'edit_industry_name',
-                                    'name' => 'industry_name',
-                                    'class' => 'form-control shadow-none',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <label class="form-label">Industry Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-none" id="edit_industry_name"
+                                    name="industry_name" required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'edit_display_order',
-                                    'name' => 'display_order',
-                                    'class' => 'form-control shadow-none',
-                                    'type' => 'number',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <input type="number" class="form-control shadow-none" id="edit_display_order"
+                                    name="display_order" value="0">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Industry Description</label>
-                            <?php
-                            $textareaConfig = [
-                                'id' => 'edit_industry_description',
-                                'name' => 'industry_description',
-                                'class' => 'form-control shadow-none',
-                            ];
-                            include '../components/reusable/textarea.php';
-                            ?>
+                            <textarea class="form-control shadow-none" id="edit_industry_description" name="industry_description"
+                                rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -221,19 +166,10 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'edit_status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="edit_status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -1,25 +1,8 @@
 <?php
     session_start();
+    include 'admin/components/session.php';
     require_once 'app/Db.php';
     $pdo = Db::connect();
-
-    // Check if admin is already logged in
-    if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-        $loginTime = $_SESSION['login_time'] ?? 0;
-        $currentTime = time();
-        
-        // Check if session has expired (30 minutes = 1800 seconds)
-        if ($currentTime - $loginTime > 1800) {
-            // Session expired, clear it
-            session_unset();
-            session_destroy();
-        } else {
-            // Still logged in, redirect to admin dashboard
-            header('Location: admin/index.php');
-            exit();
-        }
-    }
-
     $error_message = '';
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -57,7 +40,6 @@
                         $_SESSION['admin_id'] = $user['IdAdmin'];
                         $_SESSION['login_time'] = time();
                         
-                        // Set session timeout to 30 minutes (1800 seconds)
                         $_SESSION['session_timeout'] = 1800;
                         
                         header('Location: admin/index.php');

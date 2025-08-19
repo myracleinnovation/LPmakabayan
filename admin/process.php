@@ -47,18 +47,10 @@ $admin_id = $_SESSION['admin_id'];
 
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-12">
-                                    <?php
-                                    $searchConfig = [
-                                        'id' => 'processCustomSearch',
-                                        'placeholder' => 'Search process steps...',
-                                        'dataTarget' => 'processTable',
-                                        'minLength' => 2,
-                                        'delay' => 300,
-                                        'showClear' => true,
-                                    ];
-                                    
-                                    include '../components/reusable/search.php';
-                                    ?>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none" id="processCustomSearch"
+                                            placeholder="Search process steps..." aria-label="Search process steps">
+                                    </div>
                                 </div>
                             </div>
 
@@ -98,40 +90,20 @@ $admin_id = $_SESSION['admin_id'];
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label">Process Title *</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'processTitle',
-                                    'name' => 'process_title',
-                                    'class' => 'form-control shadow-none',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <label class="form-label">Process Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-none" id="processTitle"
+                                    name="process_title" required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'displayOrder',
-                                    'name' => 'display_order',
-                                    'class' => 'form-control shadow-none',
-                                    'type' => 'number',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <input type="number" class="form-control shadow-none" id="displayOrder"
+                                    name="display_order" value="0">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Process Description</label>
-                            <?php
-                            $textareaConfig = [
-                                'id' => 'processDescription',
-                                'name' => 'process_description',
-                                'class' => 'form-control shadow-none',
-                            ];
-                            include '../components/reusable/textarea.php';
-                            ?>
+                            <textarea class="form-control shadow-none" id="processDescription" name="process_description" rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -143,19 +115,10 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -181,40 +144,18 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label">Process Title *</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'edit_process_title',
-                                    'name' => 'process_title',
-                                    'class' => 'form-control shadow-none',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <label class="form-label">Process Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-none" id="edit_process_title" name="process_title" required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'edit_display_order',
-                                    'name' => 'display_order',
-                                    'class' => 'form-control shadow-none',
-                                    'type' => 'number',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <input type="number" class="form-control shadow-none" id="edit_display_order" name="display_order" value="0">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Process Description</label>
-                            <?php
-                            $textareaConfig = [
-                                'id' => 'edit_process_description',
-                                'name' => 'process_description',
-                                'class' => 'form-control shadow-none',
-                            ];
-                            include '../components/reusable/textarea.php';
-                            ?>
+                            <textarea class="form-control shadow-none" id="edit_process_description" name="process_description" rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -227,19 +168,10 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'edit_status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="edit_status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">

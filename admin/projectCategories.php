@@ -36,7 +36,8 @@ $admin_id = $_SESSION['admin_id'];
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">All Project Categories</h5>
-                            <button class="btn btn-primary shadow-none" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                            <button class="btn btn-primary shadow-none" data-bs-toggle="modal"
+                                data-bs-target="#addCategoryModal">
                                 Add Categories
                             </button>
                         </div>
@@ -46,18 +47,11 @@ $admin_id = $_SESSION['admin_id'];
 
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-12">
-                                    <?php
-                                    $searchConfig = [
-                                        'id' => 'categoriesCustomSearch',
-                                        'placeholder' => 'Search project categories...',
-                                        'dataTarget' => 'categoriesTable',
-                                        'minLength' => 2,
-                                        'delay' => 300,
-                                        'showClear' => true,
-                                    ];
-                                    
-                                    include '../components/reusable/search.php';
-                                    ?>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control shadow-none"
+                                            id="categoriesCustomSearch" placeholder="Search project categories..."
+                                            aria-label="Search project categories">
+                                    </div>
                                 </div>
                             </div>
 
@@ -97,40 +91,20 @@ $admin_id = $_SESSION['admin_id'];
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label">Category Name *</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'categoryName',
-                                    'name' => 'category_name',
-                                    'class' => 'form-control shadow-none',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <label class="form-label">Category Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-none" id="categoryName"
+                                    name="category_name" required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'displayOrder',
-                                    'name' => 'display_order',
-                                    'class' => 'form-control shadow-none',
-                                    'value' => '0',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <input type="number" class="form-control shadow-none" id="displayOrder"
+                                    name="display_order" value="0">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Category Description</label>
-                            <?php
-                            $textareaConfig = [
-                                'id' => 'categoryDescription',
-                                'name' => 'category_description',
-                                'class' => 'form-control shadow-none',
-                            ];
-                            include '../components/reusable/textarea.php';
-                            ?>
+                            <textarea class="form-control shadow-none" id="categoryDescription" name="category_description" rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -142,19 +116,10 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -180,40 +145,21 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label">Category Name *</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'edit_category_name',
-                                    'name' => 'category_name',
-                                    'class' => 'form-control shadow-none',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <label class="form-label">Category Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-none" id="edit_category_name"
+                                    name="category_name" required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Display Order</label>
-                                <?php
-                                $inputConfig = [
-                                    'id' => 'edit_display_order',
-                                    'name' => 'display_order',
-                                    'class' => 'form-control shadow-none',
-                                    'value' => '0',
-                                ];
-                                include '../components/reusable/input.php';
-                                ?>
+                                <input type="number" class="form-control shadow-none" id="edit_display_order"
+                                    name="display_order" value="0">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Category Description</label>
-                            <?php
-                            $textareaConfig = [
-                                'id' => 'edit_category_description',
-                                'name' => 'category_description',
-                                'class' => 'form-control shadow-none',
-                            ];
-                            include '../components/reusable/textarea.php';
-                            ?>
+                            <textarea class="form-control shadow-none" id="edit_category_description" name="category_description"
+                                rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -226,19 +172,10 @@ $admin_id = $_SESSION['admin_id'];
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php
-                            $selectConfig = [
-                                'id' => 'edit_status',
-                                'name' => 'status',
-                                'options' => [
-                                    '1' => 'Active',
-                                    '0' => 'Inactive',
-                                ],
-                                'value' => '1',
-                                'class' => 'form-select shadow-none',
-                            ];
-                            include '../components/reusable/select.php';
-                            ?>
+                            <select class="form-select shadow-none" id="edit_status" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">

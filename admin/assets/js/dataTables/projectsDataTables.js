@@ -209,6 +209,57 @@ function loadProjectData(projectId) {
     });
 }
 
+// Validation functions
+function validateNumericalField(value, fieldName, allowZero = false) {
+    if (value === '' || value === null || value === undefined) {
+        return true; // Allow empty values
+    }
+    
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) {
+        return `${fieldName} should be numbers only`;
+    }
+    
+    if (allowZero) {
+        if (numValue < 0) {
+            return `${fieldName} should be numbers only`;
+        }
+    } else {
+        if (numValue <= 0) {
+            return `${fieldName} should be numbers only`;
+        }
+    }
+    
+    return true; // Valid
+}
+
+function validateProjectForm(formId) {
+    const errors = [];
+    
+    // Validate Project Area
+    const projectArea = $(`#${formId} [name="project_area"]`).val();
+    const areaValidation = validateNumericalField(projectArea, 'Project Area', true);
+    if (areaValidation !== true) {
+        errors.push(areaValidation);
+    }
+    
+    // Validate Project Value
+    const projectValue = $(`#${formId} [name="project_value"]`).val();
+    const valueValidation = validateNumericalField(projectValue, 'Project Value', true);
+    if (valueValidation !== true) {
+        errors.push(valueValidation);
+    }
+    
+    // Validate Display Order
+    const displayOrder = $(`#${formId} [name="display_order"]`).val();
+    const orderValidation = validateNumericalField(displayOrder, 'Display Order', true);
+    if (orderValidation !== true) {
+        errors.push(orderValidation);
+    }
+    
+    return errors;
+}
+
 $(document).ready(function () {
     // Only initialize if the projects table exists on this page
     if ($('#projectsTable').length > 0) {
@@ -217,10 +268,40 @@ $(document).ready(function () {
         
         // Load categories for dropdowns
         loadCategories();
+        
+        // Add real-time validation for numerical fields
+        $('input[type="number"]').on('input', function() {
+            const fieldName = $(this).attr('name');
+            const value = $(this).val();
+            
+            if (value !== '') {
+                const validation = validateNumericalField(value, fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), true);
+                if (validation !== true) {
+                    $(this).addClass('is-invalid');
+                    // Remove any existing error message
+                    $(this).siblings('.invalid-feedback').remove();
+                    $(this).after(`<div class="invalid-feedback">${validation}</div>`);
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').remove();
+                }
+            } else {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.invalid-feedback').remove();
+            }
+        });
 
         // Handle Add Project Form
         $('#addProjectForm').on('submit', function (e) {
             e.preventDefault();
+            
+            // Validate form
+            const validationErrors = validateProjectForm('addProjectForm');
+            if (validationErrors.length > 0) {
+                toastr.error(validationErrors.join('. '));
+                return;
+            }
+            
             const formData = new FormData(this);
             formData.append('action', 'create');
 
@@ -250,6 +331,14 @@ $(document).ready(function () {
         // Handle Edit Project Form
         $('#editProjectForm').on('submit', function (e) {
             e.preventDefault();
+            
+            // Validate form
+            const validationErrors = validateProjectForm('editProjectForm');
+            if (validationErrors.length > 0) {
+                toastr.error(validationErrors.join('. '));
+                return;
+            }
+            
             const formData = new FormData(this);
             formData.append('action', 'update');
 

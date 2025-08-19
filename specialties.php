@@ -1,26 +1,48 @@
-<?php 
-    include 'components/header.php';
-    require_once 'app/Db.php';
-    $pdo = Db::connect();
+<?php
+session_start();
 
-    function fetchSpecialties($pdo) {
-        $stmt = $pdo->query("SELECT SpecialtyName, SpecialtyDescription, SpecialtyImage FROM Company_Specialties WHERE Status = 1 ORDER BY DisplayOrder");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Check if admin is logged in, redirect to admin dashboard
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    $loginTime = $_SESSION['login_time'] ?? 0;
+    $currentTime = time();
+
+    // Check if session has expired (30 minutes = 1800 seconds)
+    if ($currentTime - $loginTime > 1800) {
+        // Session expired, clear it
+        session_unset();
+        session_destroy();
+    } else {
+        // Still logged in, redirect to admin dashboard
+        header('Location: admin/index.php');
+        exit();
     }
+}
 
-    function fetchProcessSteps($pdo) {
-        $stmt = $pdo->query("SELECT ProcessTitle, ProcessDescription, ProcessImage FROM Company_Process WHERE Status = 1 ORDER BY DisplayOrder");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+include 'components/header.php';
+require_once 'app/Db.php';
+$pdo = Db::connect();
 
-    function fetchIndustries($pdo) {
-        $stmt = $pdo->query("SELECT IndustryName, IndustryDescription, IndustryImage FROM Company_Industries WHERE Status = 1 ORDER BY DisplayOrder");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+function fetchSpecialties($pdo)
+{
+    $stmt = $pdo->query('SELECT SpecialtyName, SpecialtyDescription, SpecialtyImage FROM Company_Specialties WHERE Status = 1 ORDER BY DisplayOrder');
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-    $specialties = fetchSpecialties($pdo);
-    $processSteps = fetchProcessSteps($pdo);
-    $industries = fetchIndustries($pdo);
+function fetchProcessSteps($pdo)
+{
+    $stmt = $pdo->query('SELECT ProcessTitle, ProcessDescription, ProcessImage FROM Company_Process WHERE Status = 1 ORDER BY DisplayOrder');
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function fetchIndustries($pdo)
+{
+    $stmt = $pdo->query('SELECT IndustryName, IndustryDescription, IndustryImage FROM Company_Industries WHERE Status = 1 ORDER BY DisplayOrder');
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+$specialties = fetchSpecialties($pdo);
+$processSteps = fetchProcessSteps($pdo);
+$industries = fetchIndustries($pdo);
 ?>
 
 <body class="bg-warning">
@@ -38,17 +60,17 @@
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
                         <?php if (!empty($specialty['SpecialtyImage'])): ?>
-                        <img src="assets/img/<?= htmlspecialchars($specialty['SpecialtyImage']); ?>" class="w-100 object-fit-cover"
-                            alt="<?= htmlspecialchars($specialty['SpecialtyName']); ?>">
+                        <img src="assets/img/<?= htmlspecialchars($specialty['SpecialtyImage']) ?>"
+                            class="w-100 object-fit-cover" alt="<?= htmlspecialchars($specialty['SpecialtyName']) ?>">
                         <?php endif; ?>
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
-                                <?= htmlspecialchars($specialty['SpecialtyName']); ?></h3>
+                                <?= htmlspecialchars($specialty['SpecialtyName']) ?></h3>
                         </div>
                     </div>
                     <?php if (!empty($specialty['SpecialtyDescription'])): ?>
                     <div class="mt-3">
-                        <p class="text-black fs-6"><?= htmlspecialchars($specialty['SpecialtyDescription']); ?></p>
+                        <p class="text-black fs-6"><?= htmlspecialchars($specialty['SpecialtyDescription']) ?></p>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -68,14 +90,14 @@
                 <div class="col-12 col-sm-6 col-md-3 mb-4">
                     <div class="mx-auto mb-2 rounded d-flex align-items-center justify-content-center w-100">
                         <?php if (!empty($process['ProcessImage'])): ?>
-                        <img src="assets/img/<?= htmlspecialchars($process['ProcessImage']); ?>"
+                        <img src="assets/img/<?= htmlspecialchars($process['ProcessImage']) ?>"
                             class="w-100 h-100 object-fit-cover"
-                            alt="<?= htmlspecialchars($process['ProcessTitle']); ?>">
+                            alt="<?= htmlspecialchars($process['ProcessTitle']) ?>">
                         <?php endif; ?>
                     </div>
-                    <h1 class="fs-3 text-uppercase fw-bold"><?= htmlspecialchars($process['ProcessTitle']); ?></h1>
+                    <h1 class="fs-3 text-uppercase fw-bold"><?= htmlspecialchars($process['ProcessTitle']) ?></h1>
                     <?php if (!empty($process['ProcessDescription'])): ?>
-                    <h2 class="fs-5 fw-normal"><?= htmlspecialchars($process['ProcessDescription']); ?></h2>
+                    <h2 class="fs-5 fw-normal"><?= htmlspecialchars($process['ProcessDescription']) ?></h2>
                     <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
@@ -94,17 +116,17 @@
                 <div class="col-12 col-md-4 mb-4">
                     <div class="position-relative project-category overflow-hidden">
                         <?php if (!empty($industry['IndustryImage'])): ?>
-                        <img src="assets/img/<?= htmlspecialchars($industry['IndustryImage']); ?>" class="w-100 object-fit-cover"
-                            alt="<?= htmlspecialchars($industry['IndustryName']); ?>">
+                        <img src="assets/img/<?= htmlspecialchars($industry['IndustryImage']) ?>"
+                            class="w-100 object-fit-cover" alt="<?= htmlspecialchars($industry['IndustryName']) ?>">
                         <?php endif; ?>
                         <div class="category-overlay d-flex align-items-center justify-content-center">
                             <h3 class="text-white fw-bold text-center fs-2 fs-md-5 text-uppercase">
-                                <?= htmlspecialchars($industry['IndustryName']); ?></h3>
+                                <?= htmlspecialchars($industry['IndustryName']) ?></h3>
                         </div>
                     </div>
                     <?php if (!empty($industry['IndustryDescription'])): ?>
                     <div class="mt-3">
-                        <p class="text-black fs-6"><?= htmlspecialchars($industry['IndustryDescription']); ?></p>
+                        <p class="text-black fs-6"><?= htmlspecialchars($industry['IndustryDescription']) ?></p>
                     </div>
                     <?php endif; ?>
                 </div>
