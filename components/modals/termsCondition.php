@@ -1,13 +1,13 @@
 <!-- Terms and Conditions Modal -->
 <div class="modal fade" id="termsConditionModal" tabindex="-1" aria-labelledby="termsConditionModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="termsConditionModalLabel">Website Terms and Conditions</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="max-height:70vh; overflow-y:auto;">
+            <div class="modal-body">
                 <p><strong>Makabayan Avellanosa Construction</strong> governs the use of its website and services
                     through these Terms and Conditions. Accessing or using the website constitutes agreement to these
                     terms. Users who do not agree should refrain from using the website.</p>
