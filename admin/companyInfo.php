@@ -268,6 +268,96 @@ try {
     </div>
 
     <?php include 'components/footer.php'; ?>
+    
+    <script>
+        $(document).ready(function() {
+            // Store initial form values
+            let initialFormValues = {};
+            let hasChanges = false;
+            
+            // Function to capture initial form values
+            function captureInitialValues() {
+                initialFormValues = {
+                    contactType: $('#contactType').val(),
+                    contactLabel: $('#contactLabel').val(),
+                    contactValue: $('#contactValue').val(),
+                    contactIcon: $('#contactIcon').val(),
+                    displayOrder: $('#displayOrder').val(),
+                    status: $('#status').val()
+                };
+            }
+            
+            // Function to check if form has changes
+            function checkFormChanges() {
+                const currentValues = {
+                    contactType: $('#contactType').val(),
+                    contactLabel: $('#contactLabel').val(),
+                    contactValue: $('#contactValue').val(),
+                    contactIcon: $('#contactIcon').val(),
+                    displayOrder: $('#displayOrder').val(),
+                    status: $('#status').val()
+                };
+                
+                hasChanges = false;
+                
+                // Compare current values with initial values
+                for (let key in currentValues) {
+                    if (currentValues[key] !== initialFormValues[key]) {
+                        hasChanges = true;
+                        break;
+                    }
+                }
+                
+                // Enable/disable update button based on changes
+                if (hasChanges) {
+                    $('#updateContactBtn').prop('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
+                } else {
+                    $('#updateContactBtn').prop('disabled', true).removeClass('btn-primary').addClass('btn-secondary');
+                }
+            }
+            
+            // Initialize form tracking when modal is shown
+            $('#addContactModal').on('shown.bs.modal', function() {
+                captureInitialValues();
+                // Initially disable update button
+                $('#updateContactBtn').prop('disabled', true).removeClass('btn-primary').addClass('btn-secondary');
+            });
+            
+            // Track changes on form inputs
+            $('#contactForm input, #contactForm select, #contactForm textarea').on('input change', function() {
+                checkFormChanges();
+            });
+            
+            // Reset form tracking when modal is hidden
+            $('#addContactModal').on('hidden.bs.modal', function() {
+                initialFormValues = {};
+                hasChanges = false;
+                $('#contactForm')[0].reset();
+                $('#saveContactBtn').show();
+                $('#updateContactBtn').hide().prop('disabled', true);
+            });
+            
+            // Handle edit contact (when opening modal for editing)
+            $(document).on('click', '.edit-contact', function() {
+                // Capture values after form is populated with contact data
+                setTimeout(function() {
+                    captureInitialValues();
+                    checkFormChanges();
+                }, 100);
+            });
+            
+            // Handle form submission
+            $('#updateContactBtn').on('click', function() {
+                if (!hasChanges) {
+                    toastr.warning('No changes detected. Please make changes before updating.');
+                    return;
+                }
+                
+                // Proceed with update logic here
+                // Your existing update logic should be called here
+            });
+        });
+    </script>
 </body>
 
 </html>
