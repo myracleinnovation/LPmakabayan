@@ -70,7 +70,6 @@ class CompanyContact
         $contactType = trim($postData['contact_type']);
         $contactValue = trim($postData['contact_value']);
         $contactLabel = trim($postData['contact_label']);
-        $contactIcon = trim($postData['contact_icon']);
         $displayOrder = (int)($postData['display_order'] ?? 0);
         $status = (int)($postData['status'] ?? 1);
 
@@ -80,10 +79,9 @@ class CompanyContact
 
         // Convert empty strings to NULL for optional fields
         $contactLabel = empty($contactLabel) ? null : $contactLabel;
-        $contactIcon = empty($contactIcon) ? null : $contactIcon;
 
-        $stmt = $this->conn->prepare("INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $result = $stmt->execute([$contactType, $contactValue, $contactLabel, $contactIcon, $displayOrder, $status]);
+        $stmt = $this->conn->prepare("INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, DisplayOrder, Status, CreatedTimestamp) VALUES (?, ?, ?, ?, ?, NOW())");
+        $result = $stmt->execute([$contactType, $contactValue, $contactLabel, $displayOrder, $status]);
 
         if (!$result) {
             throw new Exception('Failed to create contact');
@@ -98,7 +96,6 @@ class CompanyContact
         $contactType = trim($postData['contact_type']);
         $contactValue = trim($postData['contact_value']);
         $contactLabel = trim($postData['contact_label']);
-        $contactIcon = trim($postData['contact_icon']);
         $displayOrder = (int)($postData['display_order'] ?? 0);
         $status = (int)($postData['status'] ?? 1);
 
@@ -108,11 +105,10 @@ class CompanyContact
 
         // Convert empty strings to NULL for optional fields
         $contactLabel = empty($contactLabel) ? null : $contactLabel;
-        $contactIcon = empty($contactIcon) ? null : $contactIcon;
 
-        $sql = "UPDATE Company_Contact SET ContactType = ?, ContactValue = ?, ContactLabel = ?, ContactIcon = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdContact = ?";
+        $sql = "UPDATE Company_Contact SET ContactType = ?, ContactValue = ?, ContactLabel = ?, DisplayOrder = ?, Status = ?, UpdatedTimestamp = NOW() WHERE IdContact = ?";
         $stmt = $this->conn->prepare($sql);
-        $result = $stmt->execute([$contactType, $contactValue, $contactLabel, $contactIcon, $displayOrder, $status, $id]);
+        $result = $stmt->execute([$contactType, $contactValue, $contactLabel, $displayOrder, $status, $id]);
 
         if (!$result) {
             throw new Exception('Failed to update contact');

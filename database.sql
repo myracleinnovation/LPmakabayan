@@ -175,7 +175,6 @@ IdContact INT AUTO_INCREMENT PRIMARY KEY,
 ContactType ENUM('phone', 'email', 'address', 'social_media', 'website') NOT NULL,
 ContactValue VARCHAR(500) NOT NULL,
 ContactLabel VARCHAR(200) NULL,
-ContactIcon VARCHAR(100) NULL,
 DisplayOrder INT DEFAULT 0,
 Status TINYINT DEFAULT 1 COMMENT '1-active, 0-inactive',
 CreatedTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -301,12 +300,12 @@ INSERT INTO Company_Process (ProcessTitle, ProcessDescription, ProcessImage, Dis
 ('Execution', 'Construction activities that take place on a project site.', 'pentagon7.png', 3);
 
 -- Seed: Contact Information
-INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder) VALUES
-('phone', '+63 912 345 6789', 'Main Office', 'bi-telephone', 1),
-('email', 'info@makabayanconstruction.com', 'General Inquiries', 'bi-envelope', 2),
-('address', '123 Construction Ave, Metro Manila, Philippines', 'Main Office Address', 'bi-geo-alt', 3),
-('phone', '+63 998 765 4321', 'Project Inquiries', 'bi-telephone', 4),
-('email', 'projects@makabayanconstruction.com', 'Project Inquiries', 'bi-envelope', 5);
+INSERT INTO Company_Contact (ContactType, ContactValue, ContactLabel, DisplayOrder) VALUES
+('phone', '+63 912 345 6789', 'Main Office', 1),
+('email', 'info@makabayanconstruction.com', 'General Inquiries', 2),
+('address', '123 Construction Ave, Metro Manila, Philippines', 'Main Office Address', 3),
+('phone', '+63 998 765 4321', 'Project Inquiries', 4),
+('email', 'projects@makabayanconstruction.com', 'Project Inquiries', 5);
 
 -- Seed: System Settings
 INSERT INTO System_Settings (SettingKey, SettingValue, SettingDescription, SettingType) VALUES

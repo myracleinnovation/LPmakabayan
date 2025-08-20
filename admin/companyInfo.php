@@ -17,9 +17,9 @@ $admin_id = $_SESSION['admin_id'];
 spl_autoload_register(function ($class) {
     $classFile = 'app/' . $class . '.php';
     if (file_exists($classFile)) {
-        require_once($classFile);
+        require_once $classFile;
     } else {
-        throw new Exception("Required class file not found: " . $class);
+        throw new Exception('Required class file not found: ' . $class);
     }
 });
 
@@ -28,7 +28,7 @@ try {
 
     $stmt = $pdo->query('SELECT * FROM Company_Info WHERE Status = 1 LIMIT 1');
     $Company_Info = $stmt->fetch();
-    
+
     // Get total contacts count for display order dropdown
     $companyContact = new CompanyContact($pdo);
     $totalContacts = $companyContact->getTotalContacts();
@@ -157,21 +157,16 @@ try {
                             <h5 class="card-title">Contact Information</h5>
                         </div>
                         <div class="card-body">
-                            <div class="text-end mb-3 mt-3">
+                            <div class="text-end my-3">
                                 <button class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#addContactModal">
                                     Add Contact
                                 </button>
                             </div>
-
-                            <!-- Search Section -->
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control shadow-none"
-                                            id="contactsCustomSearch" placeholder="Search contacts..."
-                                            aria-label="Search contacts">
-                                    </div>
+                            <div class="col-md-12 mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control shadow-none" id="contactsCustomSearch"
+                                        placeholder="Search contacts..." aria-label="Search contacts">
                                 </div>
                             </div>
 
@@ -204,53 +199,48 @@ try {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Contact Information</h5>
+                    <h5 class="modal-title">Add Contact</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="contactForm">
+                <form id="addContactForm">
                     <div class="modal-body">
-                        <input type="hidden" id="contactId" name="contact_id">
-
                         <div class="mb-3">
                             <label class="form-label">Contact Type <span class="text-danger">*</span></label>
-                            <select class="form-select shadow-none" id="contactType" name="contact_type">
+                            <select class="form-select shadow-none" id="addContactType" name="contact_type" required>
+                                <option value="">Select Contact Type</option>
                                 <option value="email">Email</option>
-                                <option value="phone" selected>Phone</option>
+                                <option value="phone">Phone</option>
                                 <option value="address">Address</option>
+                                <option value="website">Website</option>
+                                <option value="social">Social Media</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Contact Label <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control shadow-none" id="contactLabel"
+                            <input type="text" class="form-control shadow-none" id="addContactLabel"
                                 name="contact_label" required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Contact Value <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control shadow-none" id="contactValue"
+                            <input type="text" class="form-control shadow-none" id="addContactValue"
                                 name="contact_value" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Contact Icon</label>
-                            <input type="text" class="form-control shadow-none" id="contactIcon"
-                                name="contact_icon">
-                        </div>
-
-                        <div class="mb-3">
                             <label class="form-label">Display Order</label>
-                            <select class="form-select shadow-none" id="displayOrder" name="display_order">
+                            <select class="form-select shadow-none" id="addDisplayOrder" name="display_order">
                                 <option value="0">First (0)</option>
                                 <?php for($i = 1; $i <= $totalContacts + 10; $i++): ?>
-                                    <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
                                 <?php endfor; ?>
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select shadow-none" id="status" name="status">
+                            <select class="form-select shadow-none" id="addStatus" name="status">
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -259,8 +249,70 @@ try {
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-primary" id="saveContactBtn">Add</button>
-                        <button type="button" class="btn btn-primary" id="updateContactBtn"
-                            style="display: none;">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Contact Modal -->
+    <div class="modal fade" id="editContactModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Contact</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="editContactForm">
+                    <div class="modal-body">
+                        <input type="hidden" id="editContactId" name="contact_id">
+
+                        <div class="mb-3">
+                            <label class="form-label">Contact Type <span class="text-danger">*</span></label>
+                            <select class="form-select shadow-none" id="editContactType" name="contact_type"
+                                required>
+                                <option value="">Select Contact Type</option>
+                                <option value="email">Email</option>
+                                <option value="phone">Phone</option>
+                                <option value="address">Address</option>
+                                <option value="website">Website</option>
+                                <option value="social">Social Media</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contact Label <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control shadow-none" id="editContactLabel"
+                                name="contact_label" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contact Value <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control shadow-none" id="editContactValue"
+                                name="contact_value" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Display Order</label>
+                            <select class="form-select shadow-none" id="editDisplayOrder" name="display_order">
+                                <option value="0">First (0)</option>
+                                <?php for($i = 1; $i <= $totalContacts + 10; $i++): ?>
+                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select shadow-none" id="editStatus" name="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="updateContactBtn">Update</button>
                     </div>
                 </form>
             </div>
@@ -268,96 +320,6 @@ try {
     </div>
 
     <?php include 'components/footer.php'; ?>
-    
-    <script>
-        $(document).ready(function() {
-            // Store initial form values
-            let initialFormValues = {};
-            let hasChanges = false;
-            
-            // Function to capture initial form values
-            function captureInitialValues() {
-                initialFormValues = {
-                    contactType: $('#contactType').val(),
-                    contactLabel: $('#contactLabel').val(),
-                    contactValue: $('#contactValue').val(),
-                    contactIcon: $('#contactIcon').val(),
-                    displayOrder: $('#displayOrder').val(),
-                    status: $('#status').val()
-                };
-            }
-            
-            // Function to check if form has changes
-            function checkFormChanges() {
-                const currentValues = {
-                    contactType: $('#contactType').val(),
-                    contactLabel: $('#contactLabel').val(),
-                    contactValue: $('#contactValue').val(),
-                    contactIcon: $('#contactIcon').val(),
-                    displayOrder: $('#displayOrder').val(),
-                    status: $('#status').val()
-                };
-                
-                hasChanges = false;
-                
-                // Compare current values with initial values
-                for (let key in currentValues) {
-                    if (currentValues[key] !== initialFormValues[key]) {
-                        hasChanges = true;
-                        break;
-                    }
-                }
-                
-                // Enable/disable update button based on changes
-                if (hasChanges) {
-                    $('#updateContactBtn').prop('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
-                } else {
-                    $('#updateContactBtn').prop('disabled', true).removeClass('btn-primary').addClass('btn-secondary');
-                }
-            }
-            
-            // Initialize form tracking when modal is shown
-            $('#addContactModal').on('shown.bs.modal', function() {
-                captureInitialValues();
-                // Initially disable update button
-                $('#updateContactBtn').prop('disabled', true).removeClass('btn-primary').addClass('btn-secondary');
-            });
-            
-            // Track changes on form inputs
-            $('#contactForm input, #contactForm select, #contactForm textarea').on('input change', function() {
-                checkFormChanges();
-            });
-            
-            // Reset form tracking when modal is hidden
-            $('#addContactModal').on('hidden.bs.modal', function() {
-                initialFormValues = {};
-                hasChanges = false;
-                $('#contactForm')[0].reset();
-                $('#saveContactBtn').show();
-                $('#updateContactBtn').hide().prop('disabled', true);
-            });
-            
-            // Handle edit contact (when opening modal for editing)
-            $(document).on('click', '.edit-contact', function() {
-                // Capture values after form is populated with contact data
-                setTimeout(function() {
-                    captureInitialValues();
-                    checkFormChanges();
-                }, 100);
-            });
-            
-            // Handle form submission
-            $('#updateContactBtn').on('click', function() {
-                if (!hasChanges) {
-                    toastr.warning('No changes detected. Please make changes before updating.');
-                    return;
-                }
-                
-                // Proceed with update logic here
-                // Your existing update logic should be called here
-            });
-        });
-    </script>
 </body>
 
 </html>

@@ -3,206 +3,231 @@ $(document).ready(function() {
     $('<style>')
         .prop('type', 'text/css')
         .html(`
-            #contactsTable thead th.sorting:before,
-            #contactsTable thead th.sorting:after,
-            #contactsTable thead th.sorting_asc:before,
-            #contactsTable thead th.sorting_asc:after,
-            #contactsTable thead th.sorting_desc:before,
-            #contactsTable thead th.sorting_desc:after {
+            .table thead th.sorting:before,
+            .table thead th.sorting:after,
+            .table thead th.sorting_asc:before,
+            .table thead th.sorting_asc:after,
+            .table thead th.sorting_desc:before,
+            .table thead th.sorting_desc:after {
                 display: none !important;
             }
         `)
         .appendTo('head');
 
-    // Only initialize if the contacts table exists on this page
-    if ($('#contactsTable').length > 0) {
-        // Initialize DataTable for Contacts in Company Info page
-        let contactsDataTable;
+    // Initialize company info functionality
+    initializeCompanyInfo();
+});
+
+// Initialize company info functionality
+function initializeCompanyInfo() {
+    // Handle company info form submission
+    let isSubmitting = false;
+    
+    $('#companyInfoForm').on('submit', function(e) {
+        e.preventDefault();
         
-        // Check if DataTable is already initialized
-        if ($('#contactsTable').length && !$.fn.DataTable.isDataTable('#contactsTable')) {
-            contactsDataTable = new DataTable('#contactsTable', {
-                columnDefs: [
-                    { orderable: true, targets: [0] },  // ContactLabel
-                    { orderable: true, targets: [1] },  // ContactValue  
-                    { orderable: true, targets: [2] },  // ContactType
-                    { orderable: true, targets: [3] },  // DisplayOrder
-                    { orderable: true, targets: [4] },  // Status
-                    { orderable: false, targets: [5] }  // Actions
-                ],
-                order: [[1, 'asc']],
-                dom: "<'row'<'col-12 mb-3'tr>>" +
-                    "<'row'<'col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2'ip>>",
-                processing: true,
-                ajax: {
-                    url: 'app/apiCompanyContact.php',
-                    type: 'POST',
-                    data: { action: 'get_contacts' },
-                    dataSrc: json => {
-                        console.log('Contacts data received:', json);
-                        if (json.status === 1) return json.data || [];
-                        toastr.error(json.message || 'Error loading data');
-                        return [];
-                    },
-                    error: () => toastr.error('Error loading contacts data')
-                },
-                columns: [
-                    { data: 'ContactLabel', render: data => `<div class="text-start">${data || '-'}</div>` },
-                    { data: 'ContactValue', render: data => `<div class="text-start">${data}</div>` },
-                    { data: 'ContactType', render: data => `<span class="badge bg-primary">${data}</span>` },
-                    { data: 'DisplayOrder', render: data => `<div class="text-center">${data}</div>` },
-                    { data: 'Status', render: data => `<span class="badge ${data == 1 ? 'bg-success' : 'bg-danger'}">${data == 1 ? 'Active' : 'Inactive'}</span>` },
-                    { data: null, render: (_, __, row) => {
-                        const editBtn = `<button class="btn btn-outline-primary edit_contact" 
-                                data-contact-id="${row.IdContact}" 
-                                title="Edit Contact">
-                            <i class="bi bi-pencil"></i>
-                        </button>`;
-                        
-                        return `<div class="btn-group" role="group">${editBtn}</div>`;
-                    }}
-                ]
-            });
+        if (isSubmitting) {
+            return false;
         }
-
-        // Handle company info form submission
-        let isSubmitting = false;
-        $('#companyInfoForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            if (isSubmitting) {
-                return false;
-            }
-            
-            isSubmitting = true;
-            
-            const formData = new FormData(this);
-            formData.append('action', 'update_company');
-            
-            $.ajax({
-                url: 'app/apiCompanyInfo.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    isSubmitting = false;
-                    if (response.status === 1) {
-                        toastr.success(response.message);
-                    } else {
-                        toastr.error(response.message || 'Error updating company information');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    isSubmitting = false;
-                    toastr.error('An error occurred while updating company information: ' + error);
+        
+        isSubmitting = true;
+        
+        const formData = new FormData(this);
+        formData.append('action', 'update_company');
+        
+        // Show loading state
+        const submitBtn = $('#updateCompanyBtn');
+        const originalText = submitBtn.text();
+        submitBtn.prop('disabled', true).text('Updating...');
+        
+        $.ajax({
+            url: 'app/apiCompanyInfo.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                isSubmitting = false;
+                if (response.status === 1) {
+                    toastr.success(response.message);
+                    
+                    // Reload page after successful update to show new images
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    toastr.error(response.message || 'Error updating company information');
                 }
-            });
+            },
+            error: function(xhr, status, error) {
+                isSubmitting = false;
+                console.error('Company info update error:', error);
+                toastr.error('An error occurred while updating company information: ' + error);
+            },
+            complete: function() {
+                // Reset button state
+                submitBtn.prop('disabled', false).text(originalText);
+            }
         });
+    });
 
-        // Handle contact form submission (create/update)
-        const handleContactSubmit = (action, data) => {
-            if (!data.contact_type) {
-                toastr.error('Contact type is required');
-                return;
-            }
-            
-            if (!data.contact_value) {
-                toastr.error('Contact value is required');
-                return;
-            }
+    // Handle file input changes for image preview
+    setupImagePreviews();
+    
+    // Setup form validation
+    setupFormValidation();
+}
 
-            $.ajax({
-                url: 'app/apiCompanyContact.php',
-                type: 'POST',
-                data: { action: action, ...data },
-                success: response => {
-                    if (response.status === 1) {
-                        if (contactsDataTable) {
-                            contactsDataTable.ajax.reload();
-                        }
-                        $('#contactForm')[0].reset();
-                        $('#contactId').val('');
-                        $('#saveContactBtn').show();
-                        $('#updateContactBtn').hide();
-                        toastr.success(response.message);
-                    } else {
-                        toastr.error(response.message || `Error ${action === 'add' ? 'creating' : 'updating'} contact`);
-                    }
-                },
-                error: () => toastr.error(`Error ${action === 'add' ? 'creating' : 'updating'} contact`)
-            });
-        };
-
-        // Save contact
-        $('#saveContactBtn').on('click', e => {
-            e.preventDefault();
-            const data = {
-                contact_type: $('#contactType').val(),
-                contact_value: $('#contactValue').val()?.trim(),
-                contact_label: $('#contactLabel').val()?.trim(),
-                contact_icon: $('#contactIcon').val()?.trim(),
-                display_order: $('#displayOrder').val() || 0,
-                status: $('#status').val()
+// Setup image preview functionality
+function setupImagePreviews() {
+    // About image preview
+    $('input[name="about_image"]').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#current_about_image_preview').html(`
+                    <small class="text-muted">New About Image Preview:</small><br>
+                    <img src="${e.target.result}" alt="About Image Preview"
+                        style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                        class="border rounded">
+                `);
             };
-            handleContactSubmit('add', data);
-        });
+            reader.readAsDataURL(file);
+        }
+    });
 
-        // Update contact
-        $('#updateContactBtn').on('click', e => {
-            e.preventDefault();
-            const data = {
-                contact_id: $('#contactId').val()?.trim(),
-                contact_type: $('#contactType').val(),
-                contact_value: $('#contactValue').val()?.trim(),
-                contact_label: $('#contactLabel').val()?.trim(),
-                contact_icon: $('#contactIcon').val()?.trim(),
-                display_order: $('#displayOrder').val() || 0,
-                status: $('#status').val()
+    // Logo image preview
+    $('input[name="logo_image"]').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#current_logo_image_preview').html(`
+                    <small class="text-muted">New Logo Image Preview:</small><br>
+                    <img src="${e.target.result}" alt="Logo Image Preview"
+                        style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                        class="border rounded">
+                `);
             };
-            if (!data.contact_id) {
-                toastr.error('Contact ID is required');
-                return;
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Setup form validation
+function setupFormValidation() {
+    // Company name validation
+    $('#companyName').on('blur', function() {
+        const value = $(this).val().trim();
+        if (!value) {
+            $(this).addClass('is-invalid');
+            if (!$(this).next('.invalid-feedback').length) {
+                $(this).after('<div class="invalid-feedback">Company name is required</div>');
             }
-            handleContactSubmit('edit', data);
-        });
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
 
-        // Reset form
-        $('#resetContactForm').on('click', () => {
-            $('#contactForm')[0].reset();
-            $('#contactId').val('');
-            $('#saveContactBtn').show();
-            $('#updateContactBtn').hide();
-        });
+    // Tagline validation
+    $('#tagline').on('blur', function() {
+        const value = $(this).val().trim();
+        if (!value) {
+            $(this).addClass('is-invalid');
+            if (!$(this).next('.invalid-feedback').length) {
+                $(this).after('<div class="invalid-feedback">Tagline is required</div>');
+            }
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
 
-        // Edit contact via API
-        $(document).on('click', '.edit_contact', function () {
-            const contactId = $(this).data('contact-id');
-            $.ajax({
-                url: 'app/apiCompanyContact.php',
-                type: 'POST',
-                data: { action: 'get', contact_id: contactId },
-                success: response => {
-                    if (response.status === 1) {
-                        const { IdContact, ContactType, ContactValue, ContactLabel, ContactIcon, DisplayOrder, Status } = response.data;
-                        $('#contactId').val(IdContact);
-                        $('#contactType').val(ContactType);
-                        $('#contactValue').val(ContactValue);
-                        $('#contactLabel').val(ContactLabel);
-                        $('#contactIcon').val(ContactIcon);
-                        $('#displayOrder').val(DisplayOrder);
-                        $('#status').val(Status);
-                        $('#saveContactBtn').hide();
-                        $('#updateContactBtn').show();
-                        
-                        // Open the modal
-                        $('#addContactModal').modal('show');
-                    } else {
-                        toastr.error(response.message || 'Error retrieving contact data');
-                    }
-                },
-                error: () => toastr.error('Error retrieving contact data')
-            });
-        });
-    }
-}); 
+    // Description validation
+    $('#description').on('blur', function() {
+        const value = $(this).val().trim();
+        if (!value) {
+            $(this).addClass('is-invalid');
+            if (!$(this).next('.invalid-feedback').length) {
+                $(this).after('<div class="invalid-feedback">Company description is required</div>');
+            }
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
+
+    // Mission validation
+    $('#mission').on('blur', function() {
+        const value = $(this).val().trim();
+        if (!value) {
+            $(this).addClass('is-invalid');
+            if (!$(this).next('.invalid-feedback').length) {
+                $(this).after('<div class="invalid-feedback">Mission is required</div>');
+            }
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
+
+    // Vision validation
+    $('#vision').on('blur', function() {
+        const value = $(this).val().trim();
+        if (!value) {
+            $(this).addClass('is-invalid');
+            if (!$(this).next('.invalid-feedback').length) {
+                $(this).after('<div class="invalid-feedback">Vision is required</div>');
+            }
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
+}
+
+// Utility function to validate company form
+function validateCompanyForm() {
+    let isValid = true;
+    
+    // Check required fields
+    const requiredFields = ['#companyName', '#tagline', '#description', '#mission', '#vision'];
+    
+    requiredFields.forEach(fieldId => {
+        const field = $(fieldId);
+        const value = field.val().trim();
+        
+        if (!value) {
+            field.addClass('is-invalid');
+            if (!field.next('.invalid-feedback').length) {
+                field.after('<div class="invalid-feedback">This field is required</div>');
+            }
+            isValid = false;
+        } else {
+            field.removeClass('is-invalid');
+            field.next('.invalid-feedback').remove();
+        }
+    });
+    
+    return isValid;
+}
+
+// Utility function to reset form validation
+function resetFormValidation() {
+    $('.is-invalid').removeClass('is-invalid');
+    $('.invalid-feedback').remove();
+}
+
+// Utility function to show loading state
+function showLoadingState(element, text = 'Loading...') {
+    const originalText = element.text();
+    element.prop('disabled', true).text(text);
+    return originalText;
+}
+
+// Utility function to hide loading state
+function hideLoadingState(element, originalText) {
+    element.prop('disabled', false).text(originalText);
+} 
