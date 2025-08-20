@@ -98,6 +98,23 @@
 }
 
 /* Ensure header is properly positioned on mobile */
+
+/* Fix for duplicate eye icons in password fields */
+.input-group .btn .bi-eye,
+.input-group .btn .bi-eye-slash {
+    display: inline-block !important;
+    position: relative;
+    z-index: 1;
+}
+
+.input-group .btn .bi-eye::before,
+.input-group .btn .bi-eye-slash::before {
+    content: "\f341" !important;
+}
+
+.input-group .btn .bi-eye-slash::before {
+    content: "\f340" !important;
+}
 @media (max-width: 1199px) {
     .header {
         padding-left: 20px;

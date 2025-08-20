@@ -48,8 +48,8 @@ $admin_id = $_SESSION['admin_id'];
                                             name="current_password" placeholder="Enter current password..."
                                             autocomplete="current-password" required>
                                         <button class="btn btn-outline-secondary" type="button"
-                                            id="toggleCurrentPassword" style="border-left: 0;">
-                                            <i class="bi bi-eye" id="currentPasswordIcon"></i>
+                                            id="toggleCurrentPassword" style="border-left: 0; position: relative;">
+                                            <i class="bi bi-eye" id="currentPasswordIcon" style="pointer-events: none;"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -61,8 +61,8 @@ $admin_id = $_SESSION['admin_id'];
                                             name="new_password" placeholder="Enter new password..."
                                             autocomplete="new-password" required>
                                         <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword"
-                                            style="border-left: 0;">
-                                            <i class="bi bi-eye" id="newPasswordIcon"></i>
+                                            style="border-left: 0; position: relative;">
+                                            <i class="bi bi-eye" id="newPasswordIcon" style="pointer-events: none;"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -75,8 +75,8 @@ $admin_id = $_SESSION['admin_id'];
                                             name="confirm_password" placeholder="Confirm new password..."
                                             autocomplete="new-password" required>
                                         <button class="btn btn-outline-secondary" type="button"
-                                            id="toggleConfirmPassword" style="border-left: 0;">
-                                            <i class="bi bi-eye" id="confirmPasswordIcon"></i>
+                                            id="toggleConfirmPassword" style="border-left: 0; position: relative;">
+                                            <i class="bi bi-eye" id="confirmPasswordIcon" style="pointer-events: none;"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -217,6 +217,7 @@ $admin_id = $_SESSION['admin_id'];
     </div>
 
     <?php include 'components/footer.php'; ?>
+
     <script>
         $(document).ready(function() {
             // Password visibility toggle functionality
@@ -233,20 +234,20 @@ $admin_id = $_SESSION['admin_id'];
                 }
             }
 
-            // Bind password toggle events
-            $('#toggleCurrentPassword').on('click', function() {
+            // Bind password toggle events (unbind first to prevent duplicates)
+            $('#toggleCurrentPassword').off('click').on('click', function() {
                 togglePasswordVisibility('#current_password', '#currentPasswordIcon');
             });
 
-            $('#toggleNewPassword').on('click', function() {
+            $('#toggleNewPassword').off('click').on('click', function() {
                 togglePasswordVisibility('#new_password', '#newPasswordIcon');
             });
 
-            $('#toggleConfirmPassword').on('click', function() {
+            $('#toggleConfirmPassword').off('click').on('click', function() {
                 togglePasswordVisibility('#confirm_password', '#confirmPasswordIcon');
             });
 
-            $('#toggleAddPassword').on('click', function() {
+            $('#toggleAddPassword').off('click').on('click', function() {
                 togglePasswordVisibility('#password', '#addPasswordIcon');
             });
 
