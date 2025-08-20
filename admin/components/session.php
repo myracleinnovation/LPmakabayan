@@ -1,5 +1,6 @@
 <?php
-    if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    // Only redirect to admin if we're on the login page and admin is logged in
+    if (basename($_SERVER['PHP_SELF']) === 'login.php' && isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
         $loginTime = $_SESSION['login_time'] ?? 0;
         $currentTime = time();
     

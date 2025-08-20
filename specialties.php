@@ -1,23 +1,6 @@
 <?php
 session_start();
 
-// Check if admin is logged in, redirect to admin dashboard
-if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    $loginTime = $_SESSION['login_time'] ?? 0;
-    $currentTime = time();
-
-    // Check if session has expired (30 minutes = 1800 seconds)
-    if ($currentTime - $loginTime > 1800) {
-        // Session expired, clear it
-        session_unset();
-        session_destroy();
-    } else {
-        // Still logged in, redirect to admin dashboard
-        header('Location: admin/index.php');
-        exit();
-    }
-}
-
 include 'components/header.php';
 require_once 'app/Db.php';
 $pdo = Db::connect();
